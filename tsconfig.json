@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "es2016",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "moduleResolution": "Node16",
+        "resolveJsonModule": true,
+        "baseUrl": "./",
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+    },
+    "exclude": ["node_modules"]
+}

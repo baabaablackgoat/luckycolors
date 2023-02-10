@@ -1,0 +1,28 @@
+{
+  "name": "luckycolors",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "",
+  "exports": "./index.ts",
+  "scripts": {
+    "deployCommands:guilds": "ts-node-esm scripts/deployCommands.ts guilds",
+    "deployCommands:globals": "ts-node-esm scripts/deployCommands.ts globals",
+    "deployCommands:all": "ts-node-esm scripts/deployCommands.ts all",
+    "start": "ts-node-esm src/main.ts",
+    "testScriptPlsIgnore": "ts-node-esm src/def/DatabaseWrapper.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.1.4"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.4",
+    "ts-node": "^10.9.1"
+  }
+}
