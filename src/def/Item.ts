@@ -42,10 +42,10 @@ export class Item {
         const dataObject = JSON.parse(itemData);
         switch (itemType) {
             case "role":
-                this.itemData = { roleID: dataObject.roleID };
+                this.itemData = new ItemData(dataObject.roleID);
                 break;
             default:
-                this.itemData = { other: dataObject };
+                this.itemData = new ItemData(undefined, dataObject.other);
         }
     }
 }
