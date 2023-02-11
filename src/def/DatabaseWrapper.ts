@@ -2,6 +2,7 @@ import { Database, open as dbOpen } from "sqlite";
 import sqlite3 from "sqlite3";
 import { Snowflake } from "discord.js";
 import * as fs from "fs";
+import {ItemData, ItemType} from "./Item";
 
 class DatabaseError extends Error {}
 class InsufficientBalanceError extends Error {}
@@ -134,6 +135,52 @@ export class DatabaseWrapper {
                 `Cannot subtract ${amount} from ${userID}, would be negative (${newBalance})`
             );
         return this.setUserBalance(userID, newBalance);
+    }
+
+
+    // =============
+    // Item stock / shop related queries
+    // =============
+
+    public async listAllShopItems(items = [], offset = 0) {
+        this.assertReady();
+        const limit = 100;
+        const dbResponse = await this.listShopItems(limit, offset);
+        const response = items.concat(dbResponse);
+        if (dbResponse.length >= limit) {
+            return await this.listAllShopItems(response, offset + limit)
+        } else {
+            return response;
+        }
+    }
+
+    /**
+     * Lists (at most) `count` shop items, starting with item `offset`.
+     * @param limit Defaults to 100 - constrained to database limitations.
+     * @param offset
+     * @returns
+     */
+    public async listShopItems(limit = 100, offset = 0): Promise<any[]> {
+        this.assertReady();
+        const response = await this.database.all(`SELECT * FROM Shop ORDER BY itemName ASC LIMIT ${limit} OFFSET ${offset};`);
+        if (!response) throw new DatabaseError("No data was returned while querying all items.");
+        return response; // todo: do stuff with the response to conform to the Item definition
+    }
+
+    public async createShopItem(itemName: string, itemType: ItemType, itemData: ItemData, value: number) {
+        this.assertReady();
+        if (value < 0) throw new RangeError("Shop items must not have a negative price.");
+        await this.database.exec(`INSERT INTO Shop (itemName, itemType, itemData, value) VALUES ("${itemName}", "${itemType}", "${itemData}", ${value});`);
+    }
+
+    public async getShopItem(itemID: number) {
+        this.assertReady();
+        await this.database.get(`SELECT FROM Shop WHERE itemID = ${itemID};`);
+    }
+
+    public async removeShopItem(itemID: number) {
+        this.assertReady();
+        await this.database.exec(`DELETE FROM Shop WHERE itemID = ${itemID};`);
     }
 }
 export const DataStorage = await DatabaseWrapper.getInstance();
