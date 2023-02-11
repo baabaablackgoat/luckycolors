@@ -1313,104 +1313,77 @@
     <argument id="481" parent="165">
       <Position>1</Position>
     </argument>
-    <table id="482" parent="166" name="AvailableItems"/>
-    <table id="483" parent="166" name="Bank"/>
-    <table id="484" parent="166" name="Inventory"/>
-    <table id="485" parent="166" name="sqlite_master">
+    <table id="482" parent="166" name="Bank"/>
+    <table id="483" parent="166" name="Shop"/>
+    <table id="484" parent="166" name="sqlite_master">
       <System>1</System>
     </table>
-    <table id="486" parent="166" name="sqlite_sequence">
+    <table id="485" parent="166" name="sqlite_sequence">
       <System>1</System>
     </table>
-    <column id="487" parent="482" name="value">
-      <DasType>REAL|0s</DasType>
-      <Position>1</Position>
-    </column>
-    <column id="488" parent="482" name="itemName">
-      <DasType>TEXT|0s</DasType>
-      <Position>2</Position>
-    </column>
-    <column id="489" parent="482" name="itemType">
-      <DasType>TEXT|0s</DasType>
-      <Position>3</Position>
-    </column>
-    <column id="490" parent="482" name="itemData">
-      <DasType>TEXT|0s</DasType>
-      <Position>4</Position>
-    </column>
-    <index id="491" parent="482" name="sqlite_autoindex_AvailableItems_1">
-      <ColNames>itemName</ColNames>
-      <NameSurrogate>1</NameSurrogate>
-      <Unique>1</Unique>
-    </index>
-    <key id="492" parent="482" name="AvailableItems_PK">
-      <ColNames>itemName</ColNames>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>sqlite_autoindex_AvailableItems_1</UnderlyingIndexName>
-    </key>
-    <column id="493" parent="483" name="userID">
+    <column id="486" parent="482" name="userID">
       <DasType>INTEGER|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="494" parent="483" name="balance">
+    <column id="487" parent="482" name="balance">
       <DasType>REAL|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
       <Position>2</Position>
     </column>
-    <key id="495" parent="483">
+    <key id="488" parent="482" name="Bank_PK">
       <ColNames>userID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="496" parent="484" name="entryID">
+    <column id="489" parent="483" name="itemID">
       <AutoIncrement>1</AutoIncrement>
       <DasType>INTEGER|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="497" parent="484" name="itemName">
+    <column id="490" parent="483" name="itemName">
       <DasType>TEXT|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="498" parent="484" name="userID">
-      <DasType>INTEGER|0s</DasType>
+    <column id="491" parent="483" name="itemType">
+      <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <foreign-key id="499" parent="484" name="TargetedItem_FK">
-      <ColNames>itemName</ColNames>
-      <RefColNames>itemName</RefColNames>
-      <RefTableName>AvailableItems</RefTableName>
-    </foreign-key>
-    <foreign-key id="500" parent="484" name="TargetedUser_FK">
-      <ColNames>userID</ColNames>
-      <RefColNames>userID</RefColNames>
-      <RefTableName>Bank</RefTableName>
-    </foreign-key>
-    <key id="501" parent="484">
-      <ColNames>entryID</ColNames>
+    <column id="492" parent="483" name="itemData">
+      <DasType>TEXT|0s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="493" parent="483" name="value">
+      <DasType>REAL|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <Position>5</Position>
+    </column>
+    <key id="494" parent="483">
+      <ColNames>itemID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="502" parent="485" name="type">
+    <column id="495" parent="484" name="type">
       <DasType>TEXT|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="503" parent="485" name="name">
+    <column id="496" parent="484" name="name">
       <DasType>TEXT|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="504" parent="485" name="tbl_name">
+    <column id="497" parent="484" name="tbl_name">
       <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="505" parent="485" name="rootpage">
+    <column id="498" parent="484" name="rootpage">
       <DasType>INT|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="506" parent="485" name="sql">
+    <column id="499" parent="484" name="sql">
       <DasType>TEXT|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="507" parent="486" name="name">
+    <column id="500" parent="485" name="name">
       <Position>1</Position>
     </column>
-    <column id="508" parent="486" name="seq">
+    <column id="501" parent="485" name="seq">
       <Position>2</Position>
     </column>
   </database-model>

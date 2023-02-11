@@ -1,20 +1,23 @@
 CREATE TABLE IF NOT EXISTS Bank (
-    userID INTEGER PRIMARY KEY,
-    balance REAL
+    userID TEXT,
+    balance REAL DEFAULT (0) CHECK(balance >= 0),
+    CONSTRAINT Bank_PK PRIMARY KEY (userID)
 );
 
-CREATE TABLE IF NOT EXISTS AvailableItems (
-	value REAL,
-	itemName TEXT,
-	itemType TEXT,
-	itemData TEXT,
-	CONSTRAINT AvailableItems_PK PRIMARY KEY (itemName)
+CREATE TABLE IF NOT EXISTS Shop (
+    itemID INTEGER,
+    itemName TEXT,
+    itemType TEXT,
+    itemData TEXT,
+    value REAL DEFAULT (0),
+    CONSTRAINT Shop_PK PRIMARY KEY (itemID)
 );
 
 CREATE TABLE IF NOT EXISTS Inventory (
-	entryID INTEGER PRIMARY KEY AUTOINCREMENT,
-	itemName TEXT,
-	userID INTEGER,
-	CONSTRAINT TargetedItem_FK FOREIGN KEY (itemName) REFERENCES AvailableItems(itemName),
-	CONSTRAINT TargetedUser_FK FOREIGN KEY (userID) REFERENCES Bank(userID)
+    entryID INTEGER,
+    itemID INTEGER,
+    userID TEXT,
+    CONSTRAINT Inventory_PK PRIMARY KEY (entryID),
+    CONSTRAINT userID_FK FOREIGN KEY (userID) REFERENCES Bank(userID) ON DELETE CASCADE,
+    CONSTRAINT itemID_FK FOREIGN KEY (itemID) REFERENCES Shop(itemID) ON DELETE CASCADE
 );

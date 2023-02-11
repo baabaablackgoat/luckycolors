@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
         "module": "ESNext",
-        "target": "es2016",
+        "target": "es2022",
         "sourceMap": true,
         "outDir": "./dist",
-        "moduleResolution": "Node16",
+        "moduleResolution": "Node",
         "resolveJsonModule": true,
         "baseUrl": "./",
         "allowSyntheticDefaultImports": true,
