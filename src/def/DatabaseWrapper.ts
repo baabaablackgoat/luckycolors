@@ -2,7 +2,7 @@ import { Database, open as dbOpen } from "sqlite";
 import sqlite3 from "sqlite3";
 import { Snowflake } from "discord.js";
 import * as fs from "fs";
-import {ItemData, ItemType} from "./Item";
+import {Item, ItemData, ItemType} from "./Item.js";
 
 class DatabaseError extends Error {}
 class InsufficientBalanceError extends Error {}
@@ -162,9 +162,9 @@ export class DatabaseWrapper {
      */
     public async listShopItems(limit = 100, offset = 0): Promise<any[]> {
         this.assertReady();
-        const response = await this.database.all(`SELECT * FROM Shop ORDER BY itemName ASC LIMIT ${limit} OFFSET ${offset};`);
+        const response = await this.database.all(`SELECT * FROM Shop ORDER BY itemName LIMIT ${limit} OFFSET ${offset};`);
         if (!response) throw new DatabaseError("No data was returned while querying all items.");
-        return response; // todo: do stuff with the response to conform to the Item definition
+        return response.map(row => Item.createFromDBResponse(row)); // todo: do stuff with the response to conform to the Item definition
     }
 
     public async createShopItem(itemName: string, itemType: ItemType, itemData: ItemData, value: number) {
@@ -175,13 +175,47 @@ export class DatabaseWrapper {
 
     public async getShopItem(itemID: number) {
         this.assertReady();
-        await this.database.get(`SELECT FROM Shop WHERE itemID = ${itemID};`);
+        await this.database.get(`SELECT * FROM Shop WHERE itemID = ${itemID};`);
     }
 
     public async removeShopItem(itemID: number) {
         this.assertReady();
         await this.database.exec(`DELETE FROM Shop WHERE itemID = ${itemID};`);
     }
+
+    // =============
+    // Inventory / user ownership related queries
+    // =============
+
+    public async listOwnedItems(userID: Snowflake) {
+        this.assertReady();
+        const dbResponse = await this.database.all(`SELECT Shop.itemName, Shop.itemType, Shop.itemData, Shop.itemID
+            FROM Shop INNER JOIN Inventory ON Shop.itemID = Inventory.itemID
+            WHERE userID = "${userID}";`);
+        return dbResponse.map(row => Item.createFromDBResponse(row));
+    }
+
+    /**
+     * Creates an inventory record to assign a user an item.
+     * Note: This does not respect the value and balance of the targeted item. Balance checks etc. have to be done seperately.
+     */
+    public async giveUserItem(userID: Snowflake, itemID: number) {
+        this.assertReady();
+        await this.database.exec(`INSERT INTO Inventory (itemID, userID) VALUES (${itemID}, "${userID}");`);
+    }
+
+    public async removeUserItem(userID, itemID) {
+        this.assertReady();
+        await this.database.exec(`DELETE FROM Inventory WHERE itemID = ${itemID} AND userID = "${userID}";`);
+    }
+    public async checkItemOwnership(userID, itemID): Promise<boolean> {
+        this.assertReady();
+        const response = await this.database.get(`SELECT COUNT(Shop.itemName)
+            FROM Shop INNER JOIN Inventory ON Shop.itemID = Inventory.itemID
+            WHERE userID = "${userID}" AND Inventory.itemID = ${itemID}`);
+        return response >= 1;
+    }
+
 }
 export const DataStorage = await DatabaseWrapper.getInstance();
 // Should in theory always perform the setup

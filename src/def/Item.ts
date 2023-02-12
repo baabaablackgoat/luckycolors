@@ -1,5 +1,12 @@
+import {DataStorage} from "./DatabaseWrapper.js";
+
 export type ItemType = "role" | "other";
-export class ItemData {
+
+export interface IItemData {
+    roleID?: string;
+    other?: {}
+}
+export class ItemData implements IItemData {
     roleID?: string;
     other?: {};
 
@@ -7,45 +14,63 @@ export class ItemData {
         this.roleID = roleID;
         this.other = other;
     }
-
-    toJSON(): string {
-        const dataObject = {
-            roleID: this.roleID,
-            other: this.other,
-        }
-        return JSON.stringify(dataObject)
-    }
 }
 
-// TODO: Create items based on db responses instead of manual specification
-// maybe create an overload?
+class ItemError extends Error {}
+
+export interface ItemDBResponse {
+    itemID?: number;
+    itemName?: string;
+    value?: number;
+    itemData?: string;
+    itemType?: string;
+}
+
 export class Item {
-    itemID: number;
     itemName: string;
     itemType: ItemType;
     itemData: ItemData;
-    value: number;
+    // These values aren't always necessary
+    itemID?: number;
+    value?: number;
+
+    // TODO: I'm not confident with overloads in Typescript, so this will have to do for now. Rework this into an overload!
+    static createFromDBResponse(dbResponse: ItemDBResponse): Item {
+        return new Item(
+            dbResponse.itemName ?? "unknown",
+            dbResponse.itemType ?? "unknown",
+            JSON.parse(dbResponse.itemData) ?? {},
+            dbResponse.itemID,
+            dbResponse.value
+        );
+    }
 
     constructor(
-        itemID: number,
         itemName: string,
         itemType: string,
-        itemData: string,
-        value: number
+        itemData: IItemData,
+        itemID?: number,
+        value?: number
     ) {
+        // itemID and value may be undefined - itemID in cases of newly generated items, value in case of retrieved items.
         this.itemID = itemID;
+        this.value = value;
         this.itemName = itemName;
         this.itemType = itemType as ItemType;
-        this.value = value;
-
         // load item-type specific data
-        const dataObject = JSON.parse(itemData);
         switch (itemType) {
             case "role":
-                this.itemData = new ItemData(dataObject.roleID);
+                this.itemData = new ItemData(itemData.roleID);
                 break;
             default:
-                this.itemData = new ItemData(undefined, dataObject.other);
+                this.itemData = new ItemData(undefined, itemData.other);
         }
+    }
+
+    async addToShop() {
+        if (this.value === undefined) throw new ItemError("Can't create an item in the database without a value.");
+        await DataStorage.createShopItem(this.itemName, this.itemType, this.itemData, this.value).catch(e => {
+            // TODO add error handling if database error occurs
+        })
     }
 }

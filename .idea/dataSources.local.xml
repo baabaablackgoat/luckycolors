@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal" created-in="WS-223.8617.44">
-    <data-source name="database.db" uuid="2450296a-af82-4c02-b66d-76679d0a713e">
+    <data-source name="database.db" uuid="fab2c5c9-9ba1-4650-9f50-e1b4ebd01a8e">
       <database-info product="SQLite" version="3.39.2" jdbc-version="2.1" driver-name="SQLite JDBC" driver-version="3.39.2.0" dbms="SQLITE" exact-version="3.39.2" exact-driver-version="3.39">
         <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>
@@ -10,10 +10,7 @@
       <auth-provider>no-auth</auth-provider>
       <schema-mapping>
         <introspection-scope>
-          <node kind="schema">
-            <name qname="@" />
-            <name qname="main" />
-          </node>
+          <node kind="schema" qname="@" />
         </introspection-scope>
       </schema-mapping>
     </data-source>
