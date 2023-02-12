@@ -9,15 +9,13 @@ import { TermColors } from "./def/termColors.js";
 import { enabledCommands } from "./enabledCommands.js";
 import { Command } from "./def/Command.js";
 
-import { DataStorage } from "./def/DatabaseWrapper.js";
-
 // Extending the base client to include a collection storing commands
 class CustomClient extends Client {
     commands = new Collection<string, Command>();
 }
 
 // Making the command functions accessible through the client.
-const client = new CustomClient({ intents: [] });
+const client = new CustomClient({ intents: [GatewayIntentBits.Guilds] });
 enabledCommands.forEach((command) => {
     client.commands.set(command.commandData.name, command);
 });
@@ -36,7 +34,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
             );
             await targetedCommand.execute(interaction);
         } catch (e) {
-            console.error(`Error executing ${interaction.commandName}`);
+            const error = new Error(`Error executing ${interaction.commandName}`, {cause: e});
+            console.error(error);
         }
     } else {
         console.log("Different interaction type received", interaction);

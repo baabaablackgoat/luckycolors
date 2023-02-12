@@ -1,5 +1,11 @@
 import { Command } from "./def/Command.js";
 import { ping } from "./commands/ping.js";
-import { balance } from "./commands/balance.js";
+import {addBalance, balance, setBalance, subtractBalance} from "./commands/BalanceCommands.js";
 
-export const enabledCommands: Command[] = [ping, balance];
+export const enabledCommands: Command[] = [
+    ping,
+    balance,
+    setBalance,
+    addBalance,
+    subtractBalance
+];
