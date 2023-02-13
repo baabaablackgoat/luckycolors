@@ -12,7 +12,7 @@ export const balance = new Command(
         if (interaction.user.id != targetedUser.id) {
             if (!(await assertAdminPermissions(interaction))) return;
         }
-        const userBal = await DataStorage.checkUserBalance(targetedUser.id);
+        const userBal = await DataStorage.getUserBalance(targetedUser.id);
         await replyWithEmbed(
             interaction,
             "Balance",
@@ -135,7 +135,7 @@ export const subtractBalance = new Command(
             );
             return;
         }
-        const oldUserBalance = await DataStorage.checkUserBalance(targetedUser.id);
+        const oldUserBalance = await DataStorage.getUserBalance(targetedUser.id);
         if (oldUserBalance - toSubtract < 0) {
             await replyWithEmbed(
                 interaction,

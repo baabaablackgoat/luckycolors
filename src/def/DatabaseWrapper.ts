@@ -2,7 +2,7 @@ import { Database, open as dbOpen } from "sqlite";
 import sqlite3 from "sqlite3";
 import { Snowflake } from "discord.js";
 import * as fs from "fs";
-import {Item, ItemData, ItemType} from "./Item.js";
+import { Item, ItemData, ItemType } from "./Item.js";
 
 class DatabaseError extends Error {}
 class InsufficientBalanceError extends Error {}
@@ -83,7 +83,7 @@ export class DatabaseWrapper {
         );
     }
 
-    public async checkUserBalance(userID: Snowflake): Promise<number> {
+    public async getUserBalance(userID: Snowflake): Promise<number> {
         this.assertReady();
         const res = await this.database.get(
             `SELECT balance FROM Bank WHERE userID = "${userID}"`
@@ -113,7 +113,7 @@ export class DatabaseWrapper {
         amount: number
     ): Promise<number> {
         this.assertReady();
-        const newBalance = (await this.checkUserBalance(userID)) + amount;
+        const newBalance = (await this.getUserBalance(userID)) + amount;
         return this.setUserBalance(userID, newBalance);
     }
 
@@ -129,14 +129,13 @@ export class DatabaseWrapper {
         amount: number
     ): Promise<number> {
         this.assertReady();
-        const newBalance = (await this.checkUserBalance(userID)) - amount;
+        const newBalance = (await this.getUserBalance(userID)) - amount;
         if (newBalance < 0)
             throw new InsufficientBalanceError(
                 `Cannot subtract ${amount} from ${userID}, would be negative (${newBalance})`
             );
         return this.setUserBalance(userID, newBalance);
     }
-
 
     // =============
     // Item stock / shop related queries
@@ -148,7 +147,7 @@ export class DatabaseWrapper {
         const dbResponse = await this.listShopItems(limit, offset);
         const response = items.concat(dbResponse);
         if (dbResponse.length >= limit) {
-            return await this.listAllShopItems(response, offset + limit)
+            return await this.listAllShopItems(response, offset + limit);
         } else {
             return response;
         }
@@ -162,20 +161,49 @@ export class DatabaseWrapper {
      */
     public async listShopItems(limit = 100, offset = 0): Promise<any[]> {
         this.assertReady();
-        const response = await this.database.all(`SELECT * FROM Shop ORDER BY itemName LIMIT ${limit} OFFSET ${offset};`);
-        if (!response) throw new DatabaseError("No data was returned while querying all items.");
-        return response.map(row => Item.createFromDBResponse(row)); // todo: do stuff with the response to conform to the Item definition
+        const response = await this.database.all(
+            `SELECT * FROM Shop ORDER BY itemName LIMIT ${limit} OFFSET ${offset};`
+        );
+        if (!response)
+            throw new DatabaseError(
+                "No data was returned while querying all items."
+            );
+        return response.map((row) => Item.createFromDBResponse(row)); // todo: do stuff with the response to conform to the Item definition
     }
 
-    public async createShopItem(itemName: string, itemType: ItemType, itemData: ItemData, value: number) {
+    public async createShopItem(
+        itemName: string,
+        itemType: ItemType,
+        itemData: ItemData,
+        value: number
+    ) {
         this.assertReady();
-        if (value < 0) throw new RangeError("Shop items must not have a negative price.");
-        await this.database.exec(`INSERT INTO Shop (itemName, itemType, itemData, value) VALUES ("${itemName}", "${itemType}", "${itemData}", ${value});`);
+        console.log(JSON.stringify(itemData));
+        if (value < 0)
+            throw new RangeError("Shop items must not have a negative price.");
+        await this.database.exec(
+            `INSERT INTO Shop (itemName, itemType, itemData, value) VALUES ("${itemName}", "${itemType}", '${JSON.stringify(
+                itemData
+            )}', ${value});`
+        );
     }
 
-    public async getShopItem(itemID: number) {
+    public async getShopItem(itemID: number): Promise<Item | false> {
         this.assertReady();
-        await this.database.get(`SELECT * FROM Shop WHERE itemID = ${itemID};`);
+        const foundItem = await this.database.get(
+            `SELECT * FROM Shop WHERE itemID = ${itemID};`
+        );
+        if (foundItem) return Item.createFromDBResponse(foundItem);
+        else return false;
+    }
+
+    public async searchShopItem(itemName: string): Promise<Item | false> {
+        this.assertReady();
+        const foundItem = await this.database.get(
+            `SELECT * FROM Shop WHERE itemName = "${itemName}"`
+        );
+        if (foundItem) return Item.createFromDBResponse(foundItem);
+        else return false;
     }
 
     public async removeShopItem(itemID: number) {
@@ -189,10 +217,11 @@ export class DatabaseWrapper {
 
     public async listOwnedItems(userID: Snowflake) {
         this.assertReady();
-        const dbResponse = await this.database.all(`SELECT Shop.itemName, Shop.itemType, Shop.itemData, Shop.itemID
+        const dbResponse = await this.database
+            .all(`SELECT Shop.itemName, Shop.itemType, Shop.itemData, Shop.itemID
             FROM Shop INNER JOIN Inventory ON Shop.itemID = Inventory.itemID
             WHERE userID = "${userID}";`);
-        return dbResponse.map(row => Item.createFromDBResponse(row));
+        return dbResponse.map((row) => Item.createFromDBResponse(row));
     }
 
     /**
@@ -201,12 +230,17 @@ export class DatabaseWrapper {
      */
     public async giveUserItem(userID: Snowflake, itemID: number) {
         this.assertReady();
-        await this.database.exec(`INSERT INTO Inventory (itemID, userID) VALUES (${itemID}, "${userID}");`);
+        // TODO: maybe modify this or the database such that duplicate itemID/userID pairs get rejected
+        await this.database.exec(
+            `INSERT INTO Inventory (itemID, userID) VALUES (${itemID}, "${userID}");`
+        );
     }
 
     public async removeUserItem(userID, itemID) {
         this.assertReady();
-        await this.database.exec(`DELETE FROM Inventory WHERE itemID = ${itemID} AND userID = "${userID}";`);
+        await this.database.exec(
+            `DELETE FROM Inventory WHERE itemID = ${itemID} AND userID = "${userID}";`
+        );
     }
     public async checkItemOwnership(userID, itemID): Promise<boolean> {
         this.assertReady();
@@ -215,7 +249,6 @@ export class DatabaseWrapper {
             WHERE userID = "${userID}" AND Inventory.itemID = ${itemID}`);
         return response >= 1;
     }
-
 }
 export const DataStorage = await DatabaseWrapper.getInstance();
 // Should in theory always perform the setup
