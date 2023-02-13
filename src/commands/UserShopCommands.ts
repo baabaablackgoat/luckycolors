@@ -36,7 +36,6 @@ export const buyItem = new Command(
             );
             return;
         }
-        // FIXME: the ownership check fails! aaaaa
         if (
             await DataStorage.checkItemOwnership(
                 interaction.user.id,

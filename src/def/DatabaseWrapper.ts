@@ -247,7 +247,7 @@ export class DatabaseWrapper {
         const response = await this.database.get(`SELECT COUNT(Shop.itemName)
             FROM Shop INNER JOIN Inventory ON Shop.itemID = Inventory.itemID
             WHERE userID = "${userID}" AND Inventory.itemID = ${itemID}`);
-        return response >= 1;
+        return response["COUNT(Shop.itemName)"] >= 1;
     }
 }
 export const DataStorage = await DatabaseWrapper.getInstance();
