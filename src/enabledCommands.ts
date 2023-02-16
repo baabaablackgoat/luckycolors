@@ -7,7 +7,11 @@ import {
     subtractBalance,
 } from "./commands/BalanceCommands.js";
 import { addRoleItem } from "./commands/AdminShopCommands.js";
-import { buyItem, listOwnedItems } from "./commands/UserShopCommands.js";
+import {
+    buyItem,
+    listOwnedItems,
+    useItem,
+} from "./commands/UserShopCommands.js";
 
 export const enabledCommands: Command[] = [
     ping,
@@ -18,4 +22,5 @@ export const enabledCommands: Command[] = [
     addRoleItem,
     buyItem,
     listOwnedItems,
+    useItem,
 ];
