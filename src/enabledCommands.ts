@@ -15,6 +15,7 @@ import {
     shop,
 } from "./commands/UserShopCommands.js";
 import { daily } from "./commands/DailyStreakCommand.js";
+import { drawCard } from "./commands/BlackjackCommands.js";
 
 export const enabledCommands: Command[] = [
     ping,
@@ -29,4 +30,5 @@ export const enabledCommands: Command[] = [
     listItems,
     shop,
     daily,
+    drawCard,
 ];

@@ -1,7 +1,7 @@
 import { Item } from "../def/Item.js";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
-export type ButtonAction = ItemButtonAction | "page";
+export type ButtonAction = ItemButtonAction | "page" | "drawCard";
 type ItemButtonAction = "unlock" | "equip" | "remove";
 export function ItemButtonBuilder(
     item: Item,

@@ -9,12 +9,11 @@ import { TermColors } from "./def/termColors.js";
 import { enabledCommands } from "./enabledCommands.js";
 import { Command } from "./def/Command.js";
 import { ButtonHandler } from "./def/ButtonHandler.js";
-import { ButtonAction } from "./buttons/InventoryButtons";
+import { ButtonAction } from "./buttons/InventoryButtons.js";
 
 // Extending the base client to include a collection storing commands
 class CustomClient extends Client {
     commands = new Collection<string, Command>();
-    buttonHandlers = new Collection<string, ButtonHandler>();
 }
 
 // Making the command functions accessible through the client.
@@ -60,6 +59,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
                     break;
                 case "page":
                     void ButtonHandler.page(interaction);
+                    break;
+                case "drawCard":
+                    void ButtonHandler.drawCard(interaction);
                     break;
                 default:
                     console.log(
