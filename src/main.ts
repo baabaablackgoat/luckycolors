@@ -8,10 +8,13 @@ import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
 import { TermColors } from "./def/termColors.js";
 import { enabledCommands } from "./enabledCommands.js";
 import { Command } from "./def/Command.js";
+import { ButtonHandler } from "./def/ButtonHandler.js";
+import { ButtonAction } from "./buttons/InventoryButtons";
 
 // Extending the base client to include a collection storing commands
 class CustomClient extends Client {
     commands = new Collection<string, Command>();
+    buttonHandlers = new Collection<string, ButtonHandler>();
 }
 
 // Making the command functions accessible through the client.
@@ -34,11 +37,49 @@ client.on(Events.InteractionCreate, async (interaction) => {
             );
             await targetedCommand.execute(interaction);
         } catch (e) {
-            const error = new Error(`Error executing ${interaction.commandName}`, {cause: e});
-            console.error(error);
+            console.error(
+                new Error(`Error executing ${interaction.commandName}`, {
+                    cause: e,
+                })
+            );
+        }
+    } else if (interaction.isButton()) {
+        try {
+            const buttonAction = interaction.customId.split(
+                "_"
+            )[0] as ButtonAction;
+            switch (buttonAction) {
+                case "equip":
+                    void ButtonHandler.equip(interaction);
+                    break;
+                case "remove":
+                    void ButtonHandler.remove(interaction);
+                    break;
+                case "unlock":
+                    void ButtonHandler.unlock(interaction);
+                    break;
+                case "page":
+                    void ButtonHandler.page(interaction);
+                    break;
+                default:
+                    console.log(
+                        "Invalid button interaction ID received, doing nothing"
+                    );
+                    break;
+            }
+        } catch (e) {
+            console.error(
+                new Error(
+                    `Error responding to button interaction ${interaction.customId}`,
+                    { cause: e }
+                )
+            );
         }
     } else {
-        console.log("Different interaction type received", interaction);
+        console.log(
+            "Different interaction type received, ignoring.",
+            interaction
+        );
     }
 });
 
