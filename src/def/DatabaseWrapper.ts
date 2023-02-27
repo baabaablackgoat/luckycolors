@@ -3,9 +3,14 @@ import sqlite3 from "sqlite3";
 import { Snowflake } from "discord.js";
 import * as fs from "fs";
 import { Item, ItemData, ItemType } from "./Item.js";
+import { getDayDifference } from "./DateDifference.js";
 
 class DatabaseError extends Error {}
 class InsufficientBalanceError extends Error {}
+
+// TODO: Extract these values into easily configurable settings
+const payoutMultipliers = [1, 1, 1, 2, 2, 3, 5];
+const dailyCredits = 5;
 
 export class DatabaseWrapper {
     private static instance: DatabaseWrapper;
@@ -141,7 +146,7 @@ export class DatabaseWrapper {
     // Item stock / shop related queries
     // =============
 
-    public async listAllShopItems(items = [], offset = 0) {
+    public async listAllShopItems(items = [], offset = 0): Promise<Item[]> {
         this.assertReady();
         const limit = 100;
         const dbResponse = await this.listShopItems(limit, offset);
@@ -153,13 +158,21 @@ export class DatabaseWrapper {
         }
     }
 
+    public async listUnownedItems(userID: Snowflake): Promise<Item[]> {
+        this.assertReady();
+        const dbResponse = await this.database.all(
+            `SELECT * from Shop WHERE NOT EXISTS (SELECT itemID FROM Inventory WHERE Inventory.userID = "${userID}" AND Inventory.itemID = Shop.itemID);`
+        );
+        return dbResponse.map((row) => Item.createFromDBResponse(row));
+    }
+
     /**
      * Lists (at most) `count` shop items, starting with item `offset`.
      * @param limit Defaults to 100 - constrained to database limitations.
      * @param offset
      * @returns
      */
-    public async listShopItems(limit = 100, offset = 0): Promise<any[]> {
+    public async listShopItems(limit = 100, offset = 0): Promise<Item[]> {
         this.assertReady();
         const response = await this.database.all(
             `SELECT * FROM Shop ORDER BY itemName LIMIT ${limit} OFFSET ${offset};`
@@ -215,7 +228,7 @@ export class DatabaseWrapper {
     // Inventory / user ownership related queries
     // =============
 
-    public async listOwnedItems(userID: Snowflake) {
+    public async listOwnedItems(userID: Snowflake): Promise<Item[]> {
         this.assertReady();
         const dbResponse = await this.database
             .all(`SELECT Shop.itemName, Shop.itemType, Shop.itemData, Shop.itemID
@@ -249,6 +262,56 @@ export class DatabaseWrapper {
             WHERE userID = "${userID}" AND Inventory.itemID = ${itemID}`);
         return response["COUNT(Shop.itemName)"] >= 1;
     }
+
+    // =============
+    // Daily credits / streak related
+    // =============
+    public async claimDailyCredits(
+        userID: Snowflake
+    ): Promise<DailyCreditsResponse> {
+        this.assertReady();
+        const dbResponse = await this.database.get(
+            `SELECT lastClaimed, streak FROM Streaks WHERE userID = "${userID}";`
+        );
+        const now = new Date();
+        let lastClaim: Date;
+        let dayDifference: number;
+        if (dbResponse !== undefined) {
+            lastClaim = new Date(dbResponse.lastClaimed);
+            dayDifference = getDayDifference(lastClaim, now);
+            if (dayDifference <= 0) {
+                return {
+                    received: 0,
+                    lastClaimed: lastClaim,
+                    streak: dbResponse.streak,
+                };
+            }
+        } else {
+            lastClaim = new Date(0);
+            dayDifference = Infinity;
+        }
+        // establish new streak value
+        let streak = dbResponse?.streak ?? 0;
+        if (dayDifference < 2) streak += 1;
+        else streak = 1;
+        // add currency based on payouts table. streak resets after full cycle.
+        const currencyToAdd =
+            payoutMultipliers[(streak - 1) % 7] * dailyCredits;
+        // give credits
+        await this.addUserBalance(userID, currencyToAdd);
+        // set new streak value in DB
+        await this.database.exec(
+            `INSERT OR REPLACE INTO Streaks (userID, lastClaimed, streak) VALUES ("${userID}", "${now.toISOString()}" ,${streak});`
+        );
+        // create response object
+        return { lastClaimed: now, received: currencyToAdd, streak: streak };
+    }
 }
+type DailyCreditsResponse = {
+    received: number; // 0 if none received, any positive value otherwise
+    streak: number;
+    lastClaimed: Date; // date of last claim - if just claimed, current time.
+};
+
 export const DataStorage = await DatabaseWrapper.getInstance();
 // Should in theory always perform the setup

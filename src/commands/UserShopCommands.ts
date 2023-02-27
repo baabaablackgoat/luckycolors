@@ -1,5 +1,5 @@
 import { Command } from "../def/Command.js";
-import { DataStorage } from "../def/DatabaseWrapper.js";
+import { DatabaseWrapper, DataStorage } from "../def/DatabaseWrapper.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
 import { OwnedItemBuilder } from "../buttons/InventoryButtons.js";
 import { useItemHandler } from "../handlers/UseItemHandler.js";
@@ -72,11 +72,17 @@ export const useItem = new Command(
 );
 
 export const listItems = new Command(
-    "shop",
-    "Lists the available items for purchase.",
+    "listall",
+    "Lists all items that are registered.",
     async (interaction) => {
-        // TODO
-        void interaction.reply("Coming soon, I swear!!! :treatyell:");
+        await interaction.deferReply({ ephemeral: true });
+        const allItems = await DatabaseWrapper.getInstance().listAllShopItems();
+        void replyWithEmbed(
+            interaction,
+            "All available items",
+            allItems.map((item) => item.itemName).join(", "),
+            "info"
+        );
     },
     [
         {
@@ -86,4 +92,34 @@ export const listItems = new Command(
             required: false,
         },
     ]
+);
+
+export const shop = new Command(
+    "shop",
+    "Lists all items that you haven't unlocked yet.",
+    async (interaction) => {
+        await interaction.deferReply({ ephemeral: true });
+        const missingItems =
+            await DatabaseWrapper.getInstance().listUnownedItems(
+                interaction.user.id
+            );
+        if (missingItems.length === 0)
+            void replyWithEmbed(
+                interaction,
+                "No unowned items!",
+                "You seem to have every item currently available!",
+                "warn",
+                interaction.user
+            );
+        else {
+            void replyWithEmbed(
+                interaction,
+                "Unowned items",
+                missingItems.map((item) => item.itemName).join(", "),
+                "info",
+                interaction.user
+            );
+            // TODO: add cool paginated buttons
+        }
+    }
 );

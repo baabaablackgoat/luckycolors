@@ -9,7 +9,7 @@
     "deployCommands:globals": "ts-node-esm scripts/deployCommands.ts globals",
     "deployCommands:all": "ts-node-esm scripts/deployCommands.ts all",
     "start": "ts-node-esm src/main.ts",
-    "testScriptPlsIgnore": "ts-node-esm src/sql/dbtest.ts"
+    "testScriptPlsIgnore": "ts-node-esm src/def/DateDifference.ts"
   },
   "keywords": [],
   "author": "",

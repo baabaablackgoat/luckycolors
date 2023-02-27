@@ -12,7 +12,9 @@ import {
     listOwnedItems,
     useItem,
     listItems,
+    shop,
 } from "./commands/UserShopCommands.js";
+import { daily } from "./commands/DailyStreakCommand.js";
 
 export const enabledCommands: Command[] = [
     ping,
@@ -25,4 +27,6 @@ export const enabledCommands: Command[] = [
     listOwnedItems,
     useItem,
     listItems,
+    shop,
+    daily,
 ];
