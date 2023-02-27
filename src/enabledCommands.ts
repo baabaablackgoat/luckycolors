@@ -11,6 +11,7 @@ import {
     buyItem,
     listOwnedItems,
     useItem,
+    listItems,
 } from "./commands/UserShopCommands.js";
 
 export const enabledCommands: Command[] = [
@@ -23,4 +24,5 @@ export const enabledCommands: Command[] = [
     buyItem,
     listOwnedItems,
     useItem,
+    listItems,
 ];

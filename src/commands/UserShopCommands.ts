@@ -25,8 +25,8 @@ export const buyItem = new Command(
 );
 
 export const listOwnedItems = new Command(
-    "owned",
-    "Lists all owned items.",
+    "inventory",
+    "Lists all your owned items, and allows for easy equipping.",
     async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
         const ownedItems = await DataStorage.listOwnedItems(
@@ -67,6 +67,23 @@ export const useItem = new Command(
             name: "item",
             description: "The name or item ID",
             required: true,
+        },
+    ]
+);
+
+export const listItems = new Command(
+    "shop",
+    "Lists the available items for purchase.",
+    async (interaction) => {
+        // TODO
+        void interaction.reply("Coming soon, I swear!!! :treatyell:");
+    },
+    [
+        {
+            type: "Number",
+            name: "page",
+            description: "The page number to show",
+            required: false,
         },
     ]
 );
