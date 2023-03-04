@@ -5,8 +5,8 @@ import * as fs from "fs";
 import { Item, ItemData, ItemType } from "./Item.js";
 import { getDayDifference } from "./DateDifference.js";
 
-class DatabaseError extends Error {}
-class InsufficientBalanceError extends Error {}
+export class DatabaseError extends Error {}
+export class InsufficientBalanceError extends Error {}
 
 // TODO: Extract these values into easily configurable settings
 const payoutMultipliers = [1, 1, 1, 2, 2, 3, 5];
