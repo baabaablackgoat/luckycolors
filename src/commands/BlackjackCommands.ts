@@ -376,8 +376,8 @@ export class BlackjackStorage {
             (game) => game.interaction.id === gameId
         );
         if (
-            !foundGame ||
-            !gameAction ||
+            foundGame == undefined ||
+            gameAction == undefined ||
             !BlackjackInteractionTypes.includes(gameAction)
         ) {
             void replyWithEmbed(
@@ -388,6 +388,7 @@ export class BlackjackStorage {
                 buttonInteraction.user,
                 true
             );
+            return;
         }
         await buttonInteraction.deferUpdate();
         switch (gameAction) {
