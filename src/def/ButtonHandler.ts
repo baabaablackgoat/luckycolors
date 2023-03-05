@@ -1,8 +1,14 @@
-import {ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle} from "discord.js";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonInteraction,
+    ButtonStyle,
+} from "discord.js";
 import { useItemHandler } from "../handlers/UseItemHandler.js";
 import { unlockItemHandler } from "../handlers/UnlockItemHandler.js";
 import { DeckStorage } from "./Deck.js";
 import { replyWithEmbed } from "./replyWithEmbed.js";
+import { BlackjackStorage } from "../commands/BlackjackCommands.js";
 
 function getItemID(customID: string): string {
     return customID.split("_")[1];
@@ -60,5 +66,8 @@ export class ButtonHandler {
             );
             console.error(e);
         }
+    }
+    static async blackjack(interaction: ButtonInteraction) {
+        BlackjackStorage.getInstance().handleInteraction(interaction);
     }
 }

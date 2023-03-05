@@ -90,6 +90,7 @@ export class Deck {
     }
     shuffle() {
         this.stack = this.stack.sort((_a, _b) => 0.5 - Math.random());
+        return this;
     }
     drawCard(): Card {
         if (this.stack.length === 0) this.resetDeck();

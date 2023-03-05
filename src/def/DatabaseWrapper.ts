@@ -11,6 +11,7 @@ export class InsufficientBalanceError extends Error {}
 // TODO: Extract these values into easily configurable settings
 const payoutMultipliers = [1, 1, 1, 2, 2, 3, 5];
 const dailyCredits = 5;
+const initialBank = 200;
 
 export class DatabaseWrapper {
     private static instance: DatabaseWrapper;
@@ -95,8 +96,8 @@ export class DatabaseWrapper {
         );
         // User bank entry does not exist
         if (res === undefined) {
-            await this.createUserBankEntry(userID);
-            return 0;
+            await this.createUserBankEntry(userID, initialBank);
+            return initialBank;
         } else {
             return res.balance as number;
         }
@@ -287,6 +288,7 @@ export class DatabaseWrapper {
                 };
             }
         } else {
+            // todo: this is marked as unused. uh oh.
             lastClaim = new Date(0);
             dayDifference = Infinity;
         }

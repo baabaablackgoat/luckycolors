@@ -15,7 +15,7 @@ import {
     shop,
 } from "./commands/UserShopCommands.js";
 import { daily } from "./commands/DailyStreakCommand.js";
-import { drawCard } from "./commands/BlackjackCommands.js";
+import { blackjack, drawCard } from "./commands/BlackjackCommands.js";
 import { slots } from "./commands/SlotsCommands.js";
 
 export const enabledCommands: Command[] = [
@@ -33,4 +33,5 @@ export const enabledCommands: Command[] = [
     daily,
     drawCard,
     slots,
+    blackjack,
 ];
