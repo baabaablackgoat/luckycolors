@@ -6,6 +6,7 @@ import {
 } from "../def/DatabaseWrapper.js";
 import { randomInt } from "../def/randomInt.js";
 import { ChatInputCommandInteraction } from "discord.js";
+import { getValidStake } from "../def/isValidStake.js";
 
 type SlotSymbol = {
     emoji: string;
@@ -66,20 +67,13 @@ function symbolPicker(): SlotSymbol {
 
 export const slots = new Command(
     "slots",
-    "Play totally-not-rigged slots!",
+    "Play on a simulated slot machine for your 🪙",
     async (interaction) => {
-        const stake = interaction.options.getNumber("stake");
-        if (stake <= 0) {
-            void replyWithEmbed(
-                interaction,
-                "Invalid stake",
-                "You can't stake (less than) nothing, you doof",
-                "warn",
-                interaction.user,
-                true
-            );
-            return;
-        }
+        const stake = getValidStake(
+            interaction,
+            interaction.options.getNumber("stake")
+        );
+        if (stake === 0) return;
         await interaction.deferReply({ ephemeral: true });
         const userBalance = await DataStorage.getUserBalance(
             interaction.user.id
@@ -123,7 +117,7 @@ export const slots = new Command(
     [
         {
             name: "stake",
-            description: "The amount of credits to stake.",
+            description: `The amount of credits to stake. Must be between `,
             type: "Number",
             required: true,
         },

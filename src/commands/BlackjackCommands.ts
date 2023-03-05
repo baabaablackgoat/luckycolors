@@ -13,6 +13,7 @@ import {
     DataStorage,
     InsufficientBalanceError,
 } from "../def/DatabaseWrapper.js";
+import { getValidStake } from "../def/isValidStake.js";
 
 export const drawCard = new Command(
     "card",
@@ -125,9 +126,10 @@ class BlackjackGame {
             ? this.DealerCards.slice(0, 1)
             : this.DealerCards;
         return `\n**Dealer's hand**\n
-        ${dealerShownHand.map((card) => card.toString()).join(" ")} (${
-            this.DealerScore
-        })
+        ${
+            dealerShownHand.map((card) => card.toString()).join(" ") +
+            (hideDealerCard ? " ??" : "")
+        } (${this.DealerScore})
         \n
         **Your hand**\n
         ${this.UserCards.map((card) => card.toString()).join(" ")} (${
@@ -171,14 +173,23 @@ class BlackjackGame {
     private get UserBust() {
         return this.UserScore > 21;
     }
+    private get DealerBust() {
+        return this.DealerScore > 21;
+    }
     private get UserWins() {
-        return !this.UserBust && this.UserScore > this.DealerScore;
+        return (
+            !this.UserBust &&
+            (this.UserScore > this.DealerScore || this.DealerBust)
+        );
     }
     private get Tied() {
         return !this.UserBust && this.UserScore === this.DealerScore;
     }
     private get UserLost() {
-        return this.DealerScore > this.UserScore || this.UserBust;
+        return (
+            (!this.DealerBust && this.DealerScore > this.UserScore) ||
+            this.UserBust
+        );
     }
 
     public async updateMessage() {
@@ -217,15 +228,25 @@ class BlackjackGame {
                 break;
             case BlackjackPhase.Done:
                 if (this.UserBlackjack) {
-                    description = `**BLACKJACK! Pays out 3:2.**\n${this.printHands()}`;
+                    description = `**BLACKJACK! Pays out 3:2.**
+                    ${this.stake} => ${this.stake * 2.5} 🪙.
+                    ${this.printHands()}`;
                 } else if (this.UserWins) {
-                    description = `**You win!**\n${this.printHands()}`;
+                    description = `**You win!**
+                    ${this.stake} => ${this.stake * 2} 🪙.
+                    ${this.printHands()}`;
                 } else if (this.Tied) {
-                    description = `**It's a tie.**\n${this.printHands()}`;
+                    description = `**It's a tie.**
+                    ${this.stake} => ${this.stake} 🪙.
+                    ${this.printHands()}`;
                 } else if (this.UserBust) {
-                    description = `**You went bust.**\n${this.printHands()}`;
+                    description = `**You went bust.**
+                    ${this.stake} => 0 🪙.
+                    ${this.printHands()}`;
                 } else if (this.UserLost) {
-                    description = `**You lost.**\n${this.printHands()}`;
+                    description = `**You lost.**
+                    ${this.stake} => 0 🪙.
+                    ${this.printHands()}`;
                 } else {
                     throw new Error("Blackjack - how did we even get here?");
                 }
@@ -246,7 +267,11 @@ class BlackjackGame {
         try {
             switch (this.phase) {
                 case BlackjackPhase.UserDrawing:
-                    if (this.UserBlackjack || this.UserBust) {
+                    if (
+                        this.UserBlackjack ||
+                        this.UserBust ||
+                        this.UserScore === 21
+                    ) {
                         // forcefully proceed to "done" state - user has confirmed won or lost
                         this.phase = BlackjackPhase.Done;
                         await this.updateGameState();
@@ -380,18 +405,11 @@ export const blackjack = new Command(
     "blackjack",
     'Play Blackjack ("Siebzehn und Vier") against the computer with "real" card decks!',
     async (interaction) => {
-        const stake = interaction.options.getNumber("stake");
-        if (stake <= 0) {
-            void replyWithEmbed(
-                interaction,
-                "Invalid stake",
-                "You need to bet _something_ to play!",
-                "warn",
-                interaction.user,
-                true
-            );
-            return;
-        }
+        const stake = getValidStake(
+            interaction,
+            interaction.options.getNumber("stake")
+        );
+        if (stake === 0) return;
         try {
             await interaction.deferReply({ ephemeral: true });
             await DataStorage.subtractUserBalance(interaction.user.id, stake);
