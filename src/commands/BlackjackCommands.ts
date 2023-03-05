@@ -259,7 +259,10 @@ class BlackjackGame {
             "info",
             this.interaction.user,
             true,
-            buttons.length > 0 ? buttons : []
+            buttons.length > 0 ? buttons : [],
+            new URL(
+                "https://cdn.discordapp.com/emojis/857695793090527254.gif?size=96&quality=lossless"
+            ) // TODO - this will replace the print-cards thing once I've figured out GraphicsMagick.
         );
     }
 

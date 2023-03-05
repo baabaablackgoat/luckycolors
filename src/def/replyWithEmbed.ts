@@ -13,7 +13,8 @@ export async function replyWithEmbed(
     type: ReplyEmbedType,
     author?: User,
     ephemeral?: boolean, // only works if this is the initial reply!
-    actionRows?: unknown // I don't know which fucking type discord.js wants
+    actionRows?: unknown, // I don't know which fucking type discord.js wants
+    image?: URL
 ) {
     const replyEmbed = new EmbedBuilder()
         .setTitle(title)
@@ -35,6 +36,8 @@ export async function replyWithEmbed(
             name: author.username,
             iconURL: author.avatarURL(),
         });
+    // add image url
+    if (image !== undefined) replyEmbed.setImage(image.toString());
 
     if (interaction.deferred || interaction.replied) {
         await interaction.editReply({
