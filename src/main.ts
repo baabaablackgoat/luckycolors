@@ -10,6 +10,7 @@ import { enabledCommands } from "./enabledCommands.js";
 import { Command } from "./def/Command.js";
 import { ButtonHandler } from "./def/ButtonHandler.js";
 import { ButtonAction } from "./buttons/InventoryButtons.js";
+import { BrowserRenderer } from "./webrender/BrowserRenderer.js";
 
 // Extending the base client to include a collection storing commands
 class CustomClient extends Client {
@@ -90,3 +91,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 // We don't want to reuse the token - void is fine here.
 void client.login(token);
+
+// instantiate the browser renderer early on purpose.
+BrowserRenderer.getInstance();

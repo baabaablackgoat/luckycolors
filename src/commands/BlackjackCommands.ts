@@ -14,6 +14,7 @@ import {
     InsufficientBalanceError,
 } from "../def/DatabaseWrapper.js";
 import { getValidStake } from "../def/isValidStake.js";
+import { BrowserRenderer } from "../webrender/BrowserRenderer.js";
 
 export const drawCard = new Command(
     "card",
@@ -121,6 +122,21 @@ class BlackjackGame {
         return this.calculateScore(this.UserCards);
     }
 
+    private async renderHands(hideDealerCard = false): Promise<void> {
+        const dealerShownHand = hideDealerCard
+            ? this.DealerCards.slice(0, 1)
+            : this.DealerCards;
+        console.log(
+            await BrowserRenderer.getInstance().renderBlackjack(
+                this.interaction.id,
+                this.UserCards,
+                dealerShownHand,
+                this.UserScore,
+                this.DealerScore
+            )
+        );
+    }
+
     private printHands(hideDealerCard = false): string {
         const dealerShownHand = hideDealerCard
             ? this.DealerCards.slice(0, 1)
@@ -196,6 +212,7 @@ class BlackjackGame {
         let description: string = "Something went terribly wrong...";
         let buttons: unknown[] = []; // still need to figure out which type this is
         const canAffordDouble = await this.canAffordDoubleDown();
+        void this.renderHands(); // todo: move this to the proper position and incorporate it in message renders
         switch (this.phase) {
             case BlackjackPhase.UserDrawing:
                 // add interaction buttons

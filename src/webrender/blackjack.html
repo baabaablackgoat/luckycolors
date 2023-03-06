@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>blackjack renderer</title>
+        <style>
+            html,
+            body {
+                background-color: #36393e;
+                color: #eee;
+                font-family: "TerminessTTF Nerd Font Mono", "sans-serif";
+                width: 600px;
+            }
+            .handContainer {
+                width: 150px;
+                height: 100px;
+                margin: 0 170px 50px;
+            }
+            h1 {
+                text-align: center;
+                margin-bottom: 0;
+            }
+            .score {
+                text-align: center;
+                margin: 0 0 30px;
+            }
+            .card {
+                width: 80px;
+                height: 120px;
+                background: #999;
+                border: 1px solid #000;
+                position: absolute;
+                transform-origin: bottom center;
+                color: black;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Dealer's hand</h1>
+        <p class="score">Current score: $dealerScore</p>
+        <div class="handContainer" id="handA">
+            <div class="cardSetA">
+                $dealerCards
+            </div>
+        </div>
+        <h1>Your hand</h1>
+        <p class="score">Current score: $userScore</p>
+        <div class="handContainer" id="handB">
+            <div class="cardSetB">
+                $userCards
+            </div>
+        </div>
+    </body>
+    <script>
+        function elementSpreader(containerSelector) {
+            const totalArc = 50;
+            const cardSetHolder = document.querySelector(containerSelector);
+            const cards = cardSetHolder.getElementsByClassName("card");
+            const angles = Array(cards.length)
+                .fill("")
+                .map(
+                    (entry, index) =>
+                        (totalArc / cards.length) * (index + 1) - totalArc / 2
+                );
+            const leftMargins = angles.map(
+                (entry, index) =>
+                    (cardSetHolder.offsetWidth / cards.length) * (index + 1)
+            );
+            const bottomMargins = angles.map((entry, index) => {
+                const maxOffset = 50;
+                const indexMiddle = cards.length / 2;
+                return maxOffset / (Math.abs(index + 1 - indexMiddle) + 1)
+            })
+            console.log(bottomMargins);
+            Array.prototype.forEach.call(cards, (element, index) => {
+                element.style = `transform: rotate(${angles[index]}deg); margin-left: ${leftMargins[index]}px; margin-bottom:${bottomMargins[index]}px`;
+            });
+        }
+        elementSpreader("#handA");
+        elementSpreader("#handB");
+        // based on https://stackoverflow.com/questions/71227308/css-how-to-make-an-effect-of-a-hand-holding-cards but modified to work better
+    </script>
+</html>

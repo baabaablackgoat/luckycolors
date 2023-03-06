@@ -44,6 +44,10 @@ export class Card {
         output += this.value;
         return output;
     }
+    // used in the web renderer!
+    toHtml(): string {
+        return `<div class="card">${this.toString()}</div>`;
+    }
 
     // TODO: Create a cool function that creates a picture of a card!
 }
