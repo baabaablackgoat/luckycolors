@@ -18,15 +18,18 @@
             }
             h1 {
                 text-align: center;
+                margin-top: 5px;
                 margin-bottom: 0;
+                font-size: 2.5em;
             }
             .score {
                 text-align: center;
                 margin: 0 0 15px;
+                font-size: 1.5em;
             }
             .card {
-                width: 80px;
-                height: 120px;
+                width: 100px;
+                height: 150px;
                 /*background: #999;*/
                 /*border: 1px solid #000;*/
                 left: 0;
@@ -49,35 +52,14 @@
         <p class="score">Current score: $dealerScore</p>
         <div class="handContainer" id="handA">
             <div class="cardSetA">
-                <!-- $dealerCards -->
-                <div class="card">
-                    <img src="plains.jpg" alt="cardback"/>
-                </div>
-                <div class="card">
-                    <img src="plains.jpg" alt="cardback"/>
-                </div>
+                $dealerCards
             </div>
         </div>
         <h1>Your hand</h1>
         <p class="score">Current score: $userScore</p>
         <div class="handContainer" id="handB">
             <div class="cardSetB">
-                <!-- $userCards -->
-                <div class="card">
-                    <img src="swamp.jpg" alt="cardback"/>
-                </div>
-                <div class="card">
-                    <img src="swamp.jpg" alt="cardback"/>
-                </div>
-                <div class="card">
-                    <img src="swamp.jpg" alt="cardback"/>
-                </div>
-                <div class="card">
-                    <img src="swamp.jpg" alt="cardback"/>
-                </div>
-                <div class="card">
-                    <img src="swamp.jpg" alt="cardback"/>
-                </div>
+                $userCards
             </div>
         </div>
     </body>

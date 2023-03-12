@@ -122,18 +122,13 @@ class BlackjackGame {
         return this.calculateScore(this.UserCards);
     }
 
-    private async renderHands(hideDealerCard = false): Promise<void> {
-        const dealerShownHand = hideDealerCard
-            ? this.DealerCards.slice(0, 1)
-            : this.DealerCards;
-        console.log(
-            await BrowserRenderer.getInstance().renderBlackjack(
-                this.interaction.id,
-                this.UserCards,
-                dealerShownHand,
-                this.UserScore,
-                this.DealerScore
-            )
+    private async renderHands(): Promise<string> {
+        return BrowserRenderer.getInstance().renderBlackjack(
+            this.interaction.id,
+            this.UserCards,
+            this.DealerCards,
+            this.UserScore,
+            this.DealerScore
         );
     }
 
@@ -212,7 +207,9 @@ class BlackjackGame {
         let description: string = "Something went terribly wrong...";
         let buttons: unknown[] = []; // still need to figure out which type this is
         const canAffordDouble = await this.canAffordDoubleDown();
-        void this.renderHands(); // todo: move this to the proper position and incorporate it in message renders
+        const renderPath = await this.renderHands(
+            this.phase === BlackjackPhase.UserDrawing
+        );
         switch (this.phase) {
             case BlackjackPhase.UserDrawing:
                 // add interaction buttons
@@ -277,16 +274,22 @@ class BlackjackGame {
             this.interaction.user,
             true,
             buttons.length > 0 ? buttons : [],
-            new URL(
-                "https://cdn.discordapp.com/emojis/857695793090527254.gif?size=96&quality=lossless"
-            ) // TODO - this will replace the print-cards thing once I've figured out GraphicsMagick.
+            renderPath
         );
+    }
+
+    private hideSecondDealerCard() {
+        this.DealerCards[1].hidden = true;
+    }
+    private showSecondDealerCard() {
+        this.DealerCards[1].hidden = false;
     }
 
     public async updateGameState() {
         try {
             switch (this.phase) {
                 case BlackjackPhase.UserDrawing:
+                    this.hideSecondDealerCard();
                     if (
                         this.UserBlackjack ||
                         this.UserBust ||
@@ -298,9 +301,11 @@ class BlackjackGame {
                     }
                     break;
                 case BlackjackPhase.DealerDrawing:
+                    this.showSecondDealerCard(); // enforcing showing the dealer card
                     setTimeout(this.drawAsDealer.bind(this), 2500); // make the dealer draw in 2.5 seconds for suspense
                     break;
                 case BlackjackPhase.Done:
+                    this.showSecondDealerCard(); // enforcing showing the dealer card
                     if (this.UserBlackjack) {
                         // pay out 3:2
                         await DataStorage.addUserBalance(

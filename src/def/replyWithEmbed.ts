@@ -4,6 +4,7 @@ import {
     EmbedBuilder,
     User,
 } from "discord.js";
+import * as fs from "fs";
 
 type ReplyEmbedType = "info" | "warn" | "error";
 export async function replyWithEmbed(
@@ -14,8 +15,9 @@ export async function replyWithEmbed(
     author?: User,
     ephemeral?: boolean, // only works if this is the initial reply!
     actionRows?: unknown, // I don't know which fucking type discord.js wants
-    image?: URL
+    image?: URL | string
 ) {
+    let files: string[] | undefined; // needed for custom reply embeds
     const replyEmbed = new EmbedBuilder()
         .setTitle(title)
         .setDescription(description);
@@ -36,14 +38,23 @@ export async function replyWithEmbed(
             name: author.username,
             iconURL: author.avatarURL(),
         });
-    // add image url
-    if (image !== undefined) replyEmbed.setImage(image.toString());
+    if (image !== undefined) {
+        // URLs are assumed to be external/hosted files.
+        if (image instanceof URL) replyEmbed.setImage(image.toString());
+        else {
+            if (!fs.existsSync(image))
+                throw new Error("Given path for Embed does not seem to exist.");
+            replyEmbed.setImage(`attachment://${image.split("/").at(-1)}`);
+            files = [image];
+        }
+    }
 
     if (interaction.deferred || interaction.replied) {
         await interaction.editReply({
             embeds: [replyEmbed],
             // @ts-ignore: Figure out which fucking type discord.js wants
             components: actionRows,
+            files: files,
         });
     } else
         await interaction.reply({
@@ -51,5 +62,6 @@ export async function replyWithEmbed(
             // @ts-ignore: Figure out which fucking type discord.js wants
             components: actionRows,
             ephemeral: ephemeral ?? false,
+            files: files,
         });
 }

@@ -21,9 +21,11 @@ type CardValue = (typeof cardValues)[number];
 export class Card {
     suit: Suit;
     value: CardValue;
-    constructor(suit: Suit, value: CardValue) {
+    hidden: boolean = false;
+    constructor(suit: Suit, value: CardValue, hidden = false) {
         this.suit = suit;
         this.value = value;
+        this.hidden = hidden;
     }
     toString(): string {
         let output = "";
@@ -46,10 +48,13 @@ export class Card {
     }
     // used in the web renderer!
     toHtml(): string {
-        return `<div class="card">${this.toString()}</div>`;
-    }
+        if (this.hidden)
+            return `<div class="card"><img src="../../src/webrender/plains.jpg" alt="card back"></div>`;
 
-    // TODO: Create a cool function that creates a picture of a card!
+        return `<div class="card"><img src="../../src/webrender/cards/${
+            this.value
+        }_of_${this.suit.toLowerCase()}.png" alt="${this.toString()}"></div>`;
+    }
 }
 
 type DeckType = "Skat" | "Full";

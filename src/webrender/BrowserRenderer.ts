@@ -2,6 +2,11 @@ import puppeteer from "puppeteer";
 import * as fs from "fs";
 import { Snowflake } from "discord.js";
 import { Card } from "../def/Deck";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const blackjackTemplate = fs.readFileSync(
     "./src/webrender/blackjack.html",
@@ -13,8 +18,10 @@ export class BrowserRenderer {
         void this.setup();
     }
     private async setup() {
-        this.browser = await puppeteer.launch();
-        this.page = await this.browser.newPage();
+        this.browser = await puppeteer.launch({
+            headless: true,
+        });
+        this.page = await this.browser.newPage("file://blank.html");
         await this.page.setViewport({
             width: 600,
             height: 500,
@@ -51,9 +58,16 @@ export class BrowserRenderer {
             .replace("$dealerCards", dealerCardsHTML)
             .replace("$userScore", userScore.toString())
             .replace("$dealerScore", dealerScore.toString());
-        await this.page.setContent(blackjackContent);
-        const outPath = `./out/blackjack/${interactionID}.png`;
-        await this.page.screenshot({ path: outPath });
-        return outPath;
+        fs.writeFileSync(
+            `./out/blackjack/${interactionID}.html`,
+            blackjackContent
+        );
+        await this.page.goto(
+            `file://${__dirname}/../../out/blackjack/${interactionID}.html`
+        );
+
+        const pngOutPath = `./out/blackjack/${interactionID}.png`;
+        await this.page.screenshot({ path: pngOutPath });
+        return pngOutPath;
     }
 }
