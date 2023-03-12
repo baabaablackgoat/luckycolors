@@ -9,12 +9,12 @@
                 background-color: #36393e;
                 color: #eee;
                 font-family: "TerminessTTF Nerd Font Mono", "sans-serif";
-                width: 600px;
             }
             .handContainer {
                 width: 150px;
                 height: 100px;
-                margin: 0 170px 50px;
+                margin: 0 auto 60px;
+                text-align: center;
             }
             h1 {
                 text-align: center;
@@ -22,16 +22,25 @@
             }
             .score {
                 text-align: center;
-                margin: 0 0 30px;
+                margin: 0 0 15px;
             }
             .card {
                 width: 80px;
                 height: 120px;
-                background: #999;
-                border: 1px solid #000;
+                /*background: #999;*/
+                /*border: 1px solid #000;*/
+                left: 0;
+                right: 0;
+                margin-left: auto;
+                margin-right: auto;
                 position: absolute;
                 transform-origin: bottom center;
                 color: black;
+            }
+            .card img {
+                width: 100%;
+                height: 100%;
+
             }
         </style>
     </head>
@@ -40,44 +49,62 @@
         <p class="score">Current score: $dealerScore</p>
         <div class="handContainer" id="handA">
             <div class="cardSetA">
-                $dealerCards
+                <!-- $dealerCards -->
+                <div class="card">
+                    <img src="plains.jpg" alt="cardback"/>
+                </div>
+                <div class="card">
+                    <img src="plains.jpg" alt="cardback"/>
+                </div>
             </div>
         </div>
         <h1>Your hand</h1>
         <p class="score">Current score: $userScore</p>
         <div class="handContainer" id="handB">
             <div class="cardSetB">
-                $userCards
+                <!-- $userCards -->
+                <div class="card">
+                    <img src="swamp.jpg" alt="cardback"/>
+                </div>
+                <div class="card">
+                    <img src="swamp.jpg" alt="cardback"/>
+                </div>
+                <div class="card">
+                    <img src="swamp.jpg" alt="cardback"/>
+                </div>
+                <div class="card">
+                    <img src="swamp.jpg" alt="cardback"/>
+                </div>
+                <div class="card">
+                    <img src="swamp.jpg" alt="cardback"/>
+                </div>
             </div>
         </div>
     </body>
     <script>
+        const isEven = (i) => i % 2 === 0;
+
+        function spreadValues(cardCount, total = 50, maxDiff = 10) {
+            const middleCardIndex = (cardCount - 1) / 2;
+            const angleDelta = total / cardCount <= maxDiff ? total / cardCount : maxDiff;
+            return Array(cardCount).fill("").map((entry, index) => {
+                return (index - middleCardIndex) * angleDelta;
+            })
+        }
+
         function elementSpreader(containerSelector) {
-            const totalArc = 50;
             const cardSetHolder = document.querySelector(containerSelector);
             const cards = cardSetHolder.getElementsByClassName("card");
-            const angles = Array(cards.length)
-                .fill("")
-                .map(
-                    (entry, index) =>
-                        (totalArc / cards.length) * (index + 1) - totalArc / 2
-                );
-            const leftMargins = angles.map(
-                (entry, index) =>
-                    (cardSetHolder.offsetWidth / cards.length) * (index + 1)
-            );
-            const bottomMargins = angles.map((entry, index) => {
-                const maxOffset = 50;
-                const indexMiddle = cards.length / 2;
-                return maxOffset / (Math.abs(index + 1 - indexMiddle) + 1)
-            })
-            console.log(bottomMargins);
+            const angles = spreadValues(cards.length, 50, 10);
+            const horizontals = spreadValues(cards.length, 200, 20);
             Array.prototype.forEach.call(cards, (element, index) => {
-                element.style = `transform: rotate(${angles[index]}deg); margin-left: ${leftMargins[index]}px; margin-bottom:${bottomMargins[index]}px`;
+                element.style = `transform: rotate(${angles[index]}deg) translateX(${horizontals[index]}px);`;
+                //
             });
         }
         elementSpreader("#handA");
         elementSpreader("#handB");
-        // based on https://stackoverflow.com/questions/71227308/css-how-to-make-an-effect-of-a-hand-holding-cards but modified to work better
+        // inspired by https://stackoverflow.com/questions/71227308/css-how-to-make-an-effect-of-a-hand-holding-cards
+        // but basically redone in its entirety to look way better
     </script>
 </html>
