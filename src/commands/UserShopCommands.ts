@@ -4,6 +4,8 @@ import { replyWithEmbed } from "../def/replyWithEmbed.js";
 import { OwnedItemBuilder } from "../buttons/InventoryButtons.js";
 import { useItemHandler } from "../handlers/UseItemHandler.js";
 import { unlockItemHandler } from "../handlers/UnlockItemHandler.js";
+import { Item } from "../def/Item";
+import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
 
 export const buyItem = new Command(
     "buyitem",
@@ -24,25 +26,33 @@ export const buyItem = new Command(
     ]
 );
 
+/**
+ * Retrieves the list of owned items, or responds to the interaction if they own none.
+ */
+export async function retrieveOwnedItems(
+    interaction: ChatInputCommandInteraction | ButtonInteraction
+): Promise<Item[] | null> {
+    const ownedItems = await DataStorage.listOwnedItems(interaction.user.id);
+    if (ownedItems.length === 0) {
+        await replyWithEmbed(
+            interaction,
+            "No items found!",
+            "It seems like you don't own any items... sadge.",
+            "info",
+            interaction.user,
+            true
+        );
+        return null;
+    } else return ownedItems;
+}
+
 export const listOwnedItems = new Command(
     "inventory",
     "Lists all your owned items, and allows for easy equipping.",
     async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
-        const ownedItems = await DataStorage.listOwnedItems(
-            interaction.user.id
-        );
-        if (ownedItems.length === 0) {
-            await replyWithEmbed(
-                interaction,
-                "No items found!",
-                "It seems like you don't own any items... sadge.",
-                "info",
-                interaction.user,
-                true
-            );
-            return;
-        }
+        const ownedItems = await retrieveOwnedItems(interaction);
+        if (ownedItems === null) return;
         await replyWithEmbed(
             interaction,
             "This is your inventory.",

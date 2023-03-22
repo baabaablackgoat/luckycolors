@@ -9,6 +9,7 @@ import { unlockItemHandler } from "../handlers/UnlockItemHandler.js";
 import { DeckStorage } from "./Deck.js";
 import { replyWithEmbed } from "./replyWithEmbed.js";
 import { BlackjackStorage } from "../commands/BlackjackCommands.js";
+import { pageChangeHandler } from "../handlers/PageChangeHandler.js";
 
 function getItemID(customID: string): string {
     return customID.split("_")[1];
@@ -31,9 +32,8 @@ export class ButtonHandler {
         );
     }
     static async page(interaction: ButtonInteraction) {
-        await interaction.deferReply({ ephemeral: true });
-        // TODO: pages need to be implemented still aaa
-        await interaction.editReply(`coming soon I swear`);
+        await interaction.deferUpdate();
+        void pageChangeHandler(interaction);
     }
     static async drawCard(interaction: ButtonInteraction) {
         try {
@@ -68,6 +68,6 @@ export class ButtonHandler {
         }
     }
     static async blackjack(interaction: ButtonInteraction) {
-        BlackjackStorage.getInstance().handleInteraction(interaction);
+        await BlackjackStorage.getInstance().handleInteraction(interaction);
     }
 }

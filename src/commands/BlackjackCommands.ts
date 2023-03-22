@@ -207,9 +207,7 @@ class BlackjackGame {
         let description: string = "Something went terribly wrong...";
         let buttons: unknown[] = []; // still need to figure out which type this is
         const canAffordDouble = await this.canAffordDoubleDown();
-        const renderPath = await this.renderHands(
-            this.phase === BlackjackPhase.UserDrawing
-        );
+        const renderPath = await this.renderHands();
         switch (this.phase) {
             case BlackjackPhase.UserDrawing:
                 // add interaction buttons

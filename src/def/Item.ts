@@ -1,10 +1,10 @@
-import {DataStorage} from "./DatabaseWrapper.js";
+import { DataStorage } from "./DatabaseWrapper.js";
 
 export type ItemType = "role" | "other";
 
 export interface IItemData {
     roleID?: string;
-    other?: {}
+    other?: {};
 }
 export class ItemData implements IItemData {
     roleID?: string;
@@ -68,9 +68,17 @@ export class Item {
     }
 
     async addToShop() {
-        if (this.value === undefined) throw new ItemError("Can't create an item in the database without a value.");
-        await DataStorage.createShopItem(this.itemName, this.itemType, this.itemData, this.value).catch(e => {
+        if (this.value === undefined)
+            throw new ItemError(
+                "Can't create an item in the database without a value."
+            );
+        await DataStorage.createShopItem(
+            this.itemName,
+            this.itemType,
+            this.itemData,
+            this.value
+        ).catch((e) => {
             // TODO add error handling if database error occurs
-        })
+        });
     }
 }

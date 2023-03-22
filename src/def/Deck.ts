@@ -49,11 +49,11 @@ export class Card {
     // used in the web renderer!
     toHtml(): string {
         if (this.hidden)
-            return `<div class="card"><img src="../../src/webrender/plains.jpg" alt="card back"></div>`;
+            return `<div class="card"><img src="../../src/webrender/fnv_cards/card_back.png" alt="card back"></div>`;
 
-        return `<div class="card"><img src="../../src/webrender/cards/${
+        return `<div class="card"><img src="../../src/webrender/fnv_cards/${
             this.value
-        }_of_${this.suit.toLowerCase()}.png" alt="${this.toString()}"></div>`;
+        }_of_${this.suit}.webp" alt="${this.toString()}"></div>`;
     }
 }
 
