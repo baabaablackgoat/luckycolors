@@ -14,6 +14,8 @@ const blackjackTemplate = fs.readFileSync(
 );
 export class BrowserRenderer {
     private static instance: BrowserRenderer;
+
+    private static blackjackDir = "out/blackjack";
     private constructor() {
         void this.setup();
     }
@@ -30,10 +32,38 @@ export class BrowserRenderer {
         this.ready = true;
     }
     public static getInstance(): BrowserRenderer {
-        if (!BrowserRenderer.instance)
+        if (!BrowserRenderer.instance) {
+            // Assume this is the first run - clean up all previously rendered files.
             BrowserRenderer.instance = new BrowserRenderer();
+            BrowserRenderer.initialCleanup();
+        }
         return BrowserRenderer.instance;
     }
+
+    private static initialCleanup() {
+        // clean out all known render directories
+        fs.readdir(`./${BrowserRenderer.blackjackDir}`, (err, files) => {
+            if (err)
+                console.error(
+                    "Couldn't perform initial cleanup task for blackjack:",
+                    err
+                );
+            files.forEach((fileName) => {
+                if (fileName.endsWith(".html") || fileName.endsWith(".png")) {
+                    const filePath = `./${BrowserRenderer.blackjackDir}/${fileName}`;
+                    console.log("Cleaning up leftover file: ", filePath);
+                    fs.unlink(filePath, (err) => {
+                        if (err)
+                            console.error(
+                                `Initial cleanup attempted to cleanup file ${filePath} but failed:`,
+                                err
+                            );
+                    });
+                }
+            });
+        });
+    }
+
     private browser;
     private page;
     public ready: boolean = false;
@@ -59,15 +89,38 @@ export class BrowserRenderer {
             .replace("$userScore", userScore.toString())
             .replace("$dealerScore", dealerScore.toString());
         fs.writeFileSync(
-            `./out/blackjack/${interactionID}.html`,
+            `./${BrowserRenderer.blackjackDir}/${interactionID}.html`,
             blackjackContent
         );
         await this.page.goto(
-            `file://${__dirname}/../../out/blackjack/${interactionID}.html`
+            `file://${__dirname}/../../${BrowserRenderer.blackjackDir}/${interactionID}.html`
         );
 
-        const pngOutPath = `./out/blackjack/${interactionID}.png`;
+        const pngOutPath = `./${BrowserRenderer.blackjackDir}/${interactionID}.png`;
         await this.page.screenshot({ path: pngOutPath });
         return pngOutPath;
+    }
+
+    public async cleanupBlackjack(interactionID: Snowflake) {
+        fs.unlink(
+            `./${BrowserRenderer.blackjackDir}/${interactionID}.html`,
+            (err) => {
+                if (err)
+                    console.warn(
+                        `Couldn't delete HTML file for Blackjack game ${interactionID}`,
+                        err
+                    );
+            }
+        );
+        fs.unlink(
+            `./${BrowserRenderer.blackjackDir}/${interactionID}.png`,
+            (err) => {
+                if (err)
+                    console.warn(
+                        `Couldn't delete screenshot for Blackjack game ${interactionID}`,
+                        err
+                    );
+            }
+        );
     }
 }

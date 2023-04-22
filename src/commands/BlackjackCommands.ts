@@ -355,7 +355,7 @@ export class BlackjackStorage {
     static instance: BlackjackStorage;
     private constructor() {
         this.games = [];
-        setInterval(this.cleanupTask.bind(this), 60000); // once every minute
+        setInterval(this.cleanupTask.bind(this), 6e4); // once every minute
     }
     public static getInstance() {
         if (!BlackjackStorage.instance)
@@ -369,11 +369,13 @@ export class BlackjackStorage {
         this.games = this.games.filter(
             (game) => game.interaction.id !== interactionID
         );
+        void BrowserRenderer.getInstance().cleanupBlackjack(interactionID);
     }
 
     public cleanupTask() {
         this.games.forEach((game) => {
-            if (game.initializeTime.getTime() + 600000 <= Date.now()) {
+            if (game.initializeTime.getTime() + 6e5 <= Date.now()) {
+                // ten minutes ago
                 this.deleteGame(game.interaction.id);
             }
         });

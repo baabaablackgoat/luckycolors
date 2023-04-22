@@ -16,11 +16,11 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^5.2.0",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
     "puppeteer": "^19.7.2",
     "sqlite": "^4.1.2",
-    "sqlite3": "^5.1.4"
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "prettier": "^2.8.4",
