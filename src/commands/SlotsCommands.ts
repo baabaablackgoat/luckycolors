@@ -69,6 +69,17 @@ export const slots = new Command(
     "slots",
     "Play on a simulated slot machine for your 🪙",
     async (interaction) => {
+        //TODO: Rework the slots and then uncomment this part.
+        void replyWithEmbed(
+            interaction,
+            "Coming soon!",
+            "Let him cook, Jesse.",
+            "info",
+            interaction.user,
+            true
+        );
+        return;
+        // original code starts here
         const stake = getValidStake(
             interaction,
             interaction.options.getNumber("stake")
