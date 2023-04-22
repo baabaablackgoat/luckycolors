@@ -1,9 +1,12 @@
 import { ButtonInteraction } from "discord.js";
 import {
     ItemButtonAction,
-    OwnedItemBuilder,
+    MessageItemDisplayBuilder,
 } from "../buttons/InventoryButtons.js";
-import { retrieveOwnedItems } from "../commands/UserShopCommands.js";
+import {
+    retrieveOwnedItems,
+    retrieveUnownedItems,
+} from "../commands/UserShopCommands.js";
 
 export async function pageChangeHandler(interaction: ButtonInteraction) {
     const splitCustomID = interaction.customId.split("_");
@@ -20,13 +23,27 @@ export async function pageChangeHandler(interaction: ButtonInteraction) {
             if (ownedItems === null) return;
 
             void interaction.editReply({
-                // @ts-ignore: type shenanigans
-                components: OwnedItemBuilder(ownedItems, targetPage),
+                // @ts-ignore: type shenanigans. FIXME!
+                components: MessageItemDisplayBuilder(
+                    ownedItems,
+                    "equip",
+                    targetPage
+                ),
             });
             break;
         case "remove":
         case "unlock":
-            void interaction.editReply(`Not yet implemented.`);
+            const unownedItems = await retrieveUnownedItems(interaction);
+            if (unownedItems === null) return;
+
+            void interaction.editReply({
+                // @ts-ignore: type shenanigans. FIXME!
+                components: MessageItemDisplayBuilder(
+                    unownedItems,
+                    "unlock",
+                    targetPage
+                ),
+            });
             break;
     }
 }

@@ -3,7 +3,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 export type ButtonAction = ItemButtonAction | "page" | "drawCard" | "blackjack";
 export type ItemButtonAction = "unlock" | "equip" | "remove";
-export function ItemButtonBuilder(
+function ItemButtonBuilder(
     item: Item,
     buttonAction: ItemButtonAction
 ): ButtonBuilder {
@@ -13,20 +13,24 @@ export function ItemButtonBuilder(
         );
     }
     let buttonStyle: ButtonStyle;
+    let buttonLabel: string;
     switch (buttonAction) {
         case "unlock":
             buttonStyle = ButtonStyle.Primary;
+            buttonLabel = `${item.itemName} (${item.value}🪙)`;
             break;
         case "equip":
             buttonStyle = ButtonStyle.Success;
+            buttonLabel = item.itemName;
             break;
         case "remove":
             buttonStyle = ButtonStyle.Danger;
+            buttonLabel = item.itemName;
             break;
     }
     return new ButtonBuilder()
         .setCustomId(`${buttonAction}_${item.itemID}`)
-        .setLabel(item.itemName)
+        .setLabel(buttonLabel)
         .setStyle(buttonStyle);
 }
 
@@ -66,8 +70,9 @@ export function buttonPageBuilder(
     } else return null;
 }
 
-export function OwnedItemBuilder(
+export function MessageItemDisplayBuilder(
     items: Item[],
+    interactionType: ItemButtonAction,
     page = 0,
     itemsPerPage = 20
 ): ActionRowBuilder[] {
@@ -97,16 +102,21 @@ export function OwnedItemBuilder(
         itemsToShow.slice(15, 20),
     ];
     // add a row for every 5 items (or less)
-    buttonRows.every((row) => {
-        if (row.length === 0) return false; // abort making new rows
+    buttonRows.forEach((row) => {
+        if (row.length === 0) return; // abort making new rows
         let rowBuilder = new ActionRowBuilder();
-        row.every((item) => {
-            rowBuilder.addComponents(ItemButtonBuilder(item, "equip"));
+        row.forEach((item) => {
+            rowBuilder.addComponents(ItemButtonBuilder(item, interactionType));
         });
         actionRowBuilders.push(rowBuilder);
     });
     // add the prev/next buttons
-    const navRow = buttonPageBuilder("equip", page, items.length, itemsPerPage);
+    const navRow = buttonPageBuilder(
+        interactionType,
+        page,
+        items.length,
+        itemsPerPage
+    );
     if (navRow) actionRowBuilders.push(navRow);
     // return the result
     return actionRowBuilders;

@@ -1,7 +1,7 @@
 import { Command } from "../def/Command.js";
 import { DatabaseWrapper, DataStorage } from "../def/DatabaseWrapper.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
-import { OwnedItemBuilder } from "../buttons/InventoryButtons.js";
+import { MessageItemDisplayBuilder } from "../buttons/InventoryButtons.js";
 import { useItemHandler } from "../handlers/UseItemHandler.js";
 import { unlockItemHandler } from "../handlers/UnlockItemHandler.js";
 import { Item } from "../def/Item";
@@ -46,6 +46,24 @@ export async function retrieveOwnedItems(
     } else return ownedItems;
 }
 
+export async function retrieveUnownedItems(
+    interaction: ChatInputCommandInteraction | ButtonInteraction
+): Promise<Item[] | null> {
+    const unownedItems = await DataStorage.listUnownedItems(
+        interaction.user.id
+    );
+    if (unownedItems.length === 0) {
+        void replyWithEmbed(
+            interaction,
+            "No unowned items!",
+            "You seem to have every item currently available!",
+            "warn",
+            interaction.user
+        );
+        return null;
+    } else return unownedItems;
+}
+
 export const listOwnedItems = new Command(
     "inventory",
     "Lists all your owned items, and allows for easy equipping.",
@@ -60,7 +78,7 @@ export const listOwnedItems = new Command(
             "info",
             interaction.user,
             true,
-            OwnedItemBuilder(ownedItems)
+            MessageItemDisplayBuilder(ownedItems, "equip")
         );
     }
 );
@@ -109,27 +127,18 @@ export const shop = new Command(
     "Lists all items that you haven't unlocked yet.",
     async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
-        const missingItems =
-            await DatabaseWrapper.getInstance().listUnownedItems(
-                interaction.user.id
-            );
-        if (missingItems.length === 0)
-            void replyWithEmbed(
-                interaction,
-                "No unowned items!",
-                "You seem to have every item currently available!",
-                "warn",
-                interaction.user
-            );
+        const missingItems = await retrieveUnownedItems(interaction);
+        if (!missingItems) return;
         else {
             void replyWithEmbed(
                 interaction,
-                "Unowned items",
-                missingItems.map((item) => item.itemName).join(", "),
+                "The Shop",
+                `Purchase any missing items here!`,
                 "info",
-                interaction.user
+                interaction.user,
+                true,
+                MessageItemDisplayBuilder(missingItems, "unlock")
             );
-            // TODO: add cool paginated buttons
         }
     }
 );
