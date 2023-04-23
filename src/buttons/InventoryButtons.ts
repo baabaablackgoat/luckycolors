@@ -1,5 +1,6 @@
 import { Item } from "../def/Item.js";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import { Lang } from "../lang/LanguageProvider.js";
 
 export type ButtonAction = ItemButtonAction | "page" | "drawCard" | "blackjack";
 export type ItemButtonAction = "unlock" | "equip" | "remove";
@@ -17,15 +18,22 @@ function ItemButtonBuilder(
     switch (buttonAction) {
         case "unlock":
             buttonStyle = ButtonStyle.Primary;
-            buttonLabel = `${item.itemName} (${item.value}🪙)`;
+            buttonLabel = Lang("itemView_unlockItem", {
+                name: item.itemName,
+                value: item.value.toString(),
+            });
             break;
         case "equip":
             buttonStyle = ButtonStyle.Success;
-            buttonLabel = item.itemName;
+            buttonLabel = Lang("itemView_ownedItem", {
+                name: item.itemName,
+            });
             break;
         case "remove":
             buttonStyle = ButtonStyle.Danger;
-            buttonLabel = item.itemName;
+            buttonLabel = Lang("itemView_removeItem", {
+                name: item.itemName,
+            });
             break;
     }
     return new ButtonBuilder()
@@ -57,12 +65,12 @@ export function buttonPageBuilder(
     if (showBack || showFwd) {
         return new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setLabel("Prev")
+                .setLabel(Lang("itemView_prevPage"))
                 .setCustomId(`page_${type}_${currentPage - 1}`)
                 .setStyle(ButtonStyle.Secondary)
                 .setDisabled(!showBack),
             new ButtonBuilder()
-                .setLabel("Next")
+                .setLabel(Lang("itemView_nextPage"))
                 .setCustomId(`page_${type}_${currentPage + 1}`)
                 .setStyle(ButtonStyle.Secondary)
                 .setDisabled(!showFwd)

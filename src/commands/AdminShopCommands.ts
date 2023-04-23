@@ -3,21 +3,22 @@ import { DataStorage } from "../def/DatabaseWrapper.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
 import { isAlphanumericString } from "../def/validationHelpers.js";
 import { Role } from "discord.js";
+import { Lang } from "../lang/LanguageProvider.js";
 
 export const addRoleItem = new Command(
-    "addrole",
-    "🔧 Adds a Discord role as a shop item.",
+    Lang("command_addRole_name"),
+    Lang("command_addRole_description"),
     async (interaction) => {
         const itemName = interaction.options.getString("name").trim();
         const role = interaction.options.getRole("role");
         const cost = interaction.options.getNumber("cost");
         await interaction.deferReply({ ephemeral: true });
-        if (!await assertAdminPermissions(interaction)) return;
+        if (!(await assertAdminPermissions(interaction))) return;
         if (cost < 0) {
             await replyWithEmbed(
                 interaction,
-                "Invalid cost",
-                "The cost of an item must be 0 or greater. (Yes, you can set freebies!)",
+                Lang("addItem_error_invalidCostTitle"),
+                Lang("addItem_error_invalidCostDescription"),
                 "warn",
                 undefined,
                 true
@@ -32,8 +33,8 @@ export const addRoleItem = new Command(
         ) {
             await replyWithEmbed(
                 interaction,
-                "Invalid item name",
-                "Item names can only be alphanumeric and must not be empty or longer than 32 characters.",
+                Lang("addItem_error_invalidNameTitle"),
+                Lang("addItem_error_invalidNameDescription"),
                 "warn",
                 undefined,
                 true
@@ -43,8 +44,8 @@ export const addRoleItem = new Command(
         if (!(role instanceof Role)) {
             await replyWithEmbed(
                 interaction,
-                "Unexpected response received",
-                "The role you specified behaved in a weird way... feel free to try again or go yell at me.",
+                Lang("addItem_error_unexpectedResponseTitle"),
+                Lang("addRole_error_passedRoleObjectInvalid"),
                 "error",
                 undefined,
                 true
@@ -59,8 +60,8 @@ export const addRoleItem = new Command(
             // Bot role is lower than the role that will be assigned - we know that we can't safely give this role out
             await replyWithEmbed(
                 interaction,
-                "Role too powerful!",
-                "This role has a higher position than my highest role. I won't be able to hand out this role.",
+                Lang("addRole_error_roleTooStrongTitle"),
+                Lang("addRole_error_roleTooStrongDescription"),
                 "warn",
                 undefined,
                 true
@@ -72,8 +73,10 @@ export const addRoleItem = new Command(
             .then(async () => {
                 await replyWithEmbed(
                     interaction,
-                    "Item created!",
-                    `Item with associated role ${role.name} created.`,
+                    Lang("addRole_created_title"),
+                    Lang("addRole_created_description", {
+                        roleName: role.name,
+                    }),
                     "info"
                 );
             })
@@ -81,8 +84,8 @@ export const addRoleItem = new Command(
                 console.error(`Item creation failed: ${e}`);
                 await replyWithEmbed(
                     interaction,
-                    "Something went horribly wrong...",
-                    "I couldn't create this item in my database. Go yell at my creator.",
+                    Lang("addRole_error_unknownTitle"),
+                    Lang("addRole_error_unknownDescription"),
                     "error"
                 );
             });
@@ -90,20 +93,20 @@ export const addRoleItem = new Command(
     [
         {
             type: "String",
-            name: "name",
-            description: "🔧 The name this item should have.",
+            name: Lang("command_addRole_argItemName"),
+            description: Lang("command_addRole_argItemNameDescription"),
             required: true,
         },
         {
             type: "Role",
-            name: "role",
-            description: "🔧 The user to target.",
+            name: Lang("command_addRole_argRole"),
+            description: Lang("command_addRole_argRoleDescription"),
             required: true,
         },
         {
             type: "Number",
-            name: "cost",
-            description: "🔧 How many 🪙 it will cost to unlock this item.",
+            name: Lang("command_addRole_argCost"),
+            description: Lang("command_addRole_argCostDescription"),
             required: true,
         },
     ]
