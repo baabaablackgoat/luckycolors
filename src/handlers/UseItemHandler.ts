@@ -6,6 +6,7 @@ import {
 import { findItem } from "../def/FindItem.js";
 import { DataStorage } from "../def/DatabaseWrapper.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
+import { Lang } from "../lang/LanguageProvider";
 
 export async function useItemHandler(
     interaction: ChatInputCommandInteraction | ButtonInteraction,
@@ -22,8 +23,10 @@ export async function useItemHandler(
     ) {
         await replyWithEmbed(
             interaction,
-            "Not unlocked",
-            `You do not own the item ${foundItem.itemName}.`,
+            Lang("useItem_error_notUnlockedTitle"),
+            Lang("useItem_error_notUnlockedDescription", {
+                item: foundItem.itemName,
+            }),
             "warn",
             interaction.user,
             true
@@ -42,8 +45,8 @@ export async function useItemHandler(
         if (!foundRole) {
             await replyWithEmbed(
                 interaction,
-                "Something went wrong...",
-                "I couldn't retrieve the role associated with this item. Was it deleted?",
+                Lang("useItem_error_roleNotFoundTitle"),
+                Lang("useItem_error_roleNotFoundDescription"),
                 "error",
                 interaction.user,
                 true
@@ -53,8 +56,8 @@ export async function useItemHandler(
         if (!(interaction.member instanceof GuildMember)) {
             await replyWithEmbed(
                 interaction,
-                "Something went wrong...",
-                "Discord answered with a weird API object that I don't wanna deal with. Sorry :P",
+                Lang("useItem_error_unexpectedAPIResponseTitle"),
+                Lang("useItem_error_unexpectedAPIResponseDescription"),
                 "error",
                 interaction.user,
                 true
@@ -68,8 +71,10 @@ export async function useItemHandler(
                 .then(async () => {
                     await replyWithEmbed(
                         interaction,
-                        "Role removed",
-                        `I've removed your unlocked role ${foundRole.name}.`,
+                        Lang("useItem_reply_roleRemovedTitle"),
+                        Lang("useItem_reply_roleRemovedDescription", {
+                            role: foundRole.name,
+                        }),
                         "info",
                         interaction.user,
                         true
@@ -79,8 +84,8 @@ export async function useItemHandler(
                     console.error("Failed to remove role from member", err);
                     await replyWithEmbed(
                         interaction,
-                        "Couldn't remove role.",
-                        "I couldn't remove the role from you. I might not have the permissions to do so.",
+                        Lang("useItem_error_roleRemovalFailedTitle"),
+                        Lang("useItem_error_roleRemovalFailedDescription"),
                         "error",
                         interaction.user,
                         true
@@ -94,8 +99,10 @@ export async function useItemHandler(
                 .then(async () => {
                     await replyWithEmbed(
                         interaction,
-                        "Role added",
-                        `I've assigned you your unlocked role ${foundRole.name}.`,
+                        Lang("useItem_reply_roleAddedTitle"),
+                        Lang("useItem_reply_roleAddedDescription", {
+                            role: foundRole.name,
+                        }),
                         "info",
                         interaction.user,
                         true
@@ -105,8 +112,8 @@ export async function useItemHandler(
                     console.error("Failed to assign role to member", err);
                     await replyWithEmbed(
                         interaction,
-                        "Couldn't assign role.",
-                        "I couldn't assign the role to you. I might not have the permissions to do so.",
+                        Lang("useItem_error_roleAdditionFailedTitle"),
+                        Lang("useItem_error_roleAdditionFailedDescription"),
                         "error",
                         interaction.user,
                         true

@@ -155,4 +155,28 @@ export interface ILanguage {
     findItem_error_invalidInputDescription: TranslationValue;
     findItem_error_notFoundTitle: TranslationValue;
     findItem_error_notFoundDescription: TranslationValue;
+    // useItem translations
+    useItem_error_notUnlockedTitle: TranslationValue;
+    useItem_error_notUnlockedDescription: TranslationValue;
+    useItem_error_roleNotFoundTitle: TranslationValue;
+    useItem_error_roleNotFoundDescription: TranslationValue;
+    useItem_error_unexpectedAPIResponseTitle: TranslationValue;
+    useItem_error_unexpectedAPIResponseDescription: TranslationValue;
+    useItem_reply_roleRemovedTitle: TranslationValue;
+    useItem_reply_roleRemovedDescription: TranslationValue;
+    useItem_error_roleRemovalFailedTitle: TranslationValue;
+    useItem_error_roleRemovalFailedDescription: TranslationValue;
+    useItem_reply_roleAddedTitle: TranslationValue;
+    useItem_reply_roleAddedDescription: TranslationValue;
+    useItem_error_roleAdditionFailedTitle: TranslationValue;
+    useItem_error_roleAdditionFailedDescription: TranslationValue;
+    // unlockItem translations
+    unlockItem_error_alreadyOwnedTitle: TranslationValue;
+    unlockItem_error_alreadyOwnedDescription: TranslationValue;
+    unlockItem_error_insufficientBalanceTitle: TranslationValue;
+    unlockItem_error_insufficientBalanceDescription: TranslationValue;
+    unlockItem_error_unknownErrorTitle: TranslationValue;
+    unlockItem_error_unknownErrorDescription: TranslationValue;
+    unlockItem_reply_unlockedTitle: TranslationValue;
+    unlockItem_reply_unlockedDescription: TranslationValue;
 }

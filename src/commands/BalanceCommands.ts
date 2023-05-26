@@ -176,7 +176,7 @@ export const subtractBalance = new Command(
             await replyWithEmbed(
                 interaction,
                 Lang("subtractBalance_error_insufficientBalanceTitle"),
-                Lang("subtractBalance_error_insufficientBalanceTitle", {
+                Lang("subtractBalance_error_insufficientBalanceDescription", {
                     oldUserBalance: oldUserBalance.toString(),
                     toSubtract: toSubtract.toString(),
                 }),

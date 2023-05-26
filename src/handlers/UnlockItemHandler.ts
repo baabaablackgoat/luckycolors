@@ -2,6 +2,7 @@ import { findItem } from "../def/FindItem.js";
 import { DataStorage } from "../def/DatabaseWrapper.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
 import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
+import { Lang } from "../lang/LanguageProvider";
 
 export async function unlockItemHandler(
     interaction: ChatInputCommandInteraction | ButtonInteraction,
@@ -17,8 +18,10 @@ export async function unlockItemHandler(
     ) {
         await replyWithEmbed(
             interaction,
-            "Already owned",
-            `You already own the item ${foundItem.itemName}.`,
+            Lang("unlockItem_error_alreadyOwnedTitle"),
+            Lang("unlockItem_error_alreadyOwnedDescription", {
+                item: foundItem.itemName,
+            }),
             "info",
             interaction.user,
             true
@@ -29,8 +32,12 @@ export async function unlockItemHandler(
     if (userBalance < foundItem.value) {
         await replyWithEmbed(
             interaction,
-            "Not enough funds!",
-            `You cannot afford ${foundItem.itemName}! It costs ${foundItem.value} 🪙, but you only have ${userBalance} 🪙.`,
+            Lang("unlockItem_error_insufficientBalanceTitle"),
+            Lang("unlockItem_error_insufficientBalanceDescription", {
+                item: foundItem.itemName,
+                value: foundItem.value,
+                balance: userBalance,
+            }),
             "warn",
             interaction.user,
             true
@@ -45,17 +52,21 @@ export async function unlockItemHandler(
         await DataStorage.giveUserItem(interaction.user.id, foundItem.itemID);
         await replyWithEmbed(
             interaction,
-            "Item unlocked!",
-            `You have unlocked the item ${foundItem.itemName} for ${foundItem.value} 🪙!\n
-                    ~~${userBalance}~~ -> **${newUserBalance}** 🪙`,
+            Lang("unlockItem_reply_unlockedTitle"),
+            Lang("unlockItem_reply_unlockedDescription", {
+                item: foundItem.itemName,
+                value: foundItem.value,
+                oldBalance: userBalance,
+                newBalance: newUserBalance,
+            }),
             "info",
             interaction.user
         );
     } catch (e) {
         await replyWithEmbed(
             interaction,
-            "Something went horribly wrong...",
-            "Something went wrong while trying to give you this item. Feel free to yell at my creator.",
+            Lang("unlockItem_error_unknownErrorTitle"),
+            Lang("unlockItem_error_unknownErrorDescription"),
             "error",
             interaction.user,
             true

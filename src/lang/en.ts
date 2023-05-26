@@ -174,4 +174,32 @@ export const english: ILanguage = {
     findItem_error_notFoundTitle: "Item not found",
     findItem_error_notFoundDescription:
         "Your query $query couldn't be resolved into any known items.",
+    useItem_error_notUnlockedTitle: "Not unlocked",
+    useItem_error_notUnlockedDescription: "You do not own the item $item.",
+    useItem_error_roleNotFoundTitle: "Role not found",
+    useItem_error_roleNotFoundDescription:
+        "I couldn't retrieve the role associated with this item. Was it deleted?",
+    useItem_error_unexpectedAPIResponseTitle: "Unexpected response",
+    useItem_error_unexpectedAPIResponseDescription:
+        "Discord answered with a weird API object that I don't wanna deal with. Sorry.",
+    useItem_reply_roleRemovedTitle: "Role removed",
+    useItem_reply_roleRemovedDescription:
+        "I've removed your unlocked role $role.",
+    useItem_error_roleRemovalFailedTitle: "Couldn't remove role",
+    useItem_error_roleRemovalFailedDescription:
+        "I couldn't remove the role from you. I might not have the permissions to do so.",
+    useItem_reply_roleAddedTitle: "Role added",
+    useItem_reply_roleAddedDescription:
+        "I've assigned you your unlocked role $role.",
+    useItem_error_roleAdditionFailedTitle: "Couldn't assign role",
+    useItem_error_roleAdditionFailedDescription:
+        "I couldn't assign the role to you. I might not have the permissions to do so.",
+    unlockItem_error_alreadyOwnedTitle: "Already owned",
+    unlockItem_error_alreadyOwnedDescription: "You already own the item $item.",
+    unlockItem_error_insufficientBalanceTitle: "Not enough funds!",
+    unlockItem_error_insufficientBalanceDescription: "You cannot afford $item! It costs $value 🪙, but you only have $balance 🪙.",
+    unlockItem_error_unknownErrorTitle: "Something went horribly wrong...",
+    unlockItem_error_unknownErrorDescription: "Something went wrong while trying to give you this item. Feel free to yell at my creator.",
+    unlockItem_reply_unlockedTitle: "Item unlocked!",
+    unlockItem_reply_unlockedDescription: "You have unlocked the item $item for $value 🪙!\n~~$oldBalance~~ -> **$newBalance** 🪙",
 };

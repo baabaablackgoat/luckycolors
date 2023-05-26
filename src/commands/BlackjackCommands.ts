@@ -146,7 +146,7 @@ class BlackjackGame {
             (hideDealerCard ? " ??" : "")
         } (${this.DealerScore})
         \n
-        ${Lang("blackjack_printHands_dealerHand")}\n
+        ${Lang("blackjack_printHands_playerHand")}\n
         ${this.UserCards.map((card) => card.toString()).join(" ")} (${
             this.UserScore
         })`;
