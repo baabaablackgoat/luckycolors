@@ -15,24 +15,28 @@ import {
 } from "../def/DatabaseWrapper.js";
 import { getValidStake } from "../def/isValidStake.js";
 import { BrowserRenderer } from "../webrender/BrowserRenderer.js";
+import { Lang } from "../lang/LanguageProvider";
 
 export const drawCard = new Command(
-    "card",
-    "Draw a random card from a virtually shuffled deck.",
+    Lang("command_card_name"),
+    Lang("command_card_description"),
     async (interaction) => {
         const decks = DeckStorage.getInstance();
         const deck = decks.createDeck(interaction.id);
         void replyWithEmbed(
             interaction,
-            "You've drawn...",
-            `${deck.drawCard().toString()}\nCards left: ${deck.cardCount}`,
+            Lang("card_reply_title"),
+            Lang("card_reply_description", {
+                drawnCard: deck.drawCard().toString(),
+                cardsLeft: deck.cardCount,
+            }),
             "info",
             interaction.user,
             true,
             [
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
-                        .setLabel("Draw again?")
+                        .setLabel(Lang("card_button_drawAgain"))
                         .setCustomId(`drawCard_${interaction.id}`)
                         .setStyle(ButtonStyle.Primary)
                 ),
@@ -136,13 +140,13 @@ class BlackjackGame {
         const dealerShownHand = hideDealerCard
             ? this.DealerCards.slice(0, 1)
             : this.DealerCards;
-        return `\n**Dealer's hand**\n
+        return `\n${Lang("blackjack_printHands_dealerHand")}\n
         ${
             dealerShownHand.map((card) => card.toString()).join(" ") +
             (hideDealerCard ? " ??" : "")
         } (${this.DealerScore})
         \n
-        **Your hand**\n
+        ${Lang("blackjack_printHands_dealerHand")}\n
         ${this.UserCards.map((card) => card.toString()).join(" ")} (${
             this.UserScore
         })`;
@@ -213,18 +217,18 @@ class BlackjackGame {
                 // add interaction buttons
                 const buttonList = [
                     new ButtonBuilder()
-                        .setLabel("Hit")
+                        .setLabel(Lang("blackjack_button_hit"))
                         .setStyle(ButtonStyle.Success)
                         .setCustomId(`blackjack_${this.interaction.id}_hit`),
                     new ButtonBuilder()
-                        .setLabel("Stand")
+                        .setLabel(Lang("blackjack_button_stand"))
                         .setStyle(ButtonStyle.Danger)
                         .setCustomId(`blackjack_${this.interaction.id}_stand`),
                 ];
                 if (this.UserCards.length <= 2) {
                     buttonList.push(
                         new ButtonBuilder()
-                            .setLabel("Double Down")
+                            .setLabel(Lang("blackjack_button_doubleDown"))
                             .setStyle(ButtonStyle.Primary)
                             .setCustomId(
                                 `blackjack_${this.interaction.id}_double`
@@ -232,32 +236,44 @@ class BlackjackGame {
                             .setDisabled(!canAffordDouble)
                     );
                 }
-                description = `It's your turn.\n${this.printHands(true)}`;
+                description = `${Lang(
+                    "blackjack_text_yourTurn"
+                )}\n${this.printHands(true)}`;
                 buttons = [new ActionRowBuilder().addComponents(buttonList)];
                 break;
             case BlackjackPhase.DealerDrawing:
-                description = `Dealer is drawing.\n${this.printHands()}`;
+                description = `${Lang(
+                    "blackjack_text_dealerTurn"
+                )}\n${this.printHands()}`;
                 break;
             case BlackjackPhase.Done:
                 if (this.UserBlackjack) {
-                    description = `**BLACKJACK! Pays out 3:2.**
-                    ${this.stake} => ${this.stake * 2.5} 🪙.
+                    description = `${Lang("blackjack_text_blackjackWin", {
+                        stake: this.stake,
+                        payout: this.stake * 2.5,
+                    })}
                     ${this.printHands()}`;
                 } else if (this.UserWins) {
-                    description = `**You win!**
-                    ${this.stake} => ${this.stake * 2} 🪙.
+                    description = `${Lang("blackjack_text_win", {
+                        stake: this.stake,
+                        payout: this.stake * 2,
+                    })}
                     ${this.printHands()}`;
                 } else if (this.Tied) {
-                    description = `**It's a tie.**
-                    ${this.stake} => ${this.stake} 🪙.
+                    description = `${Lang("blackjack_text_tied", {
+                        stake: this.stake,
+                        payout: this.stake,
+                    })}
                     ${this.printHands()}`;
                 } else if (this.UserBust) {
-                    description = `**You went bust.**
-                    ${this.stake} => 0 🪙.
+                    description = `${Lang("blackjack_text_bust", {
+                        stake: this.stake,
+                    })}
                     ${this.printHands()}`;
                 } else if (this.UserLost) {
-                    description = `**You lost.**
-                    ${this.stake} => 0 🪙.
+                    description = `${Lang("blackjack_text_lost", {
+                        stake: this.stake,
+                    })}
                     ${this.printHands()}`;
                 } else {
                     throw new Error("Blackjack - how did we even get here?");
@@ -266,7 +282,7 @@ class BlackjackGame {
         }
         void replyWithEmbed(
             this.interaction,
-            "Blackjack",
+            Lang("blackjack_reply_title"),
             description,
             "info",
             this.interaction.user,
@@ -339,8 +355,8 @@ class BlackjackGame {
             // report game as borked
             void replyWithEmbed(
                 this.interaction,
-                "Blackjack",
-                "Something went wrong... The game has been cancelled and your stake has been refunded.",
+                Lang("blackjack_error_gameCancelledTitle"),
+                Lang("blackjack_error_gameCancelledDescription"),
                 "error",
                 this.interaction.user,
                 true
@@ -404,8 +420,8 @@ export class BlackjackStorage {
         ) {
             void replyWithEmbed(
                 buttonInteraction,
-                "Blackjack",
-                "This interaction seems invalid.",
+                Lang("blackjack_error_invalidInteractionTitle"),
+                Lang("blackjack_error_invalidInteractionDescription"),
                 "error",
                 buttonInteraction.user,
                 true
@@ -428,8 +444,8 @@ export class BlackjackStorage {
 }
 
 export const blackjack = new Command(
-    "blackjack",
-    'Play Blackjack ("Siebzehn und Vier") against the computer with "real" card decks!',
+    Lang("command_blackjack_name"),
+    Lang("command_blackjack_description"),
     async (interaction) => {
         const stake = getValidStake(
             interaction,
@@ -444,8 +460,8 @@ export const blackjack = new Command(
             if (e instanceof InsufficientBalanceError) {
                 void replyWithEmbed(
                     interaction,
-                    "Insufficient balance",
-                    "You can't stake 🪙 you don't have!",
+                    Lang("blackjack_error_insufficientBalanceTitle"),
+                    Lang("blackjack_error_insufficientBalanceDescription"),
                     "warn",
                     interaction.user,
                     true
@@ -457,9 +473,9 @@ export const blackjack = new Command(
     },
     [
         {
-            name: "stake",
+            name: Lang("command_blackjack_argStake"),
             type: "Number",
-            description: "The amount of 🪙 to stake.",
+            description: Lang("command_blackjack_argStakeDescription"),
             required: true,
         },
     ]

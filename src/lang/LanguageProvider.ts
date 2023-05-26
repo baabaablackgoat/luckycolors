@@ -1,9 +1,11 @@
 import { english } from "./en.js";
-import { ILanguage, RandomizedTranslation } from "./ILanguage.js";
+import { ILanguage, RandomizedTranslation } from "./ILanguage";
 
 const Languages: Record<string, ILanguage> = {
     en: english,
 } as const;
+
+type Replacer = string | number;
 
 export class LanguageProvider {
     private static instance: LanguageProvider;
@@ -16,6 +18,7 @@ export class LanguageProvider {
         return LanguageProvider.instance;
     }
 
+    // TODO: once this is called, we have to re-register all commands because these _will_ affect the names
     public setLanguage(langKey: string) {
         if (Languages.hasOwnProperty(langKey)) {
             this.language = Languages[langKey];
@@ -32,7 +35,7 @@ export class LanguageProvider {
 
     public translate(
         langKey: keyof ILanguage,
-        replacers?: Record<string, string>
+        replacers?: Record<string, Replacer>
     ): string {
         if (!LanguageProvider.instance.language.hasOwnProperty(langKey)) {
             // return a fallback translation string, basically just returning the ID
@@ -46,7 +49,8 @@ export class LanguageProvider {
               )
             : foundTranslation;
         if (replacers) {
-            for (const [key, value] of Object.entries(replacers)) {
+            for (let [key, value] of Object.entries(replacers)) {
+                if (typeof value == "number") value = value.toString();
                 outString = outString.replace(`$${key}`, value);
             }
         }

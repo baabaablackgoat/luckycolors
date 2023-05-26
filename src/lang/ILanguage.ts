@@ -1,49 +1,64 @@
 export type RandomizedTranslation = string[];
-type TranslationValue = string | RandomizedTranslation;
+// TODO: This, in theory, should be extended in such a way that absolutely enforces lowercase-no-special-character strings.
+type CommandParameterName = Lowercase<string>;
+type TranslationValue = string | RandomizedTranslation | CommandParameterName;
+
 export interface ILanguage {
-    command_addRole_name: TranslationValue;
+    // Daily claim command
+    command_daily_name: CommandParameterName;
+    command_daily_description: TranslationValue;
+    daily_error_alreadyClaimedTitle: TranslationValue;
+    daily_error_alreadyClaimedDescription: TranslationValue;
+    daily_reply_claimedTitle: TranslationValue;
+    daily_reply_claimedDescription: TranslationValue;
+    // Ping command
+    command_ping_name: CommandParameterName;
+    command_ping_description: TranslationValue;
+    ping_reply_text: TranslationValue;
+    // Adding role item command
+    command_addRole_name: CommandParameterName;
     command_addRole_description: TranslationValue;
-    command_addRole_argItemName: TranslationValue;
+    command_addRole_argItemName: CommandParameterName;
     command_addRole_argItemNameDescription: TranslationValue;
-    command_addRole_argRole: TranslationValue;
+    command_addRole_argRole: CommandParameterName;
     command_addRole_argRoleDescription: TranslationValue;
-    command_addRole_argCost: TranslationValue;
+    command_addRole_argCost: CommandParameterName;
     command_addRole_argCostDescription: TranslationValue;
     // checkBalance command
-    command_checkBalance_name: TranslationValue;
+    command_checkBalance_name: CommandParameterName;
     command_checkBalance_description: TranslationValue;
-    command_checkBalance_argTargetUser: TranslationValue;
+    command_checkBalance_argTargetUser: CommandParameterName;
     command_checkBalance_argTargetUserDescription: TranslationValue;
     checkBalance_reply_title: TranslationValue;
     checkBalance_reply_description: TranslationValue;
     // setBalance command
-    command_setBalance_name: TranslationValue;
+    command_setBalance_name: CommandParameterName;
     command_setBalance_description: TranslationValue;
-    command_setBalance_argTargetUser: TranslationValue;
+    command_setBalance_argTargetUser: CommandParameterName;
     command_setBalance_argTargetUserDescription: TranslationValue;
-    command_setBalance_argAmount: TranslationValue;
+    command_setBalance_argAmount: CommandParameterName;
     command_setBalance_argAmountDescription: TranslationValue;
     setBalance_error_invalidAmountTitle: TranslationValue;
     setBalance_error_invalidAmountDescription: TranslationValue;
     setBalance_reply_successTitle: TranslationValue;
     setBalance_reply_successDescription: TranslationValue;
     // Add balance command
-    command_addBalance_name: TranslationValue;
+    command_addBalance_name: CommandParameterName;
     command_addBalance_description: TranslationValue;
-    command_addBalance_argTargetUser: TranslationValue;
+    command_addBalance_argTargetUser: CommandParameterName;
     command_addBalance_argTargetUserDescription: TranslationValue;
-    command_addBalance_argAmount: TranslationValue;
+    command_addBalance_argAmount: CommandParameterName;
     command_addBalance_argAmountDescription: TranslationValue;
     addBalance_error_invalidAmountTitle: TranslationValue;
     addBalance_error_invalidAmountDescription: TranslationValue;
     addBalance_reply_successTitle: TranslationValue;
     addBalance_reply_successDescription: TranslationValue;
     // Subtract balance command
-    command_subtractBalance_name: TranslationValue;
+    command_subtractBalance_name: CommandParameterName;
     command_subtractBalance_description: TranslationValue;
-    command_subtractBalance_argTargetUser: TranslationValue;
+    command_subtractBalance_argTargetUser: CommandParameterName;
     command_subtractBalance_argTargetUserDescription: TranslationValue;
-    command_subtractBalance_argAmount: TranslationValue;
+    command_subtractBalance_argAmount: CommandParameterName;
     command_subtractBalance_argAmountDescription: TranslationValue;
     subtractBalance_error_invalidAmountTitle: TranslationValue;
     subtractBalance_error_invalidAmountDescription: TranslationValue;
@@ -51,7 +66,7 @@ export interface ILanguage {
     subtractBalance_error_insufficientBalanceDescription: TranslationValue;
     subtractBalance_reply_successTitle: TranslationValue;
     subtractBalance_reply_successDescription: TranslationValue;
-
+    // generic item addition replies
     addItem_error_invalidCostTitle: TranslationValue;
     addItem_error_invalidCostDescription: TranslationValue;
     addItem_error_invalidNameTitle: TranslationValue;
@@ -69,4 +84,34 @@ export interface ILanguage {
     itemView_removeItem: TranslationValue;
     itemView_prevPage: TranslationValue;
     itemView_nextPage: TranslationValue;
+    // Card command
+    command_card_name: CommandParameterName;
+    command_card_description: TranslationValue;
+    card_reply_title: TranslationValue;
+    card_reply_description: TranslationValue;
+    card_button_drawAgain: TranslationValue;
+    // Blackjack
+    blackjack_printHands_dealerHand: TranslationValue;
+    blackjack_printHands_playerHand: TranslationValue;
+    blackjack_button_hit: TranslationValue;
+    blackjack_button_stand: TranslationValue;
+    blackjack_button_doubleDown: TranslationValue;
+    blackjack_text_yourTurn: TranslationValue;
+    blackjack_text_dealerTurn: TranslationValue;
+    blackjack_text_blackjackWin: TranslationValue;
+    blackjack_text_win: TranslationValue;
+    blackjack_text_tied: TranslationValue;
+    blackjack_text_bust: TranslationValue;
+    blackjack_text_lost: TranslationValue;
+    blackjack_reply_title: TranslationValue;
+    blackjack_error_gameCancelledTitle: TranslationValue;
+    blackjack_error_gameCancelledDescription: TranslationValue;
+    blackjack_error_invalidInteractionTitle: TranslationValue;
+    blackjack_error_invalidInteractionDescription: TranslationValue;
+    blackjack_error_insufficientBalanceTitle: TranslationValue;
+    blackjack_error_insufficientBalanceDescription: TranslationValue;
+    command_blackjack_name: CommandParameterName;
+    command_blackjack_description: TranslationValue;
+    command_blackjack_argStake: CommandParameterName;
+    command_blackjack_argStakeDescription: TranslationValue;
 }

@@ -1,9 +1,9 @@
-import { assertAdminPermissions, Command } from "../def/Command.js";
-import { DataStorage } from "../def/DatabaseWrapper.js";
-import { replyWithEmbed } from "../def/replyWithEmbed.js";
-import { isAlphanumericString } from "../def/validationHelpers.js";
+import { assertAdminPermissions, Command } from "../def/Command";
+import { DataStorage } from "../def/DatabaseWrapper";
+import { replyWithEmbed } from "../def/replyWithEmbed";
+import { isAlphanumericString } from "../def/validationHelpers";
 import { Role } from "discord.js";
-import { Lang } from "../lang/LanguageProvider.js";
+import { Lang } from "../lang/LanguageProvider";
 
 export const addRoleItem = new Command(
     Lang("command_addRole_name"),

@@ -4,12 +4,12 @@ import {
     ButtonInteraction,
     ButtonStyle,
 } from "discord.js";
-import { useItemHandler } from "../handlers/UseItemHandler.js";
-import { unlockItemHandler } from "../handlers/UnlockItemHandler.js";
-import { DeckStorage } from "./Deck.js";
-import { replyWithEmbed } from "./replyWithEmbed.js";
-import { BlackjackStorage } from "../commands/BlackjackCommands.js";
-import { pageChangeHandler } from "../handlers/PageChangeHandler.js";
+import { useItemHandler } from "../handlers/UseItemHandler";
+import { unlockItemHandler } from "../handlers/UnlockItemHandler";
+import { DeckStorage } from "./Deck";
+import { replyWithEmbed } from "./replyWithEmbed";
+import { BlackjackStorage } from "../commands/BlackjackCommands";
+import { pageChangeHandler } from "../handlers/PageChangeHandler";
 
 function getItemID(customID: string): string {
     return customID.split("_")[1];

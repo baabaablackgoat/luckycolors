@@ -1,6 +1,6 @@
-import { assertAdminPermissions, Command } from "../def/Command.js";
-import { DataStorage } from "../def/DatabaseWrapper.js";
-import { replyWithEmbed } from "../def/replyWithEmbed.js";
+import { assertAdminPermissions, Command } from "../def/Command";
+import { DataStorage } from "../def/DatabaseWrapper";
+import { replyWithEmbed } from "../def/replyWithEmbed";
 import { Lang } from "../lang/LanguageProvider";
 
 export const balance = new Command(

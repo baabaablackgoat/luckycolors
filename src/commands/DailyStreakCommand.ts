@@ -2,6 +2,7 @@ import { Command } from "../def/Command.js";
 import { DatabaseWrapper } from "../def/DatabaseWrapper.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
 import { dateDayReducer } from "../def/DateDifference.js";
+import { Lang } from "../lang/LanguageProvider";
 
 function getNextClaim(lastClaimed: Date): Date {
     const result = dateDayReducer(lastClaimed);
@@ -25,8 +26,8 @@ class ReadableTime {
 }
 
 export const daily = new Command(
-    "daily",
-    "Claim your daily credits! Keeping a streak earns you more.",
+    Lang("command_daily_name"),
+    Lang("command_daily_description"),
     async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
         const claimedCredits =
@@ -40,9 +41,11 @@ export const daily = new Command(
             // Already claimed credits today, should try again later
             void replyWithEmbed(
                 interaction,
-                "Already claimed today!",
-                `Daily claims reset at midnight UTC. You can claim additional 🪙 in ${timeToClaim.toString()}.
-                 Current streak: ${claimedCredits.streak}`,
+                Lang("daily_error_alreadyClaimedTitle"),
+                Lang("daily_error_alreadyClaimedDescription", {
+                    timeToClaim: timeToClaim.toString(),
+                    streak: claimedCredits.streak,
+                }),
                 "warn",
                 interaction.user
             );
@@ -50,12 +53,12 @@ export const daily = new Command(
         } else {
             void replyWithEmbed(
                 interaction,
-                "Daily credits claimed!",
-                `You have received **${
-                    claimedCredits.received
-                }**🪙. You can claim more in ${timeToClaim.toString()}. Your current streak: **${
-                    claimedCredits.streak
-                }**`,
+                Lang("daily_reply_claimedTitle"),
+                Lang("daily_reply_claimedDescription", {
+                    received: claimedCredits.received,
+                    timeToClaim: timeToClaim.toString(),
+                    streak: claimedCredits.streak
+                }),
                 "info",
                 interaction.user
             );
