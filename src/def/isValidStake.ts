@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { replyWithEmbed } from "./replyWithEmbed.js";
+import { Lang } from "../lang/LanguageProvider";
 
 /**
  * Returns a normalized stake (only whole numbers). If it is greater or less than the minimum or invalid in any other way, returns 0.
@@ -17,8 +18,12 @@ export function getValidStake(
     if (stake < minStake || stake > maxStake) {
         void replyWithEmbed(
             interaction,
-            "Invalid stake",
-            `Your stake must be between ${minStake} and ${maxStake}. Your stake: ${stake}`,
+            Lang("isValidStake_error_invalidStakeTitle"),
+            Lang("isValidStake_error_invalidStakeDescription", {
+                stake,
+                minStake,
+                maxStake,
+            }),
             "warn",
             interaction.user,
             true

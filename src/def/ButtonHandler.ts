@@ -10,6 +10,7 @@ import { DeckStorage } from "./Deck";
 import { replyWithEmbed } from "./replyWithEmbed";
 import { BlackjackStorage } from "../commands/BlackjackCommands";
 import { pageChangeHandler } from "../handlers/PageChangeHandler";
+import { Lang } from "../lang/LanguageProvider";
 
 function getItemID(customID: string): string {
     return customID.split("_")[1];
@@ -41,15 +42,18 @@ export class ButtonHandler {
             const deck = DeckStorage.getInstance().getDeck(deckID);
             void replyWithEmbed(
                 interaction,
-                "You've drawn...",
-                `${deck.drawCard().toString()}\nCards left: ${deck.cardCount}`,
+                Lang("card_reply_title"),
+                Lang("card_reply_description", {
+                    drawnCard: deck.drawCard().toString(),
+                    cardsLeft: deck.cardCount,
+                }),
                 "info",
                 interaction.user,
                 true,
                 [
                     new ActionRowBuilder().addComponents(
                         new ButtonBuilder()
-                            .setLabel("Draw again?")
+                            .setLabel(Lang("card_button_drawAgain"))
                             .setCustomId(`drawCard_${deckID}`)
                             .setStyle(ButtonStyle.Primary)
                     ),
@@ -58,8 +62,8 @@ export class ButtonHandler {
         } catch (e) {
             void replyWithEmbed(
                 interaction,
-                "Something went wrong...",
-                `I couldn't retrieve the deck I was drawing from before :(`,
+                Lang("card_error_deckMissingTitle"),
+                Lang("card_error_deckMissingDescription"),
                 "error",
                 interaction.user,
                 true

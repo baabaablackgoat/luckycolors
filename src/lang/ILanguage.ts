@@ -90,6 +90,8 @@ export interface ILanguage {
     card_reply_title: TranslationValue;
     card_reply_description: TranslationValue;
     card_button_drawAgain: TranslationValue;
+    card_error_deckMissingTitle: TranslationValue;
+    card_error_deckMissingDescription: TranslationValue;
     // Blackjack
     blackjack_printHands_dealerHand: TranslationValue;
     blackjack_printHands_playerHand: TranslationValue;
@@ -145,4 +147,12 @@ export interface ILanguage {
     command_shop_description: TranslationValue;
     shop_reply_title: TranslationValue;
     shop_reply_description: TranslationValue;
+    // isValidStake: error state
+    isValidStake_error_invalidStakeTitle: TranslationValue;
+    isValidStake_error_invalidStakeDescription: TranslationValue;
+    // findItem: error states
+    findItem_error_invalidInputTitle: TranslationValue;
+    findItem_error_invalidInputDescription: TranslationValue;
+    findItem_error_notFoundTitle: TranslationValue;
+    findItem_error_notFoundDescription: TranslationValue;
 }

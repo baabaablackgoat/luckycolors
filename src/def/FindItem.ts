@@ -3,6 +3,7 @@ import { Item } from "./Item.js";
 import { isAlphanumericString } from "./validationHelpers.js";
 import { replyWithEmbed } from "./replyWithEmbed.js";
 import { DataStorage } from "./DatabaseWrapper.js";
+import { Lang } from "../lang/LanguageProvider";
 
 /**
  * Helper function that resolves an item name or ID to a database item. Also does some query sanitization.
@@ -19,8 +20,8 @@ export async function findItem(
     if (itemRequest.length === 0 || !isAlphanumericString(itemRequest)) {
         await replyWithEmbed(
             interaction,
-            "Invalid item descriptor",
-            "This is not a valid item id nor a valid name!",
+            Lang("findItem_error_invalidInputTitle"),
+            Lang("findItem_error_invalidInputDescription"),
             "warn",
             interaction.user,
             true
@@ -35,8 +36,8 @@ export async function findItem(
     if (!foundItem) {
         await replyWithEmbed(
             interaction,
-            "Unknown item",
-            `Your query ${itemRequest} couldn't be resolved into any known items.`,
+            Lang("findItem_error_notFoundTitle"),
+            Lang("findItem_error_notFoundDescription", { query: itemRequest }),
             "warn",
             interaction.user,
             true
