@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
+        "target": "ESNext",
         "module": "ESNext",
-        "target": "es2022",
+        "esModuleInterop": true,
         "sourceMap": true,
         "outDir": "./dist",
         "moduleResolution": "Node",

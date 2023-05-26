@@ -5,10 +5,10 @@
   "description": "",
   "exports": "./index.ts",
   "scripts": {
-    "deployCommands:guilds": "ts-node-esm scripts/deployCommands.ts guilds",
-    "deployCommands:globals": "ts-node-esm scripts/deployCommands.ts globals",
-    "deployCommands:all": "ts-node-esm scripts/deployCommands.ts all",
-    "start": "ts-node-esm src/main.ts",
+    "deployCommands:guilds": "node --experimental-specifier-resolution=node --loader ts-node/esm scripts/deployCommands.ts guilds",
+    "deployCommands:globals": "node --experimental-specifier-resolution=node --loader ts-node/esm scripts/deployCommands.ts globals",
+    "deployCommands:all": "node --experimental-specifier-resolution=node --loader ts-node/esm scripts/deployCommands.ts all",
+    "start": "node --experimental-specifier-resolution=node --loader ts-node/esm src/main.ts",
     "testScriptPlsIgnore": "ts-node-esm src/webrender/BrowserRenderer.ts"
   },
   "keywords": [],
@@ -16,14 +16,14 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^5.2.0",
-    "discord.js": "^14.9.0",
+    "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
-    "puppeteer": "^19.7.2",
-    "sqlite": "^4.1.2",
+    "puppeteer": "^19.11.1",
+    "sqlite": "^4.2.1",
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
-    "prettier": "^2.8.4",
+    "prettier": "^2.8.8",
     "ts-node": "^10.9.1"
   }
 }

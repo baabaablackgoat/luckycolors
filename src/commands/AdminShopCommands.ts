@@ -9,9 +9,15 @@ export const addRoleItem = new Command(
     Lang("command_addRole_name"),
     Lang("command_addRole_description"),
     async (interaction) => {
-        const itemName = interaction.options.getString("name").trim();
-        const role = interaction.options.getRole("role");
-        const cost = interaction.options.getNumber("cost");
+        const itemName = interaction.options
+            .getString(Lang("command_addRole_argItemName"))
+            .trim();
+        const role = interaction.options.getRole(
+            Lang("command_addRole_argRole")
+        );
+        const cost = interaction.options.getNumber(
+            Lang("command_addRole_argCost")
+        );
         await interaction.deferReply({ ephemeral: true });
         if (!(await assertAdminPermissions(interaction))) return;
         if (cost < 0) {
