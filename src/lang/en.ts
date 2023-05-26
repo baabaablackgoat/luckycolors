@@ -131,4 +131,40 @@ export const english: ILanguage = {
         'Play Blackjack ("Siebzehn und Vier") against the computer with "real" card decks!',
     command_blackjack_argStake: "stake",
     command_blackjack_argStakeDescription: "The amount of 🪙 to stake.",
+    command_buyItem_name: "buyitem",
+    command_buyItem_description:
+        "Unlocks the item with the given name in exchange for your 🪙.",
+    command_buyItem_argItem: "item",
+    command_buyItem_argItemDescription: "The name or item ID",
+    // owned & unowned item reply list errors
+    ownedItems_error_noItemsOwnedTitle: "No items found!",
+    ownedItems_error_noItemsOwnedDescription:
+        "It seems like you don't own any items... sadge.",
+    unownedItems_error_allItemsOwnedTitle: "No unowned items!",
+    unownedItems_error_allItemsOwnedDescription:
+        "You seem to have every item currently available!",
+    // inventory command
+    command_inventory_name: "inventory",
+    command_inventory_description:
+        "Lists all your owned items, and allows for easy equipping.",
+    inventory_reply_title: "This is your inventory.",
+    inventory_reply_description:
+        "Click the buttons below to equip or unequip / use your items.",
+    // useItem command
+    command_useItem_name: "useitem",
+    command_useItem_description:
+        "Performs the use action on an item - if you own it! (e.g. equipping a role)",
+    command_useItem_argItem: "item",
+    command_useItem_argItemDescription: "The name or item ID",
+    // listAllItems command
+    command_listAll_name: "listall",
+    command_listAll_description: "Lists all items that are registered.",
+    command_listAll_argPage: "page",
+    command_listAll_argPageDescription: "The page number to show.",
+    listAll_reply_title: "All available items",
+    // shop command
+    command_shop_name: "shop",
+    command_shop_description: "Lists all items that you haven't unlocked yet.",
+    shop_reply_title: "The Shop",
+    shop_reply_description: "Purchase any missing items here!",
 };

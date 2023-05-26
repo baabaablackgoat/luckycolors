@@ -114,4 +114,35 @@ export interface ILanguage {
     command_blackjack_description: TranslationValue;
     command_blackjack_argStake: CommandParameterName;
     command_blackjack_argStakeDescription: TranslationValue;
+    // buy item command
+    command_buyItem_name: CommandParameterName;
+    command_buyItem_description: TranslationValue;
+    command_buyItem_argItem: CommandParameterName;
+    command_buyItem_argItemDescription: TranslationValue;
+    // owned & unowned item reply list errors
+    ownedItems_error_noItemsOwnedTitle: TranslationValue;
+    ownedItems_error_noItemsOwnedDescription: TranslationValue;
+    unownedItems_error_allItemsOwnedTitle: TranslationValue;
+    unownedItems_error_allItemsOwnedDescription: TranslationValue;
+    // inventory command
+    command_inventory_name: CommandParameterName;
+    command_inventory_description: TranslationValue;
+    inventory_reply_title: TranslationValue;
+    inventory_reply_description: TranslationValue;
+    // useItem command
+    command_useItem_name: CommandParameterName;
+    command_useItem_description: TranslationValue;
+    command_useItem_argItem: CommandParameterName;
+    command_useItem_argItemDescription: TranslationValue;
+    // listAllItems command
+    command_listAll_name: CommandParameterName;
+    command_listAll_description: TranslationValue;
+    command_listAll_argPage: CommandParameterName;
+    command_listAll_argPageDescription: TranslationValue;
+    listAll_reply_title: TranslationValue;
+    // shop command
+    command_shop_name: CommandParameterName;
+    command_shop_description: TranslationValue;
+    shop_reply_title: TranslationValue;
+    shop_reply_description: TranslationValue;
 }

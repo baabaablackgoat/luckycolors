@@ -6,21 +6,22 @@ import { useItemHandler } from "../handlers/UseItemHandler.js";
 import { unlockItemHandler } from "../handlers/UnlockItemHandler.js";
 import { Item } from "../def/Item";
 import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
+import { Lang } from "../lang/LanguageProvider";
 
 export const buyItem = new Command(
-    "buyitem",
-    "Unlocks the item with the given name in exchange for your 🪙.",
+    Lang("command_buyItem_name"),
+    Lang("command_buyItem_description"),
     async (interaction) => {
         void unlockItemHandler(
             interaction,
-            interaction.options.getString("item")
+            interaction.options.getString(Lang("command_buyItem_argItem"))
         );
     },
     [
         {
             type: "String",
-            name: "item",
-            description: "The name or item ID",
+            name: Lang("command_buyItem_argItem"),
+            description: Lang("command_buyItem_argItemDescription"),
             required: true,
         },
     ]
@@ -36,8 +37,8 @@ export async function retrieveOwnedItems(
     if (ownedItems.length === 0) {
         await replyWithEmbed(
             interaction,
-            "No items found!",
-            "It seems like you don't own any items... sadge.",
+            Lang("ownedItems_error_noItemsOwnedTitle"),
+            Lang("ownedItems_error_noItemsOwnedDescription"),
             "info",
             interaction.user,
             true
@@ -55,8 +56,8 @@ export async function retrieveUnownedItems(
     if (unownedItems.length === 0) {
         void replyWithEmbed(
             interaction,
-            "No unowned items!",
-            "You seem to have every item currently available!",
+            Lang("unownedItems_error_allItemsOwnedTitle"),
+            Lang("unownedItems_error_allItemsOwnedDescription"),
             "warn",
             interaction.user
         );
@@ -65,16 +66,16 @@ export async function retrieveUnownedItems(
 }
 
 export const listOwnedItems = new Command(
-    "inventory",
-    "Lists all your owned items, and allows for easy equipping.",
+    Lang("command_inventory_name"),
+    Lang("command_inventory_description"),
     async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
         const ownedItems = await retrieveOwnedItems(interaction);
         if (ownedItems === null) return;
         await replyWithEmbed(
             interaction,
-            "This is your inventory.",
-            "Click the buttons below to equip or unequip / use your items.",
+            Lang("inventory_reply_title"),
+            Lang("inventory_reply_description"),
             "info",
             interaction.user,
             true,
@@ -84,30 +85,36 @@ export const listOwnedItems = new Command(
 );
 
 export const useItem = new Command(
-    "useitem",
-    "Performs the use action on an item - if you own it! (e.g. equipping a role)",
+    Lang("command_useItem_name"),
+    Lang("command_useItem_description"),
     async (interaction) => {
-        void useItemHandler(interaction, interaction.options.getString("item"));
+        void useItemHandler(
+            interaction,
+            interaction.options.getString(Lang("command_useItem_argItem"))
+        );
     },
     [
         {
             type: "String",
-            name: "item",
-            description: "The name or item ID",
+            name: Lang("command_useItem_argItem"),
+            description: Lang("command_useItem_argItemDescription"),
             required: true,
         },
     ]
 );
 
 export const listItems = new Command(
-    "listall",
-    "Lists all items that are registered.",
+    Lang("command_listAll_name"),
+    Lang("command_listAll_description"),
     async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
         const allItems = await DatabaseWrapper.getInstance().listAllShopItems();
+        // const page = interaction.options.getNumber(Lang("command_listAll_argPage"));
+        // TODO: there's currently a limit of 100 set in this request, and we have a page argument.
+        //  This page argument is not implemented!
         void replyWithEmbed(
             interaction,
-            "All available items",
+            Lang("listAll_reply_title"),
             allItems.map((item) => item.itemName).join(", "),
             "info"
         );
@@ -115,16 +122,16 @@ export const listItems = new Command(
     [
         {
             type: "Number",
-            name: "page",
-            description: "The page number to show",
+            name: Lang("command_listAll_argPage"),
+            description: Lang("command_listAll_argPageDescription"),
             required: false,
         },
     ]
 );
 
 export const shop = new Command(
-    "shop",
-    "Lists all items that you haven't unlocked yet.",
+    Lang("command_shop_name"),
+    Lang("command_shop_description"),
     async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
         const missingItems = await retrieveUnownedItems(interaction);
@@ -132,8 +139,8 @@ export const shop = new Command(
         else {
             void replyWithEmbed(
                 interaction,
-                "The Shop",
-                `Purchase any missing items here!`,
+                Lang("shop_reply_title"),
+                Lang("shop_reply_description"),
                 "info",
                 interaction.user,
                 true,
