@@ -3,3 +3,5 @@ node_modules
 database.db
 botSettings.json
 out/*
+/src/webrender/fnv_cards/
+/src/webrender/cards/

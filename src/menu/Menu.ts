@@ -37,7 +37,6 @@ const publicMenuEntranceEmbed = new EmbedBuilder()
     .setTitle(Lang("menu_entryPoint_title"))
     .setDescription(Lang("menu_entryPoint_description"))
     .setColor(0xff0088);
-// .setImage("https://baabaablackgoat.com/res/salem/menuLobby2.png");
 const publicMenuEntranceButtonRow = [
     new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -52,7 +51,7 @@ const mainMenuEmbed = new EmbedBuilder()
     .setTitle("Main Menu")
     .setDescription("Select to continue")
     .setColor(0xff0088)
-    .setImage("https://baabaablackgoat.com/res/salem/menuLobby2.png");
+    .setImage("https://baabaablackgoat.com/res/salem/menuLobbyGlass.png");
 const mainMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
         .setLabel("Games")
@@ -73,7 +72,7 @@ const gamesMenuEmbed = new EmbedBuilder()
     .setTitle("Games")
     .setDescription("What would you like to play?")
     .setColor(0xff0088)
-    .setImage("https://baabaablackgoat.com/res/salem/menuCasino2.png");
+    .setImage("https://baabaablackgoat.com/res/salem/menuCasinoGlass.png");
 const gamesMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
         .setLabel("Blackjack")
