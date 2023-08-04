@@ -179,4 +179,19 @@ export interface ILanguage {
     unlockItem_error_unknownErrorDescription: TranslationValue;
     unlockItem_reply_unlockedTitle: TranslationValue;
     unlockItem_reply_unlockedDescription: TranslationValue;
+    // permission assertion
+    adminPerms_error_unknownTitle: TranslationValue;
+    adminPerms_error_unknownDescription: TranslationValue;
+    adminPerms_error_notAllowedTitle: TranslationValue;
+    adminPerms_error_notAllowedDescription: TranslationValue;
+    // Menu translations
+    command_sendMenu_name: CommandParameterName;
+    command_sendMenu_description: TranslationValue;
+    command_sendMenu_argChannel: CommandParameterName;
+    command_sendMenu_argChannelDescription: TranslationValue;
+    menu_entryPoint_title: TranslationValue;
+    menu_entryPoint_description: TranslationValue;
+    menu_entryPoint_buttonLabel: TranslationValue;
+    menu_error_unknownInteractionTitle: TranslationValue;
+    menu_error_unknownInteractionDescription: TranslationValue;
 }

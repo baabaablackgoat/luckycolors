@@ -11,6 +11,7 @@ import { replyWithEmbed } from "./replyWithEmbed";
 import { BlackjackStorage } from "../commands/BlackjackCommands";
 import { pageChangeHandler } from "../handlers/PageChangeHandler";
 import { Lang } from "../lang/LanguageProvider";
+import { menuButtonHandler } from "../menu/Menu";
 
 function getItemID(customID: string): string {
     return customID.split("_")[1];
@@ -73,5 +74,9 @@ export class ButtonHandler {
     }
     static async blackjack(interaction: ButtonInteraction) {
         await BlackjackStorage.getInstance().handleInteraction(interaction);
+    }
+
+    static async menu(interaction: ButtonInteraction) {
+        await menuButtonHandler(interaction);
     }
 }

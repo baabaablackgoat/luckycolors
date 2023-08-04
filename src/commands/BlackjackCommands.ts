@@ -21,29 +21,35 @@ export const drawCard = new Command(
     Lang("command_card_name"),
     Lang("command_card_description"),
     async (interaction) => {
-        const decks = DeckStorage.getInstance();
-        const deck = decks.createDeck(interaction.id);
-        void replyWithEmbed(
-            interaction,
-            Lang("card_reply_title"),
-            Lang("card_reply_description", {
-                drawnCard: deck.drawCard().toString(),
-                cardsLeft: deck.cardCount,
-            }),
-            "info",
-            interaction.user,
-            true,
-            [
-                new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setLabel(Lang("card_button_drawAgain"))
-                        .setCustomId(`drawCard_${interaction.id}`)
-                        .setStyle(ButtonStyle.Primary)
-                ),
-            ]
-        );
+        void drawCardExecute(interaction);
     }
 );
+
+export const drawCardExecute = async (
+    interaction: ChatInputCommandInteraction | ButtonInteraction
+) => {
+    const decks = DeckStorage.getInstance();
+    const deck = decks.createDeck(interaction.id);
+    void replyWithEmbed(
+        interaction,
+        Lang("card_reply_title"),
+        Lang("card_reply_description", {
+            drawnCard: deck.drawCard().toString(),
+            cardsLeft: deck.cardCount,
+        }),
+        "info",
+        interaction.user,
+        true,
+        [
+            new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                    .setLabel(Lang("card_button_drawAgain"))
+                    .setCustomId(`drawCard_${interaction.id}`)
+                    .setStyle(ButtonStyle.Primary)
+            ),
+        ]
+    );
+};
 
 enum BlackjackPhase {
     "UserDrawing",
@@ -451,25 +457,7 @@ export const blackjack = new Command(
             interaction,
             interaction.options.getNumber("stake")
         );
-        if (stake === 0) return;
-        try {
-            await interaction.deferReply({ ephemeral: true });
-            await DataStorage.subtractUserBalance(interaction.user.id, stake);
-            BlackjackStorage.getInstance().createGame(interaction, stake);
-        } catch (e) {
-            if (e instanceof InsufficientBalanceError) {
-                void replyWithEmbed(
-                    interaction,
-                    Lang("blackjack_error_insufficientBalanceTitle"),
-                    Lang("blackjack_error_insufficientBalanceDescription"),
-                    "warn",
-                    interaction.user,
-                    true
-                );
-            } else {
-                throw e;
-            }
-        }
+        void blackjackExecute(interaction, stake);
     },
     [
         {
@@ -480,3 +468,28 @@ export const blackjack = new Command(
         },
     ]
 );
+
+export const blackjackExecute = async (
+    interaction: ChatInputCommandInteraction | ButtonInteraction,
+    stake: number
+) => {
+    if (stake === 0) return;
+    try {
+        await interaction.deferReply({ ephemeral: true });
+        await DataStorage.subtractUserBalance(interaction.user.id, stake);
+        BlackjackStorage.getInstance().createGame(interaction, stake);
+    } catch (e) {
+        if (e instanceof InsufficientBalanceError) {
+            void replyWithEmbed(
+                interaction,
+                Lang("blackjack_error_insufficientBalanceTitle"),
+                Lang("blackjack_error_insufficientBalanceDescription"),
+                "warn",
+                interaction.user,
+                true
+            );
+        } else {
+            throw e;
+        }
+    }
+};

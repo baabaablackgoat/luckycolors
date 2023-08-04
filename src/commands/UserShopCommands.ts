@@ -69,20 +69,26 @@ export const listOwnedItems = new Command(
     Lang("command_inventory_name"),
     Lang("command_inventory_description"),
     async (interaction) => {
-        await interaction.deferReply({ ephemeral: true });
-        const ownedItems = await retrieveOwnedItems(interaction);
-        if (ownedItems === null) return;
-        await replyWithEmbed(
-            interaction,
-            Lang("inventory_reply_title"),
-            Lang("inventory_reply_description"),
-            "info",
-            interaction.user,
-            true,
-            MessageItemDisplayBuilder(ownedItems, "equip")
-        );
+        await listOwnedItemsExecute(interaction);
     }
 );
+
+export const listOwnedItemsExecute = async (
+    interaction: ChatInputCommandInteraction | ButtonInteraction
+) => {
+    await interaction.deferReply({ ephemeral: true });
+    const ownedItems = await retrieveOwnedItems(interaction);
+    if (ownedItems === null) return;
+    await replyWithEmbed(
+        interaction,
+        Lang("inventory_reply_title"),
+        Lang("inventory_reply_description"),
+        "info",
+        interaction.user,
+        true,
+        MessageItemDisplayBuilder(ownedItems, "equip")
+    );
+};
 
 export const useItem = new Command(
     Lang("command_useItem_name"),
@@ -133,19 +139,25 @@ export const shop = new Command(
     Lang("command_shop_name"),
     Lang("command_shop_description"),
     async (interaction) => {
-        await interaction.deferReply({ ephemeral: true });
-        const missingItems = await retrieveUnownedItems(interaction);
-        if (!missingItems) return;
-        else {
-            void replyWithEmbed(
-                interaction,
-                Lang("shop_reply_title"),
-                Lang("shop_reply_description"),
-                "info",
-                interaction.user,
-                true,
-                MessageItemDisplayBuilder(missingItems, "unlock")
-            );
-        }
+        await shopExecute(interaction);
     }
 );
+
+export const shopExecute = async (
+    interaction: ChatInputCommandInteraction | ButtonInteraction
+) => {
+    await interaction.deferReply({ ephemeral: true });
+    const missingItems = await retrieveUnownedItems(interaction);
+    if (!missingItems) return;
+    else {
+        void replyWithEmbed(
+            interaction,
+            Lang("shop_reply_title"),
+            Lang("shop_reply_description"),
+            "info",
+            interaction.user,
+            true,
+            MessageItemDisplayBuilder(missingItems, "unlock")
+        );
+    }
+};

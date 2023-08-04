@@ -67,6 +67,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
                 case "blackjack":
                     void ButtonHandler.blackjack(interaction);
                     break;
+                case "menu":
+                    void ButtonHandler.menu(interaction);
+                    break;
                 default:
                     console.log(
                         "Invalid button interaction ID received, doing nothing"

@@ -3,6 +3,8 @@ import {
     GuildMember,
     PermissionsBitField,
     SlashCommandBuilder,
+    ChannelType,
+    ButtonInteraction,
 } from "discord.js";
 import { replyWithEmbed } from "./replyWithEmbed.js";
 
@@ -13,7 +15,8 @@ type ICommandOptionType =
     | "Number"
     | "Boolean"
     | "Role"
-    | "User";
+    | "User"
+    | "TextChannel";
 interface ICommandOption {
     type: ICommandOptionType;
     name: string;
@@ -28,7 +31,8 @@ export class Command {
         name: string,
         description: string,
         execute: (interaction: ChatInputCommandInteraction) => Promise<void>,
-        options?: ICommandOption[]
+        options?: ICommandOption[],
+        permissionFlags?: any
     ) {
         this.commandData = new SlashCommandBuilder()
             .setName(name)
@@ -85,6 +89,15 @@ export class Command {
                                 .setRequired(option.required ?? false)
                         );
                         break;
+                    case "TextChannel":
+                        this.commandData.addChannelOption((o) =>
+                            o
+                                .setName(option.name)
+                                .setDescription(option.description)
+                                .setRequired(option.required ?? false)
+                                .addChannelTypes(ChannelType.GuildText)
+                        );
+                        break;
                 }
             });
         }
@@ -108,7 +121,8 @@ export async function assertAdminPermissions(
     interaction: ChatInputCommandInteraction
 ): Promise<boolean> {
     if (!interaction.member || !(interaction.member instanceof GuildMember)) {
-        await replyWithEmbed(interaction,
+        await replyWithEmbed(
+            interaction,
             "Couldn't determine access",
             "I'm not sure if you're allowed to run this command...",
             "warn"
@@ -120,7 +134,8 @@ export async function assertAdminPermissions(
             PermissionsBitField.Flags.Administrator
         )
     ) {
-        await replyWithEmbed(interaction,
+        await replyWithEmbed(
+            interaction,
             "No permission",
             "You're not allowed to use this command.",
             "error"

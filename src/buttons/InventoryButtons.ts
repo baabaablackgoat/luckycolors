@@ -2,7 +2,12 @@ import { Item } from "../def/Item.js";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { Lang } from "../lang/LanguageProvider.js";
 
-export type ButtonAction = ItemButtonAction | "page" | "drawCard" | "blackjack";
+export type ButtonAction =
+    | ItemButtonAction
+    | "page"
+    | "drawCard"
+    | "blackjack"
+    | "menu";
 export type ItemButtonAction = "unlock" | "equip" | "remove";
 function ItemButtonBuilder(
     item: Item,

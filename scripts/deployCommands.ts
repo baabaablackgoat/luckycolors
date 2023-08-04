@@ -32,14 +32,19 @@ export async function deployCommands(
     const restClient = new REST({ version: "10" }).setToken(
         process.env.DISCORD_TOKEN
     );
-    console.log(`Registering ${deployData.length} commands.`,
+    console.log(
+        `Registering ${deployData.length} commands.`,
         `${guilds ? TermColors.OK("GUILDS") : TermColors.Error("GUILDS")}`,
-        `${global ? TermColors.OK("GLOBAL") : TermColors.Error("GLOBAL")}`);
+        `${global ? TermColors.OK("GLOBAL") : TermColors.Error("GLOBAL")}`
+    );
     try {
         if (guilds) {
             for (const guildID of BotSettings.guildIDs) {
                 await restClient.put(
-                    Routes.applicationGuildCommands(BotSettings.clientID, guildID),
+                    Routes.applicationGuildCommands(
+                        BotSettings.clientID,
+                        guildID
+                    ),
                     { body: deployData }
                 );
                 console.log(TermColors.OK("DEPLOYED"), `to ${guildID}`);
@@ -47,7 +52,9 @@ export async function deployCommands(
         }
         if (global) {
             // TODO: consider global deployment.
-            console.log(chalk.bold.red("GLOBAL DEPLOYMENT NOT YET IMPLEMENTED."));
+            console.log(
+                chalk.bold.red("GLOBAL DEPLOYMENT NOT YET IMPLEMENTED.")
+            );
         }
     } catch (e) {
         console.error(chalk.bold.red("Failed to deploy slash commands."), e);

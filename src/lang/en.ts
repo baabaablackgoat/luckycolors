@@ -197,9 +197,30 @@ export const english: ILanguage = {
     unlockItem_error_alreadyOwnedTitle: "Already owned",
     unlockItem_error_alreadyOwnedDescription: "You already own the item $item.",
     unlockItem_error_insufficientBalanceTitle: "Not enough funds!",
-    unlockItem_error_insufficientBalanceDescription: "You cannot afford $item! It costs $value 🪙, but you only have $balance 🪙.",
+    unlockItem_error_insufficientBalanceDescription:
+        "You cannot afford $item! It costs $value 🪙, but you only have $balance 🪙.",
     unlockItem_error_unknownErrorTitle: "Something went horribly wrong...",
-    unlockItem_error_unknownErrorDescription: "Something went wrong while trying to give you this item. Feel free to yell at my creator.",
+    unlockItem_error_unknownErrorDescription:
+        "Something went wrong while trying to give you this item. Feel free to yell at my creator.",
     unlockItem_reply_unlockedTitle: "Item unlocked!",
-    unlockItem_reply_unlockedDescription: "You have unlocked the item $item for $value 🪙!\n~~$oldBalance~~ -> **$newBalance** 🪙",
+    unlockItem_reply_unlockedDescription:
+        "You have unlocked the item $item for $value 🪙!\n~~$oldBalance~~ -> **$newBalance** 🪙",
+    adminPerms_error_unknownTitle: "Couldn't determine access",
+    adminPerms_error_unknownDescription:
+        "I'm not sure if you're allowed to run this command...",
+    adminPerms_error_notAllowedTitle: "No permission",
+    adminPerms_error_notAllowedDescription:
+        "You're not allowed to use this command.",
+    command_sendMenu_name: "sendmenu",
+    command_sendMenu_description:
+        "🔧 Sends the main interaction menu publicly in this channel, unless specified.",
+    command_sendMenu_argChannel: "channel",
+    command_sendMenu_argChannelDescription:
+        "🔧 If set, the channel that the menu message will be sent in.",
+    menu_entryPoint_title: "Alley Cats Gaming Bot",
+    menu_entryPoint_description: "Made with ♥️ by Salem and Niklas",
+    menu_entryPoint_buttonLabel: "Enter Lobby",
+    menu_error_unknownInteractionTitle: "Something went wrong",
+    menu_error_unknownInteractionDescription:
+        "The menu interaction failed because I can't recognize its ID. sorry.",
 };

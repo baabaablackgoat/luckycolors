@@ -3,6 +3,7 @@ import { DatabaseWrapper } from "../def/DatabaseWrapper.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
 import { dateDayReducer } from "../def/DateDifference.js";
 import { Lang } from "../lang/LanguageProvider";
+import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
 
 function getNextClaim(lastClaimed: Date): Date {
     const result = dateDayReducer(lastClaimed);
@@ -28,40 +29,44 @@ class ReadableTime {
 export const daily = new Command(
     Lang("command_daily_name"),
     Lang("command_daily_description"),
-    async (interaction) => {
-        await interaction.deferReply({ ephemeral: true });
-        const claimedCredits =
-            await DatabaseWrapper.getInstance().claimDailyCredits(
-                interaction.user.id
-            );
-        const timeToClaim = new ReadableTime(
-            getNextClaim(claimedCredits.lastClaimed).getTime() - Date.now()
-        );
-        if (claimedCredits.received === 0) {
-            // Already claimed credits today, should try again later
-            void replyWithEmbed(
-                interaction,
-                Lang("daily_error_alreadyClaimedTitle"),
-                Lang("daily_error_alreadyClaimedDescription", {
-                    timeToClaim: timeToClaim.toString(),
-                    streak: claimedCredits.streak,
-                }),
-                "warn",
-                interaction.user
-            );
-            return;
-        } else {
-            void replyWithEmbed(
-                interaction,
-                Lang("daily_reply_claimedTitle"),
-                Lang("daily_reply_claimedDescription", {
-                    received: claimedCredits.received,
-                    timeToClaim: timeToClaim.toString(),
-                    streak: claimedCredits.streak
-                }),
-                "info",
-                interaction.user
-            );
-        }
-    }
+    async (interaction) => {}
 );
+
+export const dailyExecute = async (
+    interaction: ChatInputCommandInteraction | ButtonInteraction
+) => {
+    await interaction.deferReply({ ephemeral: true });
+    const claimedCredits =
+        await DatabaseWrapper.getInstance().claimDailyCredits(
+            interaction.user.id
+        );
+    const timeToClaim = new ReadableTime(
+        getNextClaim(claimedCredits.lastClaimed).getTime() - Date.now()
+    );
+    if (claimedCredits.received === 0) {
+        // Already claimed credits today, should try again later
+        void replyWithEmbed(
+            interaction,
+            Lang("daily_error_alreadyClaimedTitle"),
+            Lang("daily_error_alreadyClaimedDescription", {
+                timeToClaim: timeToClaim.toString(),
+                streak: claimedCredits.streak,
+            }),
+            "warn",
+            interaction.user
+        );
+        return;
+    } else {
+        void replyWithEmbed(
+            interaction,
+            Lang("daily_reply_claimedTitle"),
+            Lang("daily_reply_claimedDescription", {
+                received: claimedCredits.received,
+                timeToClaim: timeToClaim.toString(),
+                streak: claimedCredits.streak,
+            }),
+            "info",
+            interaction.user
+        );
+    }
+};

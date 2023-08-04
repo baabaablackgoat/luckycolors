@@ -17,6 +17,7 @@ import {
 import { daily } from "./commands/DailyStreakCommand.js";
 import { blackjack, drawCard } from "./commands/BlackjackCommands.js";
 import { slots } from "./commands/SlotsCommands.js";
+import { sendMenu } from "./menu/Menu";
 
 export const enabledCommands: Command[] = [
     ping,
@@ -34,4 +35,5 @@ export const enabledCommands: Command[] = [
     drawCard,
     slots,
     blackjack,
+    sendMenu,
 ];
