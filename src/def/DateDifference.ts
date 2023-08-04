@@ -1,9 +1,14 @@
 /**
  * Creates a new date with reduced precision down to days only. Based on UTC.
- * @param x
+ * @param date
  */
-export function dateDayReducer(x: Date): Date {
-    return new Date(x.getUTCFullYear(), x.getUTCMonth(), x.getUTCDate());
+export function dateDayReducer(date: Date): Date {
+    let mutableDate = new Date(date);
+    mutableDate.setUTCHours(0);
+    mutableDate.setUTCMinutes(0);
+    mutableDate.setUTCSeconds(0);
+    mutableDate.setUTCMilliseconds(0);
+    return mutableDate;
 }
 /**
  * Calculates the difference between two dates, in whole days only, dropping any partial days.
@@ -19,3 +24,5 @@ export function getDayDifference(a: Date, b: Date): number {
     const b_daysOnly = dateDayReducer(b);
     return (b_daysOnly.getTime() - a_daysOnly.getTime()) / 86400000;
 }
+
+console.log(dateDayReducer(new Date()));

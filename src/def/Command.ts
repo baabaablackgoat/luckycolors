@@ -1,10 +1,9 @@
 import {
+    ChannelType,
     ChatInputCommandInteraction,
     GuildMember,
     PermissionsBitField,
     SlashCommandBuilder,
-    ChannelType,
-    ButtonInteraction,
 } from "discord.js";
 import { replyWithEmbed } from "./replyWithEmbed.js";
 

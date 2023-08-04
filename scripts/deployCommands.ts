@@ -17,8 +17,8 @@ enum deployType {
 
 /**
  * Registers all known commands defined in the commands object above.
- * @param guilds: Defaults true. If set, will attempt to register the commands on all known guilds set in botSettings.json.
- * @param global: Defaults false. If set, will attempt to register the commands globally - subject to stricter ratelimits.
+ * @param guilds Defaults true. If set, will attempt to register the commands on all known guilds set in botSettings.json.
+ * @param global Defaults false. If set, will attempt to register the commands globally - subject to stricter ratelimits.
  */
 export async function deployCommands(
     guilds = true,

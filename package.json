@@ -9,7 +9,7 @@
     "deployCommands:globals": "node --experimental-specifier-resolution=node --loader ts-node/esm scripts/deployCommands.ts globals",
     "deployCommands:all": "node --experimental-specifier-resolution=node --loader ts-node/esm scripts/deployCommands.ts all",
     "start": "node --experimental-specifier-resolution=node --loader ts-node/esm src/main.ts",
-    "testScriptPlsIgnore": "ts-node-esm src/webrender/BrowserRenderer.ts"
+    "testScriptPlsIgnore": "node --experimental-specifier-resolution=node --loader ts-node/esm src/def/DateDifference.ts"
   },
   "keywords": [],
   "author": "",
