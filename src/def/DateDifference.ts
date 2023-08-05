@@ -24,5 +24,3 @@ export function getDayDifference(a: Date, b: Date): number {
     const b_daysOnly = dateDayReducer(b);
     return (b_daysOnly.getTime() - a_daysOnly.getTime()) / 86400000;
 }
-
-console.log(dateDayReducer(new Date()));

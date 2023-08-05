@@ -5,3 +5,4 @@ botSettings.json
 out/*
 /src/webrender/fnv_cards/
 /src/webrender/cards/
+/src/webrender/fonts/

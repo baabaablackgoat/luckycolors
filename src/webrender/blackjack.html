@@ -4,12 +4,16 @@
         <meta charset="UTF-8" />
         <title>blackjack renderer</title>
         <style>
+            @font-face {
+                font-family: Market Deco;
+                src: url("../../src/webrender/fonts/Market_Deco.ttf");
+            }
             html,
             body {
                 /*background-color: #36393e;*/
                 color: #eee;
                 text-shadow: #000 5px 0 10px, #000 2px 0, #000 -2px 0, #000 0 2px, #000 0 -2px;
-                font-family: "TerminessTTF Nerd Font Mono", "sans-serif";
+                font-family: "Market Deco", "TerminessTTF Nerd Font Mono", "sans-serif";
             }
             #bgImg {
                 width: 100vw;
@@ -34,7 +38,7 @@
             }
             .score {
                 text-align: center;
-                margin: 0 0 15px;
+                margin: 0 0 8px;
                 font-size: 1.5em;
             }
             .card {
@@ -61,14 +65,14 @@
     <body>
         <img alt="bgImg" id="bgImg" src="../../src/webrender/blackjackBgBlurryGreen.png">
         <h1>Dealer's hand</h1>
-        <p class="score">Current score: $dealerScore</p>
+        <p class="score">( $dealerScore )</p>
         <div class="handContainer" id="handA">
             <div class="cardSetA">
                 $dealerCards
             </div>
         </div>
         <h1>Your hand</h1>
-        <p class="score">Current score: $userScore</p>
+        <p class="score">( $userScore )</p>
         <div class="handContainer" id="handB">
             <div class="cardSetB">
                 $userCards
