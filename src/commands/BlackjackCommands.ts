@@ -290,7 +290,7 @@ class BlackjackGame {
                         new ButtonBuilder()
                             .setLabel(
                                 Lang("blackjack_button_playAgain", {
-                                    wager: this.stake,
+                                    stake: this.stake,
                                 })
                             )
                             .setStyle(ButtonStyle.Primary)
