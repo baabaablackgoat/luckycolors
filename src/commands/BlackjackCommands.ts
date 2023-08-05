@@ -59,6 +59,7 @@ enum BlackjackPhase {
 class BlackjackGame {
     private deck: Deck;
     private stake: number;
+    private doubledDown: boolean = false;
     private phase: BlackjackPhase = BlackjackPhase.UserDrawing;
     public DealerCards: Card[] = [];
     public UserCards: Card[] = [];
@@ -183,6 +184,7 @@ class BlackjackGame {
         );
         // ...and then update the stake to be double
         this.stake = this.stake * 2;
+        this.doubledDown = true;
         this.UserCards.push(this.deck.drawCard());
         this.phase = BlackjackPhase.DealerDrawing;
         await this.updateGameState();
@@ -285,16 +287,20 @@ class BlackjackGame {
                     throw new Error("Blackjack - how did we even get here?");
                 }
                 // add a button that allows to play again with the same stake
+                const replayStake = this.doubledDown
+                    ? this.stake / 2
+                    : this.stake;
+
                 buttons = [
                     new ActionRowBuilder().addComponents([
                         new ButtonBuilder()
                             .setLabel(
                                 Lang("blackjack_button_playAgain", {
-                                    stake: this.stake,
+                                    stake: replayStake,
                                 })
                             )
                             .setStyle(ButtonStyle.Primary)
-                            .setCustomId(`menu_stake_blackjack_${this.stake}`),
+                            .setCustomId(`menu_stake_blackjack_${replayStake}`),
                     ]),
                 ];
                 break;
