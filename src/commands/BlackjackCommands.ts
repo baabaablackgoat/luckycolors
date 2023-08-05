@@ -310,11 +310,7 @@ class BlackjackGame {
             switch (this.phase) {
                 case BlackjackPhase.UserDrawing:
                     this.hideSecondDealerCard();
-                    if (
-                        this.UserBlackjack ||
-                        this.UserBust ||
-                        this.UserScore === 21
-                    ) {
+                    if (this.UserBlackjack || this.UserBust) {
                         // forcefully proceed to "done" state - user has confirmed won or lost
                         this.phase = BlackjackPhase.Done;
                         await this.updateGameState();
