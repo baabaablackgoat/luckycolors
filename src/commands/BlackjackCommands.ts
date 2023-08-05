@@ -284,6 +284,19 @@ class BlackjackGame {
                 } else {
                     throw new Error("Blackjack - how did we even get here?");
                 }
+                // add a button that allows to play again with the same stake
+                buttons = [
+                    new ActionRowBuilder().addComponents([
+                        new ButtonBuilder()
+                            .setLabel(
+                                Lang("blackjack_button_playAgain", {
+                                    wager: this.stake,
+                                })
+                            )
+                            .setStyle(ButtonStyle.Primary)
+                            .setCustomId(`menu_stake_blackjack_${this.stake}`),
+                    ]),
+                ];
                 break;
         }
         void replyWithEmbed(

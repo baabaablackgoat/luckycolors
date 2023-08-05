@@ -98,6 +98,7 @@ export interface ILanguage {
     blackjack_button_hit: TranslationValue;
     blackjack_button_stand: TranslationValue;
     blackjack_button_doubleDown: TranslationValue;
+    blackjack_button_playAgain: TranslationValue;
     blackjack_text_yourTurn: TranslationValue;
     blackjack_text_dealerTurn: TranslationValue;
     blackjack_text_blackjackWin: TranslationValue;

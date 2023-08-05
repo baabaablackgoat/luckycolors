@@ -111,6 +111,7 @@ export const english: ILanguage = {
     blackjack_button_hit: "Hit",
     blackjack_button_stand: "Stand",
     blackjack_button_doubleDown: "Double Down",
+    blackjack_button_playAgain: "Play again ($stake 🪙)",
     blackjack_text_yourTurn: "It's your turn.",
     blackjack_text_dealerTurn: "Dealer is drawing.",
     blackjack_text_blackjackWin:
