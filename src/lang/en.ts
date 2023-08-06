@@ -247,4 +247,6 @@ export const english: ILanguage = {
     balanceMenu_button_daily: "Daily claim",
     balanceMenu_button_inventory: "Open inventory",
     balanceMenu_button_getLoan: "Get a loan..?",
+    command_enter_name: "enter",
+    command_enter_description: "Opens the main menu for you.",
 };

@@ -48,13 +48,13 @@ const publicMenuEntranceButtonRow = [
     ),
 ];
 
-/* First level menu, reached after clicking "enter" */
-const mainMenuEmbed = new EmbedBuilder()
+/* First level menu, reached after clicking "enter" or issuing menu command */
+export const mainMenuEmbed = new EmbedBuilder()
     .setTitle(Lang("mainMenu_text_title"))
     .setDescription(Lang("mainMenu_text_description"))
     .setColor(0xff0088)
     .setImage("https://baabaablackgoat.com/res/salem/menuLobbyGlass.png");
-const mainMenuButtonRow = new ActionRowBuilder().addComponents(
+export const mainMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
         .setLabel(Lang("mainMenu_button_games"))
         .setStyle(ButtonStyle.Primary)

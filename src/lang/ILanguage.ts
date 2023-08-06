@@ -148,6 +148,10 @@ export interface ILanguage {
     command_shop_description: TranslationValue;
     shop_reply_title: TranslationValue;
     shop_reply_description: TranslationValue;
+    // enter command
+    command_enter_name: CommandParameterName;
+    command_enter_description: TranslationValue;
+
     // isValidStake: error state
     isValidStake_error_invalidStakeTitle: TranslationValue;
     isValidStake_error_invalidStakeDescription: TranslationValue;
