@@ -224,4 +224,27 @@ export const english: ILanguage = {
     menu_error_unknownInteractionTitle: "Something went wrong",
     menu_error_unknownInteractionDescription:
         "The menu interaction failed because I can't recognize its ID. sorry.",
+    getLoan_reply_rejectedTitle: "Loan application rejected.",
+    getLoan_reply_rejectedDescription:
+        "sorry we don't find it viable financially to loan out to gambling addicts. we suggest you call a hotline and wish you the best.",
+    menu_text_back: "Back",
+    menu_text_stakeDescription: "Choose an amount to stake",
+    // main menu
+    mainMenu_text_title: "Main Menu",
+    mainMenu_text_description: "Select to continue",
+    mainMenu_button_games: "Games",
+    mainMenu_button_balance: "Balance",
+    mainMenu_button_shop: "Shop",
+    // games menu
+    gamesMenu_text_title: "Games",
+    gamesMenu_text_description: "What would you like to play?",
+    gamesMenu_button_blackjack: "Blackjack",
+    gamesMenu_button_slots: "Slots",
+    gamesMenu_button_drawCard: "Draw a card",
+    // balance menu
+    balanceMenu_text_title: "Balance",
+    balanceMenu_text_description: "Your current balance is $balance 🪙",
+    balanceMenu_button_daily: "Daily claim",
+    balanceMenu_button_inventory: "Open inventory",
+    balanceMenu_button_getLoan: "Get a loan..?",
 };

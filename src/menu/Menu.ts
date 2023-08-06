@@ -19,6 +19,7 @@ import {
 } from "../commands/BlackjackCommands";
 import { dailyExecute } from "../commands/DailyStreakCommand";
 import { DataStorage } from "../def/DatabaseWrapper";
+import { getLoanHandler } from "../handlers/getLoanHandler";
 
 type MenuAction =
     | "enter"
@@ -27,6 +28,7 @@ type MenuAction =
     | "balance"
     | "shop"
     | "stake"
+    | "loan"
     | MenuGamesActions
     | MenuBalanceActions;
 type MenuGamesActions = "blackjack" | "slots" | "draw";
@@ -48,76 +50,82 @@ const publicMenuEntranceButtonRow = [
 
 /* First level menu, reached after clicking "enter" */
 const mainMenuEmbed = new EmbedBuilder()
-    .setTitle("Main Menu")
-    .setDescription("Select to continue")
+    .setTitle(Lang("mainMenu_text_title"))
+    .setDescription(Lang("mainMenu_text_description"))
     .setColor(0xff0088)
     .setImage("https://baabaablackgoat.com/res/salem/menuLobbyGlass.png");
 const mainMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-        .setLabel("Games")
+        .setLabel(Lang("mainMenu_button_games"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_games"),
     new ButtonBuilder()
-        .setLabel("Balance")
+        .setLabel(Lang("mainMenu_button_balance"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_balance"),
     new ButtonBuilder()
-        .setLabel("Shop")
+        .setLabel(Lang("mainMenu_button_shop"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_shop")
 );
 
 /* game selection menu */
 const gamesMenuEmbed = new EmbedBuilder()
-    .setTitle("Games")
-    .setDescription("What would you like to play?")
+    .setTitle(Lang("gamesMenu_text_title"))
+    .setDescription(Lang("gamesMenu_text_description"))
     .setColor(0xff0088)
     .setImage("https://baabaablackgoat.com/res/salem/menuCasinoGlass.png");
 const gamesMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-        .setLabel("Blackjack")
+        .setLabel(Lang("gamesMenu_button_blackjack"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_blackjack"),
     new ButtonBuilder()
-        .setLabel("Slots")
+        .setLabel(Lang("gamesMenu_button_slots"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_slots"),
     new ButtonBuilder()
-        .setLabel("Draw a card")
+        .setLabel(Lang("gamesMenu_button_drawCard"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_draw")
 );
 
 /* balance menu */
-function balanceMenuEmbed(balance: number, currencySymbol = "🪙") {
+function balanceMenuEmbed(balance: number) {
     return new EmbedBuilder()
-        .setTitle("Balance")
-        .setDescription(`Your current balance is ${balance} ${currencySymbol}`)
+        .setTitle(Lang("balanceMenu_text_title"))
+        .setDescription(
+            Lang("balanceMenu_text_description", { balance: balance })
+        )
         .setColor(0xff0088);
 }
 
 const balanceMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-        .setLabel("Daily claim")
+        .setLabel(Lang("balanceMenu_button_daily"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_daily"),
     new ButtonBuilder()
-        .setLabel("Open inventory")
+        .setLabel(Lang("balanceMenu_button_inventory"))
         .setStyle(ButtonStyle.Primary)
-        .setCustomId("menu_inventory")
+        .setCustomId("menu_inventory"),
+    new ButtonBuilder()
+        .setLabel(Lang("balanceMenu_button_getLoan"))
+        .setStyle(ButtonStyle.Secondary)
+        .setCustomId("menu_loan")
 );
 /* Row specifically to go back home */
 const backHomeRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-        .setLabel("Back")
+        .setLabel(Lang("menu_text_back"))
         .setStyle(ButtonStyle.Secondary)
         .setCustomId("menu_backEnter")
 );
 
 /* Blackjack wager embed */
 const blackjackStakeEmbed = new EmbedBuilder()
-    .setTitle("Blackjack")
-    .setDescription("Choose an amount to stake")
+    .setTitle(Lang("blackjack_reply_title"))
+    .setDescription(Lang("menu_text_stakeDescription"))
     .setColor(0xff0088);
 
 /* Stake Menu constructor */
@@ -255,6 +263,10 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
                     // TODO: report that something went wrong
                     break;
             }
+            break;
+        case "loan":
+            await interaction.deferReply({ ephemeral: true });
+            void getLoanHandler(interaction);
             break;
         default:
             void replyWithEmbed(

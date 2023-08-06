@@ -37,6 +37,7 @@ export class ButtonHandler {
         await interaction.deferUpdate();
         void pageChangeHandler(interaction);
     }
+
     static async drawCard(interaction: ButtonInteraction) {
         try {
             const deckID = interaction.customId.split("_")[1];

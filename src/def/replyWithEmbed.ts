@@ -7,6 +7,18 @@ import {
 import * as fs from "fs";
 
 type ReplyEmbedType = "info" | "warn" | "error";
+
+/**
+ *
+ * @param interaction - the interaction that will be replied to
+ * @param title - the bolded text at the top.
+ * @param description - the normal text at the bottom.
+ * @param type - affects the design. can be any of {@link ReplyEmbedType}
+ * @param author - will include this user in the embed at the top left.
+ * @param ephemeral - if set to true, will ensure that the embed is only visible to that user. only works if this is initial reply.
+ * @param actionRows - the interaction additions (e.g. buttons) to add
+ * @param image - the embed image
+ */
 export async function replyWithEmbed(
     interaction: CommandInteraction | ButtonInteraction,
     title: string,

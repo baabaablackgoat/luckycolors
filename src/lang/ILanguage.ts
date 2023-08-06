@@ -195,4 +195,30 @@ export interface ILanguage {
     menu_entryPoint_buttonLabel: TranslationValue;
     menu_error_unknownInteractionTitle: TranslationValue;
     menu_error_unknownInteractionDescription: TranslationValue;
+
+    // generic menu entries
+    menu_text_back: TranslationValue;
+    menu_text_stakeDescription: TranslationValue;
+    // main menu
+    mainMenu_text_title: TranslationValue;
+    mainMenu_text_description: TranslationValue;
+    mainMenu_button_games: TranslationValue;
+    mainMenu_button_balance: TranslationValue;
+    mainMenu_button_shop: TranslationValue;
+    // games menu
+    gamesMenu_text_title: TranslationValue;
+    gamesMenu_text_description: TranslationValue;
+    gamesMenu_button_blackjack: TranslationValue;
+    gamesMenu_button_slots: TranslationValue;
+    gamesMenu_button_drawCard: TranslationValue;
+    // balance menu
+    balanceMenu_text_title: TranslationValue;
+    balanceMenu_text_description: TranslationValue;
+    balanceMenu_button_daily: TranslationValue;
+    balanceMenu_button_inventory: TranslationValue;
+    balanceMenu_button_getLoan: TranslationValue;
+
+    // loan (haha) translations
+    getLoan_reply_rejectedTitle: TranslationValue;
+    getLoan_reply_rejectedDescription: TranslationValue;
 }
