@@ -7,6 +7,7 @@ import {
     ButtonStyle,
     EmbedBuilder,
     TextChannel,
+    User,
 } from "discord.js";
 import { replyWithEmbed } from "../def/replyWithEmbed";
 import {
@@ -25,14 +26,14 @@ type MenuAction =
     | "enter"
     | "backEnter" // specifically to update the message instead of creating a new one
     | "games"
-    | "balance"
+    | "profile"
     | "shop"
     | "stake"
     | "loan"
     | MenuGamesActions
-    | MenuBalanceActions;
+    | MenuProfileActions;
 type MenuGamesActions = "blackjack" | "slots" | "draw";
-type MenuBalanceActions = "daily" | "inventory";
+type MenuProfileActions = "daily" | "inventory";
 
 /*  TOP LEVEL MENU - Publically visible  */
 const publicMenuEntranceEmbed = new EmbedBuilder()
@@ -60,9 +61,9 @@ export const mainMenuButtonRow = new ActionRowBuilder().addComponents(
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_games"),
     new ButtonBuilder()
-        .setLabel(Lang("mainMenu_button_balance"))
+        .setLabel(Lang("mainMenu_button_profile"))
         .setStyle(ButtonStyle.Primary)
-        .setCustomId("menu_balance"),
+        .setCustomId("menu_profile"),
     new ButtonBuilder()
         .setLabel(Lang("mainMenu_button_shop"))
         .setStyle(ButtonStyle.Primary)
@@ -90,27 +91,31 @@ const gamesMenuButtonRow = new ActionRowBuilder().addComponents(
         .setCustomId("menu_draw")
 );
 
-/* balance menu */
-function balanceMenuEmbed(balance: number) {
+/* profile menu */
+function profileMenuEmbed(balance: number, user: User) {
     return new EmbedBuilder()
-        .setTitle(Lang("balanceMenu_text_title"))
+        .setTitle(Lang("profileMenu_text_title"))
         .setDescription(
-            Lang("balanceMenu_text_description", { balance: balance })
+            Lang("profileMenu_text_description", { balance: balance })
         )
+        .setAuthor({
+            name: user.username,
+            iconURL: user.avatarURL(),
+        })
         .setColor(0xff0088);
 }
 
-const balanceMenuButtonRow = new ActionRowBuilder().addComponents(
+const profileMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-        .setLabel(Lang("balanceMenu_button_daily"))
+        .setLabel(Lang("profileMenu_button_daily"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_daily"),
     new ButtonBuilder()
-        .setLabel(Lang("balanceMenu_button_inventory"))
+        .setLabel(Lang("profileMenu_button_inventory"))
         .setStyle(ButtonStyle.Primary)
         .setCustomId("menu_inventory"),
     new ButtonBuilder()
-        .setLabel(Lang("balanceMenu_button_getLoan"))
+        .setLabel(Lang("profileMenu_button_getLoan"))
         .setStyle(ButtonStyle.Secondary)
         .setCustomId("menu_loan")
 );
@@ -219,14 +224,14 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
                 components: [gamesMenuButtonRow, backHomeRow],
             });
             break;
-        case "balance":
+        case "profile":
             const userBal = await DataStorage.getUserBalance(
                 interaction.user.id
             );
             //@ts-ignore: actual garbage typings
             void interaction.update({
-                embeds: [balanceMenuEmbed(userBal)],
-                components: [balanceMenuButtonRow, backHomeRow],
+                embeds: [profileMenuEmbed(userBal, interaction.user)],
+                components: [profileMenuButtonRow, backHomeRow],
             });
             break;
         case "shop":

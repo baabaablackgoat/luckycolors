@@ -207,7 +207,7 @@ export interface ILanguage {
     mainMenu_text_title: TranslationValue;
     mainMenu_text_description: TranslationValue;
     mainMenu_button_games: TranslationValue;
-    mainMenu_button_balance: TranslationValue;
+    mainMenu_button_profile: TranslationValue;
     mainMenu_button_shop: TranslationValue;
     // games menu
     gamesMenu_text_title: TranslationValue;
@@ -215,12 +215,12 @@ export interface ILanguage {
     gamesMenu_button_blackjack: TranslationValue;
     gamesMenu_button_slots: TranslationValue;
     gamesMenu_button_drawCard: TranslationValue;
-    // balance menu
-    balanceMenu_text_title: TranslationValue;
-    balanceMenu_text_description: TranslationValue;
-    balanceMenu_button_daily: TranslationValue;
-    balanceMenu_button_inventory: TranslationValue;
-    balanceMenu_button_getLoan: TranslationValue;
+    // profile menu
+    profileMenu_text_title: TranslationValue;
+    profileMenu_text_description: TranslationValue;
+    profileMenu_button_daily: TranslationValue;
+    profileMenu_button_inventory: TranslationValue;
+    profileMenu_button_getLoan: TranslationValue;
 
     // loan (haha) translations
     getLoan_reply_rejectedTitle: TranslationValue;

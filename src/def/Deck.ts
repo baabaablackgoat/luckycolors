@@ -170,6 +170,3 @@ export class DeckStorage {
         });
     }
 }
-
-const deck = new Deck();
-console.log(deck.shuffle().stack);
