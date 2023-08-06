@@ -98,7 +98,16 @@ export class Deck {
         this.shuffle();
     }
     shuffle() {
-        this.stack = this.stack.sort((_a, _b) => 0.5 - Math.random());
+        // Implementation of Fisher-Yates from StackOverflow
+        let i = this.stack.length;
+        let j: number;
+        let temp: Card;
+        while (--i > 0) {
+            j = Math.floor(Math.random() * (i + 1));
+            temp = this.stack[j];
+            this.stack[j] = this.stack[i];
+            this.stack[i] = temp;
+        }
         return this;
     }
     drawCard(): Card {
@@ -161,3 +170,6 @@ export class DeckStorage {
         });
     }
 }
+
+const deck = new Deck();
+console.log(deck.shuffle().stack);
