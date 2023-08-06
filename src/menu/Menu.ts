@@ -102,7 +102,8 @@ function profileMenuEmbed(balance: number, user: User) {
             name: user.username,
             iconURL: user.avatarURL(),
         })
-        .setColor(0xff0088);
+        .setColor(0xff0088)
+        .setImage("https://baabaablackgoat.com/res/salem/menuProfileGlass.png");
 }
 
 const profileMenuButtonRow = new ActionRowBuilder().addComponents(
