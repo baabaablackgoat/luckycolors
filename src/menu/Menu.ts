@@ -54,7 +54,7 @@ export const mainMenuEmbed = new EmbedBuilder()
     .setTitle(Lang("mainMenu_text_title"))
     .setDescription(Lang("mainMenu_text_description"))
     .setColor(0xff0088)
-    .setImage("https://baabaablackgoat.com/res/salem/menuLobbyGlass.png");
+    .setImage("https://baabaablackgoat.com/res/salem/menuLobbyGlass2.png");
 export const mainMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
         .setLabel(Lang("mainMenu_button_games"))
@@ -75,7 +75,7 @@ const gamesMenuEmbed = new EmbedBuilder()
     .setTitle(Lang("gamesMenu_text_title"))
     .setDescription(Lang("gamesMenu_text_description"))
     .setColor(0xff0088)
-    .setImage("https://baabaablackgoat.com/res/salem/menuCasinoGlass.png");
+    .setImage("https://baabaablackgoat.com/res/salem/menuCasinoGlass2.png");
 const gamesMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
         .setLabel(Lang("gamesMenu_button_blackjack"))
@@ -103,7 +103,9 @@ function profileMenuEmbed(balance: number, user: User) {
             iconURL: user.avatarURL(),
         })
         .setColor(0xff0088)
-        .setImage("https://baabaablackgoat.com/res/salem/menuProfileGlass.png");
+        .setImage(
+            "https://baabaablackgoat.com/res/salem/menuProfileGlass2.png"
+        );
 }
 
 const profileMenuButtonRow = new ActionRowBuilder().addComponents(
