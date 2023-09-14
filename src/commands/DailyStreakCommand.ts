@@ -30,7 +30,9 @@ class ReadableTime {
 export const daily = new Command(
     Lang("command_daily_name"),
     Lang("command_daily_description"),
-    async (interaction) => {}
+    async (interaction) => {
+        void dailyExecute(interaction);
+    }
 );
 
 export const dailyExecute = async (
