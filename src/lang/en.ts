@@ -254,14 +254,14 @@ export const english: ILanguage = {
         "Need less 🪙",
     ],
     getLoan_reply_rejectedDescription: [
-        "Sorry, we don't find it financially viable to chase down insignificant gambling addict losses. We suggest you \
-        call a hotline and wish you the best.",
+        "Sorry, we don't find it financially viable to chase down insignificant gambling addict losses. We suggest you " +
+            "call a hotline and wish you the best.",
 
-        "You may know that you have rights, but I also have the right to reject this application. You wouldn't make me \
-        enough money with that much still in your bank. Sorry.",
+        "You may know that you have rights, but I also have the right to reject this application. You wouldn't make me " +
+            "enough money with that much still in your bank. Sorry.",
 
-        "Hey, what's a gambling whale doing in my office? Get out! I have more serious cases to deal with. Come back \
-        when you've got a _real_ problem on your grubby paws.",
+        "Hey, what's a gambling whale doing in my office? Get out! I have more serious cases to deal with. Come back " +
+            "when you've got a _real_ problem on your grubby paws.",
     ],
     getLoan_reply_acceptedTitle: [
         "Losses recuperated!",
@@ -269,20 +269,22 @@ export const english: ILanguage = {
         "Here's your losses back.",
     ],
     getLoan_reply_acceptedDescription: [
-        "Baa Goodman here. We fought those rat bastards tooth and nail to get you your money back, but unfortunately \
-        they have actual lawyers and judges! Those scare the shit out of me. Thankfully, they don't care much for \
-        smallfry like you, so they settled out of court for $value 🪙! ...well, actually, it was $fakeValue 🪙, but you \
-        read the terms, right? I get to keep a quarter of your claims. Thank you for trusting Baa Humbug.",
+        "Baa Goodman here. We fought those rat bastards tooth and nail to get you your money back, but unfortunately " +
+            "they have actual lawyers and judges! Those scare the shit out of me. Thankfully, they don't care much for " +
+            "smallfry like you, so they settled out of court for $value 🪙! ...well, actually, it was $fakeValue 🪙, " +
+            "but you read the terms, right? I get to keep a quarter of your claims. Thank you for trusting Baa Humbug.",
 
-        "Hey, this is Baa Goodman, your favorite representative of Baa Humbug. We took those sons of bitches to court \
-        to make sure you can keep gambling your life savings away. Turns out they have a much stronger legal defense \
-        than you do! But who needs a strong defense when you've got me on your side. I got them to cough up \
-        $fakeValue 🪙 of your retirement funds. So, as agreed, 25%-ish of that are mine - here are your remaining $value 🪙.",
+        "Hey, this is Baa Goodman, your favorite representative of Baa Humbug. We took those sons of bitches to court " +
+            "to make sure you can keep gambling your life savings away. Turns out they have a much stronger legal defense " +
+            "than you do! But who needs a strong defense when you've got me on your side. I got them to cough up " +
+            "$fakeValue 🪙 of your retirement funds. So, as agreed, 25%-ish of that are mine - " +
+            "here are your remaining $value 🪙.",
 
-        "Hi, Baa Goodman, representative of Baa Humbug, how you doing? I fought your case against those gambling sharks \
-        for you. Can tell you, wasn't easy, those slimy CEOs have some mean left hooks and some even meaner lawyers. \
-        But what kind of attorney would I be if I didn't win those? ...don't answer that, actually. I settled with them. \
-        Here's your $value 🪙. And if you run out of your insurance claims again, you know who to call.",
+        "Hi, Baa Goodman, representative of Baa Humbug, how you doing? I fought your case against those gambling " +
+            "sharks for you. Can tell you, wasn't easy, those slimy CEOs have some mean left hooks and some even meaner " +
+            "lawyers. But what kind of attorney would I be if I didn't win those? ...don't answer that, actually. " +
+            "I settled with them. Here's your $value 🪙. And if you run out of your insurance claims again, " +
+            "you know who to call.",
     ],
     command_setBirthday_name: "birthday",
     command_setBirthday_description: "Let Colby remember your birthday!",
