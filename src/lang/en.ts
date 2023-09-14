@@ -244,6 +244,7 @@ export const english: ILanguage = {
     profileMenu_button_daily: "Daily claim",
     profileMenu_button_inventory: "Open inventory",
     profileMenu_button_getLoan: "Losses claim (<25 🪙)",
+    profileMenu_button_setBirthday: "Set birthday",
     command_enter_name: "enter",
     command_enter_description: "Opens the main menu for you.",
     getLoan_reply_rejectedTitle: [

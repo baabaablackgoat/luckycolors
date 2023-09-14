@@ -223,6 +223,7 @@ export interface ILanguage {
     profileMenu_button_daily: TranslationValue;
     profileMenu_button_inventory: TranslationValue;
     profileMenu_button_getLoan: TranslationValue;
+    profileMenu_button_setBirthday: TranslationValue;
 
     // loan/refund translations
     getLoan_reply_rejectedTitle: TranslationValue;

@@ -21,6 +21,7 @@ import {
 import { dailyExecute } from "../commands/DailyStreakCommand";
 import { DataStorage } from "../def/DatabaseWrapper";
 import { getLoanHandler } from "../handlers/getLoanHandler";
+import { sendBirthdayModal } from "../commands/BirthdayCommands";
 
 type MenuAction =
     | "enter"
@@ -30,6 +31,7 @@ type MenuAction =
     | "shop"
     | "stake"
     | "loan"
+    | "setBirthday"
     | MenuGamesActions
     | MenuProfileActions;
 type MenuGamesActions = "blackjack" | "slots" | "draw";
@@ -120,7 +122,11 @@ const profileMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
         .setLabel(Lang("profileMenu_button_getLoan"))
         .setStyle(ButtonStyle.Secondary)
-        .setCustomId("menu_loan")
+        .setCustomId("menu_loan"),
+    new ButtonBuilder()
+        .setLabel(Lang("profileMenu_button_setBirthday"))
+        .setStyle(ButtonStyle.Secondary)
+        .setCustomId("menu_setBirthday")
 );
 /* Row specifically to go back home */
 const backHomeRow = new ActionRowBuilder().addComponents(
@@ -275,6 +281,10 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
         case "loan":
             await interaction.deferReply({ ephemeral: true });
             void getLoanHandler(interaction);
+            break;
+        case "setBirthday":
+            // do not defer the reply - the modal refuses to send if the initial reply was deferred.
+            void sendBirthdayModal(interaction);
             break;
         default:
             void replyWithEmbed(
