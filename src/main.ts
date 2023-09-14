@@ -1,16 +1,17 @@
 // Set up env vars for token
 import { config } from "dotenv";
-config();
-const token: string = process.env.DISCORD_TOKEN;
-
 // Remaining imports
 import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
 import { TermColors } from "./def/termColors.js";
 import { enabledCommands } from "./enabledCommands.js";
 import { Command } from "./def/Command.js";
 import { ButtonHandler } from "./def/ButtonHandler.js";
+import { ModalHandler } from "./def/ModalHandler.js";
 import { ButtonAction } from "./buttons/InventoryButtons.js";
 import { BrowserRenderer } from "./webrender/BrowserRenderer.js";
+
+config();
+const token: string = process.env.DISCORD_TOKEN;
 
 // Extending the base client to include a collection storing commands
 class CustomClient extends Client {
@@ -80,6 +81,26 @@ client.on(Events.InteractionCreate, async (interaction) => {
             console.error(
                 new Error(
                     `Error responding to button interaction ${interaction.customId}`,
+                    { cause: e }
+                )
+            );
+        }
+    } else if (interaction.isModalSubmit()) {
+        try {
+            switch (interaction.customId) {
+                case "birthdayModal":
+                    void ModalHandler.birthday(interaction);
+                    break;
+                default:
+                    console.log(
+                        "Invalid modal interaction ID received, doing nothing"
+                    );
+                    break;
+            }
+        } catch (e) {
+            console.error(
+                new Error(
+                    `Error responding to modal interaction ${interaction.customId}`,
                     { cause: e }
                 )
             );

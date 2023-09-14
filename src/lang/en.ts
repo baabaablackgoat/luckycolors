@@ -9,6 +9,9 @@ export const english: ILanguage = {
     daily_reply_claimedDescription:
         "You have received **$received**🪙. You can claim more in **$timeToClaim**. Your current streak: **$streak**",
     daily_reply_claimedTitle: "Daily credits claimed!",
+    daily_reply_birthdayTitle: "Happy $agebirthday!",
+    daily_reply_birthdayDescription:
+        "For your birthday, you've received **$received**🪙. You can claim more in **$timeToClaim**. Your current streak: **$streak**",
     command_ping_description: "Pong!",
     command_ping_name: "ping",
     ping_reply_text: [
@@ -224,9 +227,6 @@ export const english: ILanguage = {
     menu_error_unknownInteractionTitle: "Something went wrong",
     menu_error_unknownInteractionDescription:
         "The menu interaction failed because I can't recognize its ID. sorry.",
-    getLoan_reply_rejectedTitle: "Loan application rejected.",
-    getLoan_reply_rejectedDescription:
-        "sorry we don't find it viable financially to loan out to gambling addicts. we suggest you call a hotline and wish you the best.",
     menu_text_back: "Back",
     menu_text_stakeDescription: "Choose an amount to stake",
     mainMenu_text_title: "Main Menu",
@@ -243,7 +243,62 @@ export const english: ILanguage = {
     profileMenu_text_description: "Your current balance is $balance 🪙",
     profileMenu_button_daily: "Daily claim",
     profileMenu_button_inventory: "Open inventory",
-    profileMenu_button_getLoan: "Get a loan..?",
+    profileMenu_button_getLoan: "Losses claim (<25 🪙)",
     command_enter_name: "enter",
     command_enter_description: "Opens the main menu for you.",
+    getLoan_reply_rejectedTitle: [
+        "Still too successful",
+        "Not enough of a loser",
+        "You're too rich",
+        "Need less 🪙",
+    ],
+    getLoan_reply_rejectedDescription: [
+        "Sorry, we don't find it financially viable to chase down insignificant gambling addict losses. We suggest you \
+        call a hotline and wish you the best.",
+
+        "You may know that you have rights, but I also have the right to reject this application. You wouldn't make me \
+        enough money with that much still in your bank. Sorry.",
+
+        "Hey, what's a gambling whale doing in my office? Get out! I have more serious cases to deal with. Come back \
+        when you've got a _real_ problem on your grubby paws.",
+    ],
+    getLoan_reply_acceptedTitle: [
+        "Losses recuperated!",
+        "Settled out of court!",
+        "Here's your losses back.",
+    ],
+    getLoan_reply_acceptedDescription: [
+        "Baa Goodman here. We fought those rat bastards tooth and nail to get you your money back, but unfortunately \
+        they have actual lawyers and judges! Those scare the shit out of me. Thankfully, they don't care much for \
+        smallfry like you, so they settled out of court for $value 🪙! ...well, actually, it was $fakeValue 🪙, but you \
+        read the terms, right? I get to keep a quarter of your claims. Thank you for trusting Baa Humbug.",
+
+        "Hey, this is Baa Goodman, your favorite representative of Baa Humbug. We took those sons of bitches to court \
+        to make sure you can keep gambling your life savings away. Turns out they have a much stronger legal defense \
+        than you do! But who needs a strong defense when you've got me on your side. I got them to cough up \
+        $fakeValue 🪙 of your retirement funds. So, as agreed, 25%-ish of that are mine - here are your remaining $value 🪙.",
+
+        "Hi, Baa Goodman, representative of Baa Humbug, how you doing? I fought your case against those gambling sharks \
+        for you. Can tell you, wasn't easy, those slimy CEOs have some mean left hooks and some even meaner lawyers. \
+        But what kind of attorney would I be if I didn't win those? ...don't answer that, actually. I settled with them. \
+        Here's your $value 🪙. And if you run out of your insurance claims again, you know who to call.",
+    ],
+    command_setBirthday_name: "birthday",
+    command_setBirthday_description: "Let Colby remember your birthday!",
+    modal_birthday_title: "Enter your birthday",
+    modal_birthday_dayLabel: "Day",
+    modal_birthday_monthLabel: "Month (number, please!)",
+    modal_birthday_yearLabel: "Year (optional)",
+    birthday_error_parseFailureTitle: "Invalid value specified",
+    birthday_error_parseFailureDescription:
+        "The values you've given me failed to parse - please make sure you supply all values as numbers.",
+    birthday_error_invalidDateTitle: "Invalid date specified",
+    birthday_error_invalidDateDescription:
+        "The date you've supplied either is in the future or does not exist. Remember - you don't have to supply a year if you don't want to!",
+    birthday_error_alreadySetTitle: "Birthday already set",
+    birthday_error_alreadySetDescription:
+        "You've already set your birthday with me! You can't change that by yourself. If you need something fixed, poke someone :3c",
+    birthday_reply_setTitle: "Birthday registered!",
+    birthday_reply_setDescription:
+        "I will remember your birthday as: $day. $month $year",
 };

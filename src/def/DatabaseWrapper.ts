@@ -9,9 +9,10 @@ export class DatabaseError extends Error {}
 export class InsufficientBalanceError extends Error {}
 
 // TODO: Extract these values into easily configurable settings
-const payoutMultipliers = [1, 1, 1, 2, 2, 3, 5];
+const payoutMultipliers = [2, 3, 4, 5, 6, 8, 10];
 const dailyCredits = 5;
 const initialBank = 200;
+const birthdayCredits = 400;
 
 export class DatabaseWrapper {
     private static instance: DatabaseWrapper;
@@ -250,13 +251,16 @@ export class DatabaseWrapper {
         );
     }
 
-    public async removeUserItem(userID, itemID) {
+    public async removeUserItem(userID: Snowflake, itemID: number) {
         this.assertReady();
         await this.database.exec(
             `DELETE FROM Inventory WHERE itemID = ${itemID} AND userID = "${userID}";`
         );
     }
-    public async checkItemOwnership(userID, itemID): Promise<boolean> {
+    public async checkItemOwnership(
+        userID: Snowflake,
+        itemID: number
+    ): Promise<boolean> {
         this.assertReady();
         const response = await this.database.get(`SELECT COUNT(Shop.itemName)
             FROM Shop INNER JOIN Inventory ON Shop.itemID = Inventory.itemID
@@ -285,6 +289,8 @@ export class DatabaseWrapper {
                     received: 0,
                     lastClaimed: lastClaim,
                     streak: dbResponse.streak,
+                    isBirthday: false,
+                    userAge: null,
                 };
             }
         } else {
@@ -296,9 +302,21 @@ export class DatabaseWrapper {
         let streak = dbResponse?.streak ?? 0;
         if (dayDifference < 2) streak += 1;
         else streak = 1;
-        // add currency based on payouts table. streak resets after full cycle.
-        const currencyToAdd =
-            payoutMultipliers[(streak - 1) % 7] * dailyCredits;
+        // make the daily query check the birthday - if it's set, check if the current day & month match.
+        const birthdayDbResponse = await this.getBirthday(userID);
+        const isBirthday =
+            birthdayDbResponse &&
+            birthdayDbResponse.day === now.getDate() &&
+            birthdayDbResponse.month === now.getMonth() + 1;
+        const userAge =
+            birthdayDbResponse && birthdayDbResponse.year
+                ? now.getFullYear() - birthdayDbResponse.year
+                : null;
+
+        // add currency based on payouts table - if birthday, give flat amount. streak resets after full cycle.
+        const currencyToAdd = isBirthday
+            ? birthdayCredits
+            : payoutMultipliers[(streak - 1) % 7] * dailyCredits;
         // give credits
         await this.addUserBalance(userID, currencyToAdd);
         // set new streak value in DB
@@ -306,14 +324,57 @@ export class DatabaseWrapper {
             `INSERT OR REPLACE INTO Streaks (userID, lastClaimed, streak) VALUES ("${userID}", "${now.toISOString()}" ,${streak});`
         );
         // create response object
-        return { lastClaimed: now, received: currencyToAdd, streak: streak };
+        return {
+            lastClaimed: now,
+            received: currencyToAdd,
+            streak: streak,
+            isBirthday: isBirthday,
+            userAge: userAge,
+        };
+    }
+
+    public async setBirthday(
+        userID: Snowflake,
+        day: number,
+        month: number,
+        year?: number
+    ) {
+        this.assertReady();
+        await this.database.exec(
+            `INSERT OR REPLACE INTO Birthdays (userID, day, month, year) VALUES ("${userID}", ${day}, ${month}, ${
+                year ?? "NULL"
+            });`
+        );
+    }
+
+    public async getBirthday(
+        userID: Snowflake
+    ): Promise<BirthdayResponse | null> {
+        this.assertReady();
+        const dbResponse = await this.database.get(
+            `SELECT day, month, year FROM Birthdays WHERE userID = "${userID}";`
+        );
+        if (dbResponse === undefined) return null;
+        return {
+            day: dbResponse.day,
+            month: dbResponse.month,
+            year: dbResponse.year ?? null,
+        };
     }
 }
 type DailyCreditsResponse = {
     received: number; // 0 if none received, any positive value otherwise
     streak: number;
     lastClaimed: Date; // date of last claim - if just claimed, current time.
+    isBirthday: boolean;
+    userAge: number | null;
 };
 
-export const DataStorage = await DatabaseWrapper.getInstance();
+type BirthdayResponse = {
+    day: number;
+    month: number;
+    year: number | null;
+};
+
+export const DataStorage = DatabaseWrapper.getInstance();
 // Should in theory always perform the setup

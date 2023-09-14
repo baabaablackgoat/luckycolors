@@ -28,3 +28,11 @@ CREATE TABLE IF NOT EXISTS Streaks (
     lastClaimed TEXT,
     CONSTRAINT Streaks_PK PRIMARY KEY (userID)
 );
+
+CREATE TABLE IF NOT EXISTS Birthdays (
+   userID TEXT,
+   "day" INTEGER,
+   "month" INTEGER,
+   "year" INTEGER,
+   CONSTRAINT Birthdays_PK PRIMARY KEY (userId)
+);

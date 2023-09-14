@@ -19,9 +19,11 @@ import { blackjack, drawCard } from "./commands/BlackjackCommands.js";
 import { slots } from "./commands/SlotsCommands.js";
 import { sendMenu } from "./menu/Menu.js";
 import { enter } from "./commands/MenuEntryCommand.js";
+import { setBirthday } from "./commands/BirthdayCommands.js";
 
 export const enabledCommands: Command[] = [
     ping,
+    setBirthday,
     balance,
     setBalance,
     addBalance,

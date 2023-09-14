@@ -11,6 +11,8 @@ export interface ILanguage {
     daily_error_alreadyClaimedDescription: TranslationValue;
     daily_reply_claimedTitle: TranslationValue;
     daily_reply_claimedDescription: TranslationValue;
+    daily_reply_birthdayTitle: TranslationValue;
+    daily_reply_birthdayDescription: TranslationValue;
     // Ping command
     command_ping_name: CommandParameterName;
     command_ping_description: TranslationValue;
@@ -222,7 +224,26 @@ export interface ILanguage {
     profileMenu_button_inventory: TranslationValue;
     profileMenu_button_getLoan: TranslationValue;
 
-    // loan (haha) translations
+    // loan/refund translations
     getLoan_reply_rejectedTitle: TranslationValue;
     getLoan_reply_rejectedDescription: TranslationValue;
+    getLoan_reply_acceptedTitle: TranslationValue;
+    getLoan_reply_acceptedDescription: TranslationValue;
+
+    // birthday translations
+    command_setBirthday_name: CommandParameterName;
+    command_setBirthday_description: TranslationValue;
+    modal_birthday_title: TranslationValue;
+    modal_birthday_dayLabel: TranslationValue;
+    modal_birthday_monthLabel: TranslationValue;
+    modal_birthday_yearLabel: TranslationValue;
+
+    birthday_error_parseFailureTitle: TranslationValue;
+    birthday_error_parseFailureDescription: TranslationValue;
+    birthday_error_invalidDateTitle: TranslationValue;
+    birthday_error_invalidDateDescription: TranslationValue;
+    birthday_error_alreadySetTitle: TranslationValue;
+    birthday_error_alreadySetDescription: TranslationValue;
+    birthday_reply_setTitle: TranslationValue;
+    birthday_reply_setDescription: TranslationValue;
 }

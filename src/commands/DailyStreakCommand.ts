@@ -4,6 +4,7 @@ import { replyWithEmbed } from "../def/replyWithEmbed.js";
 import { dateDayReducer } from "../def/DateDifference.js";
 import { Lang } from "../lang/LanguageProvider";
 import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
+import { numberToPosition } from "../def/NumberToPosition";
 
 function getNextClaim(lastClaimed: Date): Date {
     const result = dateDayReducer(lastClaimed);
@@ -57,6 +58,24 @@ export const dailyExecute = async (
         );
         return;
     } else {
+        if (claimedCredits.isBirthday) {
+            void replyWithEmbed(
+                interaction,
+                Lang("daily_reply_birthdayTitle", {
+                    age: claimedCredits.userAge
+                        ? numberToPosition(claimedCredits.userAge) + " "
+                        : "",
+                }),
+                Lang("daily_reply_birthdayDescription", {
+                    received: claimedCredits.received,
+                    timeToClaim: timeToClaim.toString(),
+                    streak: claimedCredits.streak,
+                }),
+                "info",
+                interaction.user
+            );
+            return;
+        }
         void replyWithEmbed(
             interaction,
             Lang("daily_reply_claimedTitle"),

@@ -2,6 +2,7 @@ import {
     ButtonInteraction,
     CommandInteraction,
     EmbedBuilder,
+    ModalSubmitInteraction,
     User,
 } from "discord.js";
 import * as fs from "fs";
@@ -20,7 +21,10 @@ type ReplyEmbedType = "info" | "warn" | "error";
  * @param image - the embed image
  */
 export async function replyWithEmbed(
-    interaction: CommandInteraction | ButtonInteraction,
+    interaction:
+        | CommandInteraction
+        | ButtonInteraction
+        | ModalSubmitInteraction,
     title: string,
     description: string,
     type: ReplyEmbedType,
