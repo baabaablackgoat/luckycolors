@@ -234,13 +234,17 @@ export const english: ILanguage = {
     mainMenu_button_games: "Games",
     mainMenu_button_profile: "Profile",
     mainMenu_button_shop: "Shop",
+    mainMenu_button_about: "About Colby",
     gamesMenu_text_title: "Games",
     gamesMenu_text_description: "What would you like to play?",
     gamesMenu_button_blackjack: "Blackjack",
     gamesMenu_button_slots: "Slots",
     gamesMenu_button_drawCard: "Draw a card",
     profileMenu_text_title: "Profile",
-    profileMenu_text_description: "Your current balance is $balance 🪙",
+    profileMenu_text_description: "This is your profile.",
+    profileMenu_field_balanceName: "Your balance",
+    profileMenu_field_balanceValue: "$balance 🪙",
+    profileMenu_field_birthdayName: "Birthday",
     profileMenu_button_daily: "Daily claim",
     profileMenu_button_inventory: "Open inventory",
     profileMenu_button_getLoan: "Losses claim (<25 🪙)",
@@ -302,6 +306,18 @@ export const english: ILanguage = {
     birthday_error_alreadySetDescription:
         "You've already set your birthday with me! You can't change that by yourself. If you need something fixed, poke someone :3c",
     birthday_reply_setTitle: "Birthday registered!",
-    birthday_reply_setDescription:
-        "I will remember your birthday as: $day. $month $year",
+    birthday_reply_setDescription: "I will remember your birthday as $birthday",
+    birthday_format_noneSet: "None set!",
+
+    about_header_title: "About Colby Jack",
+    about_header_description:
+        "Since Colby Jack can store some of your personal data (specifically, your birthday), here's the important but " +
+        "boring privacy disclaimer:\n\n" +
+        "**We do not use your personal data for _anything_ but the actual operation of Colby Jack.** Full stop.\n" +
+        "Right now, it only affects what's shown in your profile, and the amount of coins you get when doing your daily claim.\n" +
+        "I plan to add a fun little thing that counts down to your birthday, but that is it. The data _is_ associated " +
+        "with your discord ID, obviously - but it will never leave the server Colby Jack is hosted on, and I will never " +
+        "sell or transfer any of your data to any third party. No messages are read nor stored, and if you wish to do " +
+        "so, you may at any time have your birthday removed from the database, no questions asked. I'll probably add a " +
+        "button to do so eventually, but for now, please, just send me (Niklas) a message. I will take care of it post-haste.",
 };

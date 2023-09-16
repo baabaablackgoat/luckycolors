@@ -5,7 +5,7 @@ import {
     InsufficientBalanceError,
 } from "../def/DatabaseWrapper.js";
 import { randomInt } from "../def/randomInt.js";
-import { ChatInputCommandInteraction } from "discord.js";
+import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
 import { getValidStake } from "../def/isValidStake.js";
 
 type SlotSymbol = {
@@ -65,19 +65,25 @@ function symbolPicker(): SlotSymbol {
     return SlotSymbols[0];
 }
 
+export function comingSoonReply(
+    interaction: ChatInputCommandInteraction | ButtonInteraction
+) {
+    void replyWithEmbed(
+        interaction,
+        "Coming soon!",
+        "Let him cook, Jesse.",
+        "info",
+        interaction.user,
+        true
+    );
+}
+
 export const slots = new Command(
     "slots",
     "Play on a simulated slot machine for your 🪙",
     async (interaction) => {
-        //TODO: Rework the slots and then uncomment this part.
-        void replyWithEmbed(
-            interaction,
-            "Coming soon!",
-            "Let him cook, Jesse.",
-            "info",
-            interaction.user,
-            true
-        );
+        //TODO: Rework the slots, then drop the coming soon stuff.
+        comingSoonReply(interaction);
         return;
         // original code starts here
         const stake = getValidStake(

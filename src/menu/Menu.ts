@@ -19,9 +19,11 @@ import {
     drawCardExecute,
 } from "../commands/BlackjackCommands";
 import { dailyExecute } from "../commands/DailyStreakCommand";
-import { DataStorage } from "../def/DatabaseWrapper";
+import { BirthdayResponse, DataStorage } from "../def/DatabaseWrapper";
 import { getLoanHandler } from "../handlers/getLoanHandler";
 import { sendBirthdayModal } from "../commands/BirthdayCommands";
+import { birthdayIsChangeable, formatBirthday } from "../def/FormatBirthday";
+import { comingSoonReply } from "../commands/SlotsCommands";
 
 type MenuAction =
     | "enter"
@@ -32,6 +34,7 @@ type MenuAction =
     | "stake"
     | "loan"
     | "setBirthday"
+    | "about"
     | MenuGamesActions
     | MenuProfileActions;
 type MenuGamesActions = "blackjack" | "slots" | "draw";
@@ -69,7 +72,11 @@ export const mainMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
         .setLabel(Lang("mainMenu_button_shop"))
         .setStyle(ButtonStyle.Primary)
-        .setCustomId("menu_shop")
+        .setCustomId("menu_shop"),
+    new ButtonBuilder()
+        .setLabel(Lang("mainMenu_button_about"))
+        .setStyle(ButtonStyle.Secondary)
+        .setCustomId("menu_about")
 );
 
 /* game selection menu */
@@ -94,40 +101,65 @@ const gamesMenuButtonRow = new ActionRowBuilder().addComponents(
 );
 
 /* profile menu */
-function profileMenuEmbed(balance: number, user: User) {
+function profileMenuEmbed(
+    user: User,
+    balance: number,
+    birthday: BirthdayResponse
+) {
     return new EmbedBuilder()
         .setTitle(Lang("profileMenu_text_title"))
-        .setDescription(
-            Lang("profileMenu_text_description", { balance: balance })
-        )
+        .setDescription(Lang("profileMenu_text_description"))
         .setAuthor({
             name: user.username,
             iconURL: user.avatarURL(),
         })
         .setColor(0xff0088)
-        .setImage(
-            "https://baabaablackgoat.com/res/salem/menuProfileGlass2.png"
-        );
+        .setImage("https://baabaablackgoat.com/res/salem/menuProfileGlass2.png")
+        .addFields([
+            {
+                name: Lang("profileMenu_field_balanceName"),
+                value: Lang("profileMenu_field_balanceValue", {
+                    balance: balance,
+                }),
+                inline: true,
+            },
+            {
+                name: Lang("profileMenu_field_birthdayName"),
+                value: formatBirthday(birthday),
+                inline: true,
+            },
+        ]);
 }
 
-const profileMenuButtonRow = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-        .setLabel(Lang("profileMenu_button_daily"))
-        .setStyle(ButtonStyle.Primary)
-        .setCustomId("menu_daily"),
-    new ButtonBuilder()
-        .setLabel(Lang("profileMenu_button_inventory"))
-        .setStyle(ButtonStyle.Primary)
-        .setCustomId("menu_inventory"),
-    new ButtonBuilder()
-        .setLabel(Lang("profileMenu_button_getLoan"))
-        .setStyle(ButtonStyle.Secondary)
-        .setCustomId("menu_loan"),
-    new ButtonBuilder()
-        .setLabel(Lang("profileMenu_button_setBirthday"))
-        .setStyle(ButtonStyle.Secondary)
-        .setCustomId("menu_setBirthday")
-);
+function profileMenuButtonRow(balance: number, birthday: BirthdayResponse) {
+    const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setLabel(Lang("profileMenu_button_daily"))
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId("menu_daily"),
+        new ButtonBuilder()
+            .setLabel(Lang("profileMenu_button_inventory"))
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId("menu_inventory")
+    );
+    // if (balance < 25) commented out for now - we like having negative responses here :3c
+    row.addComponents(
+        new ButtonBuilder()
+            .setLabel(Lang("profileMenu_button_getLoan"))
+            .setStyle(ButtonStyle.Secondary)
+            .setCustomId("menu_loan")
+    );
+
+    if (birthdayIsChangeable(birthday))
+        row.addComponents(
+            new ButtonBuilder()
+                .setLabel(Lang("profileMenu_button_setBirthday"))
+                .setStyle(ButtonStyle.Secondary)
+                .setCustomId("menu_setBirthday")
+        );
+    return row;
+}
+
 /* Row specifically to go back home */
 const backHomeRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -205,6 +237,33 @@ export const sendMenu = new Command(
     ]
 );
 
+function sendAboutEmbed(interaction: ButtonInteraction) {
+    const embed = new EmbedBuilder()
+        .setTitle(Lang("about_header_title"))
+        .setDescription(Lang("about_header_description"))
+        .addFields(
+            {
+                name: "Made with ♥️ by",
+                value: "Salem & Niklas",
+                inline: true,
+            },
+            {
+                name: "Source code",
+                value: "coming soon, I promise!",
+                inline: true,
+            },
+            {
+                name: "Hosting location",
+                value: "Hetzner GmbH, Falkenstein cluster",
+                inline: true,
+            }
+        );
+    void interaction.reply({
+        embeds: [embed],
+        ephemeral: true,
+    });
+}
+
 export async function menuButtonHandler(interaction: ButtonInteraction) {
     // await interaction.deferReply({ ephemeral: true });
     const menuTarget = interaction.customId.split("_")[1] as MenuAction;
@@ -234,14 +293,21 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
             });
             break;
         case "profile":
-            const userBal = await DataStorage.getUserBalance(
-                interaction.user.id
-            );
-            //@ts-ignore: actual garbage typings
-            void interaction.update({
-                embeds: [profileMenuEmbed(userBal, interaction.user)],
-                components: [profileMenuButtonRow, backHomeRow],
+            const userBal = DataStorage.getUserBalance(interaction.user.id);
+            const birthday = DataStorage.getBirthday(interaction.user.id);
+            Promise.all([userBal, birthday]).then(([userBal, birthday]) => {
+                //@ts-ignore: actual garbage typings
+                void interaction.update({
+                    embeds: [
+                        profileMenuEmbed(interaction.user, userBal, birthday),
+                    ],
+                    components: [
+                        profileMenuButtonRow(userBal, birthday),
+                        backHomeRow,
+                    ],
+                });
             });
+
             break;
         case "shop":
             void shopExecute(interaction);
@@ -263,7 +329,7 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
             void dailyExecute(interaction);
             break;
         case "slots":
-            // todo: call slots interaction
+            void comingSoonReply(interaction);
             break;
         case "stake":
             const game = interaction.customId.split("_")[2];
@@ -285,6 +351,9 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
         case "setBirthday":
             // do not defer the reply - the modal refuses to send if the initial reply was deferred.
             void sendBirthdayModal(interaction);
+            break;
+        case "about":
+            void sendAboutEmbed(interaction);
             break;
         default:
             void replyWithEmbed(

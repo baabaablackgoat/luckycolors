@@ -211,6 +211,7 @@ export interface ILanguage {
     mainMenu_button_games: TranslationValue;
     mainMenu_button_profile: TranslationValue;
     mainMenu_button_shop: TranslationValue;
+    mainMenu_button_about: TranslationValue;
     // games menu
     gamesMenu_text_title: TranslationValue;
     gamesMenu_text_description: TranslationValue;
@@ -220,6 +221,9 @@ export interface ILanguage {
     // profile menu
     profileMenu_text_title: TranslationValue;
     profileMenu_text_description: TranslationValue;
+    profileMenu_field_balanceName: TranslationValue;
+    profileMenu_field_balanceValue: TranslationValue;
+    profileMenu_field_birthdayName: TranslationValue;
     profileMenu_button_daily: TranslationValue;
     profileMenu_button_inventory: TranslationValue;
     profileMenu_button_getLoan: TranslationValue;
@@ -247,4 +251,8 @@ export interface ILanguage {
     birthday_error_alreadySetDescription: TranslationValue;
     birthday_reply_setTitle: TranslationValue;
     birthday_reply_setDescription: TranslationValue;
+    birthday_format_noneSet: TranslationValue;
+
+    about_header_title: TranslationValue;
+    about_header_description: TranslationValue;
 }

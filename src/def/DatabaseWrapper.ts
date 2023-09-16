@@ -370,7 +370,7 @@ type DailyCreditsResponse = {
     userAge: number | null;
 };
 
-type BirthdayResponse = {
+export type BirthdayResponse = {
     day: number;
     month: number;
     year: number | null;
