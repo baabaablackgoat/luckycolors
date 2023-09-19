@@ -15,7 +15,7 @@ export async function getLoanHandler(interaction: ButtonInteraction) {
             interaction.user,
             true,
             undefined,
-            new URL("https://baabaablackgoat.com/res/salem/baaHumbugTemp.png")
+            new URL("https://baabaablackgoat.com/res/salem/baaHumbug.png")
         );
         return;
     }
@@ -26,12 +26,12 @@ export async function getLoanHandler(interaction: ButtonInteraction) {
         Lang("getLoan_reply_acceptedTitle"),
         Lang("getLoan_reply_acceptedDescription", {
             value: loanValue,
-            fakeValue: Math.ceil(loanValue * 1.25),
+            fakeValue: Math.ceil((loanValue / 35) * 100), // user gets to "keep" 35%, i take 65%. this is probably simplifiable
         }),
         "info",
         interaction.user,
         true,
         undefined,
-        new URL("https://baabaablackgoat.com/res/salem/baaHumbugTemp.png")
+        new URL("https://baabaablackgoat.com/res/salem/baaHumbug.png")
     );
 }

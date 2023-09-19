@@ -276,19 +276,19 @@ export const english: ILanguage = {
         "Baa Goodman here. We fought those rat bastards tooth and nail to get you your money back, but unfortunately " +
             "they have actual lawyers and judges! Those scare the shit out of me. Thankfully, they don't care much for " +
             "smallfry like you, so they settled out of court for $value 🪙! ...well, actually, it was $fakeValue 🪙, " +
-            "but you read the terms, right? I get to keep a quarter of your claims. Thank you for trusting Baa Humbug.",
+            "but you agreed to my terms and the cut that gets me. Thank you for trusting Baa Humbug. See you around.",
 
         "Hey, this is Baa Goodman, your favorite representative of Baa Humbug. We took those sons of bitches to court " +
             "to make sure you can keep gambling your life savings away. Turns out they have a much stronger legal defense " +
             "than you do! But who needs a strong defense when you've got me on your side. I got them to cough up " +
-            "$fakeValue 🪙 of your retirement funds. So, as agreed, 25%-ish of that are mine - " +
+            "$fakeValue 🪙 of your retirement funds. So, as agreed, 65%-ish of that are mine - " +
             "here are your remaining $value 🪙.",
 
         "Hi, Baa Goodman, representative of Baa Humbug, how you doing? I fought your case against those gambling " +
             "sharks for you. Can tell you, wasn't easy, those slimy CEOs have some mean left hooks and some even meaner " +
             "lawyers. But what kind of attorney would I be if I didn't win those? ...don't answer that, actually. " +
-            "I settled with them. Here's your $value 🪙. And if you run out of your insurance claims again, " +
-            "you know who to call.",
+            "I settled with them. Here's your $value 🪙. I took my cut out of your winnings of $fakevalue 🪙 already, no " +
+            "need to do the math yourself. And if you run out of your insurance claims again, you know who to call.",
     ],
     command_setBirthday_name: "birthday",
     command_setBirthday_description: "Let Colby remember your birthday!",
