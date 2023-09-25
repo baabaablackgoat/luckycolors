@@ -157,7 +157,8 @@ export const shopExecute = async (
             "info",
             interaction.user,
             true,
-            MessageItemDisplayBuilder(missingItems, "unlock")
+            MessageItemDisplayBuilder(missingItems, "unlock"),
+            new URL("https://baabaablackgoat.com/res/salem/shopv1.png")
         );
     }
 };
