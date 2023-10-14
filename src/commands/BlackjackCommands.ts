@@ -345,7 +345,7 @@ class BlackjackGame {
                         // pay out 3:2
                         await DataStorage.addUserBalance(
                             this.interaction.user.id,
-                            this.stake * 2.5
+                            Math.ceil(this.stake * 2.5) // intentional bank error in players' favour to round to whole numbers
                         );
                     } else if (this.UserWins) {
                         // pay out 1:1

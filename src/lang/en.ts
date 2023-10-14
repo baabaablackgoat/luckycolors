@@ -287,7 +287,7 @@ export const english: ILanguage = {
         "Hi, Baa Goodman, representative of Baa Humbug, how you doing? I fought your case against those gambling " +
             "sharks for you. Can tell you, wasn't easy, those slimy CEOs have some mean left hooks and some even meaner " +
             "lawyers. But what kind of attorney would I be if I didn't win those? ...don't answer that, actually. " +
-            "I settled with them. Here's your $value 🪙. I took my cut out of your winnings of $fakevalue 🪙 already, no " +
+            "I settled with them. Here's your $value 🪙. I took my cut out of your winnings of $fakeValue 🪙 already, no " +
             "need to do the math yourself. And if you run out of your insurance claims again, you know who to call.",
     ],
     command_setBirthday_name: "birthday",
