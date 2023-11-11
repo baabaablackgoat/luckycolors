@@ -5,11 +5,17 @@
         "esModuleInterop": true,
         "sourceMap": true,
         "outDir": "./dist",
-        "moduleResolution": "Node",
+        "moduleResolution": "node",
         "resolveJsonModule": true,
         "baseUrl": "./",
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
+        "allowImportingTsExtensions": true,
+    },
+    "ts-node": {
+        // Tell ts-node CLI to install the --loader automatically, explained below
+        "esm": true,
+        "experimentalSpecifierResolution": "node"
     },
     "exclude": ["node_modules"]
 }

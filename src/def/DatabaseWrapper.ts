@@ -4,6 +4,7 @@ import { Snowflake } from "discord.js";
 import * as fs from "fs";
 import { Item, ItemData, ItemType } from "./Item.js";
 import { getDayDifference } from "./DateDifference.js";
+import { birthdayIsToday, isDangerousLeapDay } from "./FormatBirthday.js";
 
 export class DatabaseError extends Error {}
 export class InsufficientBalanceError extends Error {}
@@ -304,10 +305,7 @@ export class DatabaseWrapper {
         else streak = 1;
         // make the daily query check the birthday - if it's set, check if the current day & month match.
         const birthdayDbResponse = await this.getBirthday(userID);
-        const isBirthday =
-            birthdayDbResponse &&
-            birthdayDbResponse.day === now.getDate() &&
-            birthdayDbResponse.month === now.getMonth() + 1;
+        const isBirthday = birthdayIsToday(birthdayDbResponse);
         const userAge =
             birthdayDbResponse && birthdayDbResponse.year
                 ? now.getFullYear() - birthdayDbResponse.year
@@ -361,7 +359,42 @@ export class DatabaseWrapper {
             year: dbResponse.year ?? null,
         };
     }
+
+    public async getAllActiveBirthdays(
+        date?: Date
+    ): Promise<ActiveBirthdayResponse[]> {
+        this.assertReady();
+        if (!date) date = new Date();
+        let dbResponse = await this.database.all(
+            `SELECT userID, day, month, year FROM Birthdays WHERE day = ${date.getDate()} AND month = ${
+                date.getMonth() + 1
+            }`
+        );
+
+        // account for leap year children
+        if (isDangerousLeapDay(date)) {
+            const extraResponse = await this.database.all(
+                `SELECT userID, day, month, year FROM Birthdays WHERE day = 29 AND month = 2`
+            );
+            dbResponse = dbResponse.concat(extraResponse);
+        }
+
+        if (dbResponse === undefined) return [];
+        return dbResponse.map(
+            (row: { userID: any; day: any; month: any; year: any }) => {
+                return {
+                    userId: row.userID,
+                    birthday: {
+                        day: row.day,
+                        month: row.month,
+                        year: row.year ?? null,
+                    },
+                };
+            }
+        );
+    }
 }
+
 type DailyCreditsResponse = {
     received: number; // 0 if none received, any positive value otherwise
     streak: number;
@@ -374,6 +407,11 @@ export type BirthdayResponse = {
     day: number;
     month: number;
     year: number | null;
+};
+
+type ActiveBirthdayResponse = {
+    userId: Snowflake;
+    birthday: BirthdayResponse;
 };
 
 export const DataStorage = DatabaseWrapper.getInstance();

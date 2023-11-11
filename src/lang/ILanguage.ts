@@ -253,6 +253,10 @@ export interface ILanguage {
     birthday_reply_setDescription: TranslationValue;
     birthday_format_noneSet: TranslationValue;
 
+    // public birthday messages
+    publicBirthday_message_header: TranslationValue;
+    publicBirthday_message_body: TranslationValue;
+
     about_header_title: TranslationValue;
     about_header_description: TranslationValue;
 }
