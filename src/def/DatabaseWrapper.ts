@@ -365,6 +365,11 @@ export class DatabaseWrapper {
     ): Promise<ActiveBirthdayResponse[]> {
         this.assertReady();
         if (!date) date = new Date();
+        if (isNaN(date.getTime())) {
+            throw new Error(
+                `invalid date specified to active birthday getter: ${date}`
+            );
+        }
         let dbResponse = await this.database.all(
             `SELECT userID, day, month, year FROM Birthdays WHERE day = ${date.getDate()} AND month = ${
                 date.getMonth() + 1

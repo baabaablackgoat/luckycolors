@@ -309,6 +309,9 @@ export const english: ILanguage = {
     birthday_reply_setDescription: "I will remember your birthday as $birthday",
     birthday_format_noneSet: "None set!",
 
+    publicBirthday_message_header: "Happy birthday!",
+    publicBirthday_message_body: "I have yet to add a translation here lemayo",
+
     about_header_title: "About Colby Jack",
     about_header_description:
         "Since Colby Jack can store some of your personal data (specifically, your birthday), here's the important but " +
