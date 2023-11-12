@@ -3,8 +3,7 @@ import { config } from "dotenv";
 config();
 // remaining imports
 import { REST, Routes } from "discord.js";
-// @ts-ignore: shush u
-import BotSettings from "../botSettings.json" assert { type: "json" };
+import { BotSettings } from "../src/def/SettingsHandler.ts";
 import chalk from "chalk";
 import { TermColors } from "../src/def/termColors.js";
 import { enabledCommands } from "../src/enabledCommands.js";
@@ -39,10 +38,10 @@ export async function deployCommands(
     );
     try {
         if (guilds) {
-            for (const guildID of BotSettings.guildIDs) {
+            for (const guildID of BotSettings.getSetting("guildIds")) {
                 await restClient.put(
                     Routes.applicationGuildCommands(
-                        BotSettings.clientID,
+                        BotSettings.getSetting("clientId"),
                         guildID
                     ),
                     { body: deployData }

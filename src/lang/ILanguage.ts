@@ -259,4 +259,15 @@ export interface ILanguage {
 
     about_header_title: TranslationValue;
     about_header_description: TranslationValue;
+
+    // announcement channel setting command
+    command_setAnnouncementChannel_name: CommandParameterName;
+    command_setAnnouncementChannel_description: TranslationValue;
+    command_setAnnouncementChannel_argChannel: CommandParameterName;
+    command_setAnnouncementChannel_argChannelDescription: TranslationValue;
+
+    command_setInteractionChannel_name: CommandParameterName;
+    command_setInteractionChannel_description: TranslationValue;
+    command_setInteractionChannel_argChannel: CommandParameterName;
+    command_setInteractionChannel_argChannelDescription: TranslationValue;
 }

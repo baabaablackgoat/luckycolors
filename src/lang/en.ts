@@ -312,6 +312,20 @@ export const english: ILanguage = {
     publicBirthday_message_header: "Happy birthday!",
     publicBirthday_message_body: "I have yet to add a translation here lemayo",
 
+    command_setAnnouncementChannel_name: "announcementchannel",
+    command_setAnnouncementChannel_description:
+        "🔧 Chooses the channel that this bot will send public messages (like birthday announcements) to.",
+    command_setAnnouncementChannel_argChannel: "channel",
+    command_setAnnouncementChannel_argChannelDescription:
+        "The text channel to target",
+
+    command_setInteractionChannel_name: "interactionchannel",
+    command_setInteractionChannel_description:
+        "🔧 Chooses the channel that this bot will send the interaction modal messages to every now and then.",
+    command_setInteractionChannel_argChannel: "channel",
+    command_setInteractionChannel_argChannelDescription:
+        "The text channel to target",
+
     about_header_title: "About Colby Jack",
     about_header_description:
         "Since Colby Jack can store some of your personal data (specifically, your birthday), here's the important but " +

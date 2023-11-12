@@ -20,6 +20,10 @@ import { slots } from "./commands/SlotsCommands.js";
 import { sendMenu } from "./menu/Menu.js";
 import { enter } from "./commands/MenuEntryCommand.js";
 import { setBirthday } from "./commands/BirthdayCommands.js";
+import {
+    setAnnouncementChannel,
+    setInteractionChannel,
+} from "./commands/AdminChannelSelectionCommands.js";
 
 export const enabledCommands: Command[] = [
     ping,
@@ -40,4 +44,6 @@ export const enabledCommands: Command[] = [
     blackjack,
     sendMenu,
     enter,
+    setAnnouncementChannel,
+    setInteractionChannel,
 ];

@@ -9,8 +9,12 @@ const leapYearDays = await DataStorage.getAllActiveBirthdays(
 const hasLeapYearDays = await DataStorage.getAllActiveBirthdays(
     new Date("2024-02-28")
 );
+const leapYearSanityCheck = await DataStorage.getAllActiveBirthdays(
+    new Date("2024-02-29")
+);
 const mine = await DataStorage.getAllActiveBirthdays(new Date("2023-12-03"));
 console.log("not a leap year", leapYearDays);
 console.log("in a leap year", hasLeapYearDays);
+console.log("leap year sanity check", leapYearSanityCheck);
 console.log("today", today);
 console.log("mine", mine);
