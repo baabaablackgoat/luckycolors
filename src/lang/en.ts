@@ -249,6 +249,8 @@ export const english: ILanguage = {
     profileMenu_button_inventory: "Open inventory",
     profileMenu_button_getLoan: "Losses claim (<25 🪙)",
     profileMenu_button_setBirthday: "Set birthday",
+    profileMenu_button_disableBirthdayAnnouncements: "Hide birthdays",
+    profileMenu_button_enableBirthdayAnnouncements: "Announce birthdays",
     command_enter_name: "enter",
     command_enter_description: "Opens the main menu for you.",
     getLoan_reply_rejectedTitle: [
@@ -308,6 +310,13 @@ export const english: ILanguage = {
     birthday_reply_setTitle: "Birthday registered!",
     birthday_reply_setDescription: "I will remember your birthday as $birthday",
     birthday_format_noneSet: "None set!",
+
+    birthday_title_announcementsEnabled: "Birthday announcements enabled",
+    birthday_title_announcementsDisabled: "Birthday announcements disabled",
+    birthday_description_announcementsEnabled:
+        "Your birthdays will now be publicly announced in designated announcement channels.",
+    birthday_description_announcementsDisabled:
+        "Birthdays will no longer be publicly announced. You can still claim your bonuses on your birthday!",
 
     publicBirthday_message_header: "Happy birthday, $name!",
     publicBirthday_message_body:

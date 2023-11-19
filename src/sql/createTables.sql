@@ -34,5 +34,6 @@ CREATE TABLE IF NOT EXISTS Birthdays (
    "day" INTEGER,
    "month" INTEGER,
    "year" INTEGER,
+   announce INTEGER DEFAULT (1),
    CONSTRAINT Birthdays_PK PRIMARY KEY (userId)
 );

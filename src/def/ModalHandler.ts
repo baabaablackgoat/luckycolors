@@ -78,6 +78,7 @@ export class ModalHandler {
                     day,
                     month,
                     year: yearString.length > 0 ? year : null,
+                    announce: true,
                 }),
             }),
             "info",

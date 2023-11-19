@@ -41,9 +41,12 @@ export async function birthdayAnnouncementHandler() {
     }
 
     // Before attempting to ask for channels from Discords API, check whether there are any birthdays today
-    const activeBirthdays = await DataStorage.getAllActiveBirthdays();
+    const allActiveBirthdays = await DataStorage.getAllActiveBirthdays();
+    const announcedBirthdays = allActiveBirthdays.filter(
+        (el) => el.birthday.announce
+    );
     // TODO: Filter this list based on opt-out requests of users
-    if (activeBirthdays.length === 0) {
+    if (announcedBirthdays.length === 0) {
         console.log(`No birthdays today. Skipping.`);
         return;
     }
@@ -57,11 +60,7 @@ export async function birthdayAnnouncementHandler() {
         try {
             const guild = await client.guilds.fetch(guildId);
             const channel = await guild.channels.fetch(channelId);
-            if (!channel) {
-                console.error(
-                    `The stored channel with ID ${channelId} could not be found in ${guild.name}.`
-                );
-            } else if (!(channel instanceof TextChannel)) {
+            if (!(channel instanceof TextChannel)) {
                 console.error(
                     `The stored channel with ID ${channelId} was found in ${
                         guild.name
@@ -83,7 +82,7 @@ export async function birthdayAnnouncementHandler() {
     }
 
     const foundBirthdayMembers: FoundBirthdayMember[] = [];
-    for (const birthday of activeBirthdays) {
+    for (const birthday of announcedBirthdays) {
         await Promise.all(
             announcementChannels.map(async (channel) => {
                 const member = await channel.guild.members
