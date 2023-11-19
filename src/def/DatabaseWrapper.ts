@@ -350,13 +350,14 @@ export class DatabaseWrapper {
     ): Promise<BirthdayResponse | null> {
         this.assertReady();
         const dbResponse = await this.database.get(
-            `SELECT day, month, year FROM Birthdays WHERE userID = "${userID}";`
+            `SELECT day, month, year, announce FROM Birthdays WHERE userID = "${userID}";`
         );
         if (dbResponse === undefined) return null;
         return {
             day: dbResponse.day,
             month: dbResponse.month,
             year: dbResponse.year ?? null,
+            announce: dbResponse.announce === 1,
         };
     }
 
@@ -371,7 +372,7 @@ export class DatabaseWrapper {
             );
         }
         let dbResponse = await this.database.all(
-            `SELECT userID, day, month, year FROM Birthdays WHERE day = ${date.getDate()} AND month = ${
+            `SELECT userID, day, month, year, announce FROM Birthdays WHERE day = ${date.getDate()} AND month = ${
                 date.getMonth() + 1
             }`
         );
@@ -379,23 +380,42 @@ export class DatabaseWrapper {
         // account for leap year children
         if (isDangerousLeapDay(date)) {
             const extraResponse = await this.database.all(
-                `SELECT userID, day, month, year FROM Birthdays WHERE day = 29 AND month = 2`
+                `SELECT userID, day, month, year, announce FROM Birthdays WHERE day = 29 AND month = 2`
             );
             dbResponse = dbResponse.concat(extraResponse);
         }
 
         if (dbResponse === undefined) return [];
         return dbResponse.map(
-            (row: { userID: any; day: any; month: any; year: any }) => {
+            (row: {
+                userID: any;
+                day: any;
+                month: any;
+                year: any;
+                announce: any;
+            }) => {
                 return {
                     userId: row.userID,
                     birthday: {
                         day: row.day,
                         month: row.month,
                         year: row.year ?? null,
+                        announce: row.announce === 1,
                     },
                 };
             }
+        );
+    }
+
+    public async setBirthdayAnnouncements(
+        userId: Snowflake,
+        announce: boolean
+    ) {
+        this.assertReady();
+        await this.database.exec(
+            `UPDATE Birthdays SET announce = ${
+                announce ? 1 : 0
+            } WHERE userID = ${userId}`
         );
     }
 }
@@ -412,6 +432,7 @@ export type BirthdayResponse = {
     day: number;
     month: number;
     year: number | null;
+    announce: boolean;
 };
 
 type ActiveBirthdayResponse = {

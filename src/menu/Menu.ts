@@ -21,7 +21,10 @@ import {
 import { dailyExecute } from "../commands/DailyStreakCommand";
 import { BirthdayResponse, DataStorage } from "../def/DatabaseWrapper";
 import { getLoanHandler } from "../handlers/getLoanHandler";
-import { sendBirthdayModal } from "../commands/BirthdayCommands";
+import {
+    changeBirthdayAnnouncement,
+    sendBirthdayModal,
+} from "../commands/BirthdayCommands";
 import { birthdayIsChangeable, formatBirthday } from "../def/FormatBirthday";
 import { comingSoonReply } from "../commands/SlotsCommands";
 
@@ -34,6 +37,8 @@ type MenuAction =
     | "stake"
     | "loan"
     | "setBirthday"
+    | "enableBirthdayAnnouncements"
+    | "disableBirthdayAnnouncements"
     | "about"
     | MenuGamesActions
     | MenuProfileActions;
@@ -157,6 +162,18 @@ function profileMenuButtonRow(balance: number, birthday: BirthdayResponse) {
                 .setStyle(ButtonStyle.Secondary)
                 .setCustomId("menu_setBirthday")
         );
+
+    if (birthday !== null) {
+        const type = birthday.announce ? "disable" : "enable";
+        row.addComponents(
+            new ButtonBuilder()
+                .setLabel(
+                    Lang(`profileMenu_button_${type}BirthdayAnnouncements`)
+                )
+                .setStyle(ButtonStyle.Secondary)
+                .setCustomId(`menu_${type}BirthdayAnnouncements`)
+        );
+    }
     return row;
 }
 
@@ -352,6 +369,13 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
             // do not defer the reply - the modal refuses to send if the initial reply was deferred.
             void sendBirthdayModal(interaction);
             break;
+        case "enableBirthdayAnnouncements":
+            void changeBirthdayAnnouncement(interaction, true);
+            break;
+        case "disableBirthdayAnnouncements":
+            void changeBirthdayAnnouncement(interaction, false);
+            break;
+
         case "about":
             void sendAboutEmbed(interaction);
             break;

@@ -1,25 +1,21 @@
 // Set up env vars for token
 import { config } from "dotenv";
 // Remaining imports
-import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
+import { Events, GatewayIntentBits } from "discord.js";
 import { TermColors } from "./def/termColors.js";
 import { enabledCommands } from "./enabledCommands.js";
-import { Command } from "./def/Command.js";
 import { ButtonHandler } from "./def/ButtonHandler.js";
 import { ModalHandler } from "./def/ModalHandler.js";
 import { ButtonAction } from "./buttons/InventoryButtons.js";
 import { BrowserRenderer } from "./webrender/BrowserRenderer.js";
+import { ClientStore } from "./ClientStore.js";
+import { ScheduledTask } from "./def/ScheduledTask.js";
+import { birthdayAnnouncementHandler } from "./handlers/BirthdayAnnouncementHandler.js";
 
 config();
 const token: string = process.env.DISCORD_TOKEN;
+const client = ClientStore.getClient();
 
-// Extending the base client to include a collection storing commands
-class CustomClient extends Client {
-    commands = new Collection<string, Command>();
-}
-
-// Making the command functions accessible through the client.
-const client = new CustomClient({ intents: [GatewayIntentBits.Guilds] });
 enabledCommands.forEach((command) => {
     client.commands.set(command.commandData.name, command);
 });
@@ -118,3 +114,10 @@ void client.login(token);
 
 // instantiate the browser renderer early on purpose.
 BrowserRenderer.getInstance();
+
+// Register the scheduled tasks.
+const birthdayTask = new ScheduledTask(
+    "birthdayAnnouncements",
+    "0 0 0 * * *",
+    birthdayAnnouncementHandler
+);

@@ -24,6 +24,7 @@ import {
     setAnnouncementChannel,
     setInteractionChannel,
 } from "./commands/AdminChannelSelectionCommands.js";
+import { testCommand } from "./commands/TestCommand.js";
 
 export const enabledCommands: Command[] = [
     ping,
@@ -46,4 +47,5 @@ export const enabledCommands: Command[] = [
     enter,
     setAnnouncementChannel,
     setInteractionChannel,
+    testCommand, // TODO: remove me!
 ];

@@ -8,6 +8,8 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
+import { DataStorage } from "../def/DatabaseWrapper.ts";
+import { replyWithEmbed } from "../def/replyWithEmbed.ts";
 
 export const sendBirthdayModal = async (
     interaction: ChatInputCommandInteraction | ButtonInteraction
@@ -54,6 +56,23 @@ export const sendBirthdayModal = async (
 
     await interaction.showModal(birthdayModal);
 };
+
+export async function changeBirthdayAnnouncement(
+    interaction: ChatInputCommandInteraction | ButtonInteraction,
+    value: boolean
+) {
+    await interaction.deferReply({ ephemeral: true });
+    await DataStorage.setBirthdayAnnouncements(interaction.user.id, value);
+    const type = value ? "Enabled" : "Disabled";
+    void replyWithEmbed(
+        interaction,
+        Lang(`birthday_title_announcements${type}`),
+        Lang(`birthday_description_announcements${type}`),
+        "info",
+        interaction.user,
+        true
+    );
+}
 
 export const setBirthday = new Command(
     Lang("command_setBirthday_name"),

@@ -228,6 +228,8 @@ export interface ILanguage {
     profileMenu_button_inventory: TranslationValue;
     profileMenu_button_getLoan: TranslationValue;
     profileMenu_button_setBirthday: TranslationValue;
+    profileMenu_button_disableBirthdayAnnouncements: TranslationValue;
+    profileMenu_button_enableBirthdayAnnouncements: TranslationValue;
 
     // loan/refund translations
     getLoan_reply_rejectedTitle: TranslationValue;
@@ -253,9 +255,15 @@ export interface ILanguage {
     birthday_reply_setDescription: TranslationValue;
     birthday_format_noneSet: TranslationValue;
 
+    birthday_title_announcementsEnabled: TranslationValue;
+    birthday_title_announcementsDisabled: TranslationValue;
+    birthday_description_announcementsEnabled: TranslationValue;
+    birthday_description_announcementsDisabled: TranslationValue;
+
     // public birthday messages
     publicBirthday_message_header: TranslationValue;
     publicBirthday_message_body: TranslationValue;
+    publicBirthday_message_imageUrl: TranslationValue;
 
     about_header_title: TranslationValue;
     about_header_description: TranslationValue;

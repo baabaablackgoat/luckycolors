@@ -61,7 +61,12 @@ function birthdayAccountedForLeapYear(
     birthday: BirthdayResponse
 ): BirthdayResponse {
     if (isDangerousLeapBirthday(birthday))
-        return { month: 2, day: 28, year: birthday.year };
+        return {
+            month: 2,
+            day: 28,
+            year: birthday.year,
+            announce: birthday.announce,
+        };
     return birthday;
 }
 
