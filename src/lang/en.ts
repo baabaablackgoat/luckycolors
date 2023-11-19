@@ -309,8 +309,11 @@ export const english: ILanguage = {
     birthday_reply_setDescription: "I will remember your birthday as $birthday",
     birthday_format_noneSet: "None set!",
 
-    publicBirthday_message_header: "Happy birthday!",
-    publicBirthday_message_body: "I have yet to add a translation here lemayo",
+    publicBirthday_message_header: "Happy birthday, $name!",
+    publicBirthday_message_body:
+        "Happy $age birthday! You can claim some extra 🪙 in your daily claims today.",
+    publicBirthday_message_imageUrl:
+        "https://media.tenor.com/ms6GOGGZAuAAAAAd/drake-birthday.gif",
 
     command_setAnnouncementChannel_name: "announcementchannel",
     command_setAnnouncementChannel_description:

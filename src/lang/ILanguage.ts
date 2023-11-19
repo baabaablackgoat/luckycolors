@@ -256,6 +256,7 @@ export interface ILanguage {
     // public birthday messages
     publicBirthday_message_header: TranslationValue;
     publicBirthday_message_body: TranslationValue;
+    publicBirthday_message_imageUrl: TranslationValue;
 
     about_header_title: TranslationValue;
     about_header_description: TranslationValue;
