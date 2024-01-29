@@ -17,7 +17,7 @@ function createBirthdayEmbed(target: GuildMember, birthday: BirthdayResponse) {
         .setImage(Lang("publicBirthday_message_imageUrl"))
         .setDescription(
             Lang("publicBirthday_message_body", {
-                age: formatBirthdayAge(birthday),
+                age: formatBirthdayAge(birthday) ?? "",
             })
         );
 }
