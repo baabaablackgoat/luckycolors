@@ -117,3 +117,92 @@ export const addRoleItem = new Command(
         },
     ]
 );
+
+// TODO: change all of the below things to language keys
+export const unlistItem = new Command(
+    "unlist",
+    "🛠️ Unlists an item from the shop",
+    async (interaction) => {
+        if (!(await assertAdminPermissions(interaction))) return;
+        // TODO Implement
+    },
+    [
+        {
+            type: "String",
+            name: "itemname",
+            description: "The item to unlist.",
+            required: true,
+        },
+    ]
+);
+
+// TODO: change all of the below things to language keys
+export const relistItem = new Command(
+    "relist",
+    "🛠️ Lists a currently unlisted item from the shop.",
+    async (interaction) => {
+        if (!(await assertAdminPermissions(interaction))) return;
+        // TODO Implement
+    },
+    [
+        {
+            type: "String",
+            name: "itemname",
+            description: "The item to return to the store.",
+            required: true,
+        },
+    ]
+);
+
+// TODO: change all of the below things to language keys
+export const showUnlisted = new Command(
+    "showunlisted",
+    "🛠️ Shows all currently unlisted items.",
+    async (interaction) => {
+        if (!(await assertAdminPermissions(interaction))) return;
+        // TODO Implement
+    }
+);
+
+// TODO: change all of the below things to language keys
+export const changePrice = new Command(
+    "changePrice",
+    "🛠️ Alters the price for a shop item.",
+    async (interaction) => {
+        if (!(await assertAdminPermissions(interaction))) return;
+        // TODO Implement
+    },
+    [
+        {
+            type: "String",
+            name: "itemname",
+            description: "The item that will have its price altered.",
+            required: true,
+        },
+        {
+            type: "Number",
+            name: "newValue",
+            description: "The new price for the item.",
+            required: true,
+        },
+    ]
+);
+
+// TODO: change all of the below things to language keys
+export const removeItem = new Command(
+    "removeitem",
+    "🛠️ Lists a currently unlisted item from the shop.",
+    async (interaction) => {
+        if (!(await assertAdminPermissions(interaction))) return;
+        // TODO Implement
+        // TODO: Ensure that the admin absolutely wants to remove this item (which should cause a cascade delete in inventories!)
+    },
+    [
+        {
+            type: "String",
+            name: "itemname",
+            description: "The item to permanently remove from the store.",
+            required: true,
+        },
+    ]
+);
