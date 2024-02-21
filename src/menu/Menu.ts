@@ -26,7 +26,7 @@ import {
     sendBirthdayModal,
 } from "../commands/BirthdayCommands";
 import { birthdayIsChangeable, formatBirthday } from "../def/FormatBirthday";
-import { comingSoonReply } from "../commands/SlotsCommands";
+import { slotsExecute } from "../commands/SlotsCommands";
 
 type MenuAction =
     | "enter"
@@ -346,7 +346,7 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
             void dailyExecute(interaction);
             break;
         case "slots":
-            void comingSoonReply(interaction);
+            void slotsExecute(interaction, 5);
             break;
         case "stake":
             const game = interaction.customId.split("_")[2];

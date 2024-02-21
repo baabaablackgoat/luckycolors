@@ -13,22 +13,24 @@ const minStake = 1;
 
 export function getValidStake(
     interaction: ChatInputCommandInteraction,
-    stake: number
+    stake: number,
+    max: number = maxStake,
+    min: number = minStake
 ): number {
-    if (stake < minStake || stake > maxStake) {
+    if (stake < min || stake > max) {
         void replyWithEmbed(
             interaction,
             Lang("isValidStake_error_invalidStakeTitle"),
             Lang("isValidStake_error_invalidStakeDescription", {
                 stake,
-                minStake,
-                maxStake,
+                min,
+                max,
             }),
             "warn",
             interaction.user,
             true
         );
-        return 0;
+        return -1;
     }
     return Math.round(stake);
 }

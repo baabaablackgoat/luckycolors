@@ -8,175 +8,130 @@ import { randomInt } from "../def/randomInt.js";
 import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
 import { getValidStake } from "../def/isValidStake.js";
 
-type SlotSymbol = {
-    emoji: string;
-    weight: number;
-    payout: number;
-};
-
-const SlotSymbols: SlotSymbol[] = [
-    {
-        emoji: "🍈",
-        weight: 10,
-        payout: 2,
-    },
-    {
-        emoji: "🍍",
-        weight: 5,
-        payout: 5,
-    },
-    {
-        emoji: "7️⃣",
-        weight: 3,
-        payout: 10,
-    },
-    {
-        emoji: "⭐",
-        weight: 2,
-        payout: 20,
-    },
-    {
-        emoji: "👽",
-        weight: 1,
-        payout: 50,
-    },
-];
-const totalWeight = SlotSymbols.map((i) => i.weight).reduce((i, j) => i + j);
-
-function symbolPicker(): SlotSymbol {
-    const randomizedWeight = Math.random() * totalWeight;
-    let sum = 0;
-    let chosenSymbol: SlotSymbol | undefined;
-    for (let i = 0; i < SlotSymbols.length; i++) {
-        const symbol = SlotSymbols[i];
-        sum += symbol.weight;
-        if (sum >= randomizedWeight) {
-            chosenSymbol = symbol;
-            break;
-        }
-    }
-    if (chosenSymbol) return chosenSymbol;
-    // This should never happen, but just in case something went wrong - return the first known symbol.
-    console.warn(
-        `The symbol picker function has not reached a decision after iterating through all symbols.
-        This is a bug! Returning the first symbol by default.
-        Chosen weight: ${randomizedWeight}, total weight: ${totalWeight}`
-    );
-    return SlotSymbols[0];
-}
-
-export function comingSoonReply(
-    interaction: ChatInputCommandInteraction | ButtonInteraction
-) {
-    void replyWithEmbed(
-        interaction,
-        "Coming soon!",
-        "Let him cook, Jesse.",
-        "info",
-        interaction.user,
-        true
-    );
-}
-
 export const slots = new Command(
-    "slots",
-    "Play on a simulated slot machine for your 🪙",
+    "slots", // TODO translate me!
+    "Play on a simulated slot machine for your 🪙", // TODO translate me!
     async (interaction) => {
-        //TODO: Rework the slots, then drop the coming soon stuff.
-        comingSoonReply(interaction);
-        return;
-        // original code starts here
         const stake = getValidStake(
             interaction,
             interaction.options.getNumber("stake")
         );
-        if (stake === 0) return;
-        await interaction.deferReply({ ephemeral: true });
-        const userBalance = await DataStorage.getUserBalance(
-            interaction.user.id
-        );
-        try {
-            await DataStorage.subtractUserBalance(interaction.user.id, stake);
-        } catch (e) {
-            if (e instanceof InsufficientBalanceError) {
-                void replyWithEmbed(
-                    interaction,
-                    "Not enough 🪙",
-                    `Your current balance: ${userBalance}`,
-                    "warn",
-                    interaction.user
-                );
-                return;
-            } else throw e;
-        }
-
-        // write the first response before the delayed results
-        const toasts = [
-            "The wheels go speen",
-            "haha, slots go brr",
-            "WHEEEEEEEEL OF MONEY",
-            "speen.",
-            "Spinning the slot wheels...",
-            "speen-ing the slot wheels...",
-            "Waiting for Salem to turn the handcrank on this bad boy...",
-        ];
-        await replyWithEmbed(
-            interaction,
-            toasts[randomInt(0, toasts.length)],
-            `Spinning the wheels for ${stake} 🪙...\n⬛    ⬛    ⬛`,
-            "info"
-        );
-        // fake calculation time :3c
-        setTimeout(() => {
-            slotResultsShower(interaction, stake);
-        }, 1000);
+        if (stake <= 0) return;
+        void slotsExecute(interaction, stake);
     },
     [
         {
-            name: "stake",
-            description: `The amount of credits to stake. Must be between `,
+            name: "stake", // TODO translate me!
+            description: `The amount of credits to stake. Must be between 1 and 5`, // TODO translate me!
             type: "Number",
             required: true,
         },
     ]
 );
 
-/**
- * This function is here to be called by setTimeout, to give the illusion of spinning slots
- * @param interaction The interaction that called the slots
- * @param stake The stake that was set.
- */
-async function slotResultsShower(
-    interaction: ChatInputCommandInteraction,
+type SlotSymbol = {
+    payout: number;
+    weight: number;
+    symbol: string | null;
+};
+
+const slotsWeights: Array<SlotSymbol> = [
+    { payout: 0, weight: 20, symbol: null },
+    { payout: 1, weight: 10, symbol: ":grapes:" },
+    { payout: 1.5, weight: 5, symbol: ":tangerine:" },
+    { payout: 2, weight: 3, symbol: ":cherries:" },
+    { payout: 5, weight: 2, symbol: ":watermelon:" },
+    { payout: 10, weight: 1, symbol: "<:seben:1209838452250640424>" },
+];
+
+const totalSlotWeights = () =>
+    slotsWeights.reduce((acc, cur) => acc + cur.weight, 0);
+export function calculateExpectedValue() {
+    const totalWeight = totalSlotWeights();
+    return slotsWeights.reduce(
+        (acc, cur) => acc + cur.payout * (cur.weight / totalWeight),
+        0
+    );
+}
+
+/* I see you're reading the code.
+/ Yes, slots is completely fucking rigged. That's the point. Realism!
+/ Please don't gamble with your actual money. And if you do, set a strict limit on yourself.
+ This is all for fake coins that have no value.
+*/
+
+export function chooseSlotsOutcome(): SlotSymbol {
+    const randomizedWeight = Math.random() * totalSlotWeights();
+    let sum = 0;
+    let chosenOutcome: { payout: number; weight: number; symbol: string };
+    for (let i = 0; i < slotsWeights.length; i++) {
+        const possibleOutcome = slotsWeights[i];
+        sum += possibleOutcome.weight;
+        if (sum >= randomizedWeight) {
+            chosenOutcome = possibleOutcome;
+            break;
+        }
+    }
+    if (chosenOutcome) return chosenOutcome;
+    throw new Error(
+        `Couldn't determine a slots outcome. Chosen weight: ${randomizedWeight}, total weight: ${totalSlotWeights()}`
+    );
+}
+
+export function constructFakeSlotsResult(outcome: SlotSymbol) {
+    const outputLength = 3;
+    const possibleFakeSymbols = slotsWeights.filter((el) => el.symbol !== null);
+    if (outcome.payout === 0) {
+        let choices = [];
+        for (let i = 0; i < outputLength; i++) {
+            if (i === outputLength - 1) {
+                // ensure the last symbol does not match by taking the "next" symbol
+                const index = possibleFakeSymbols.indexOf(
+                    choices[choices.length - 1]
+                );
+                choices.push(
+                    possibleFakeSymbols[
+                        (index + 1) % possibleFakeSymbols.length
+                    ]
+                );
+            } else
+                choices.push(
+                    possibleFakeSymbols[
+                        randomInt(0, possibleFakeSymbols.length - 1)
+                    ]
+                );
+        }
+        return choices.reduce((acc, cur) => acc + cur.symbol, "");
+    } else {
+        return `${outcome.symbol} `.repeat(3).trim();
+    }
+}
+
+export async function slotsExecute(
+    interaction: ChatInputCommandInteraction | ButtonInteraction,
     stake: number
 ) {
-    const slotResults: SlotSymbol[] = [];
-    for (let i = 0; i < 3; i++) {
-        slotResults.push(symbolPicker());
+    await interaction.deferReply({ ephemeral: true });
+    const userBalance = await DataStorage.getUserBalance(interaction.user.id);
+    try {
+        await DataStorage.subtractUserBalance(interaction.user.id, stake);
+    } catch (e) {
+        if (e instanceof InsufficientBalanceError) {
+            void replyWithEmbed(
+                interaction,
+                "Not enough 🪙",
+                `Your current balance: ${userBalance}`,
+                "warn",
+                interaction.user
+            );
+            return;
+        } else throw e;
     }
-
-    const won: boolean =
-        slotResults[0].emoji === slotResults[1].emoji &&
-        slotResults[0].emoji === slotResults[2].emoji;
-
-    const slotResultsString = `${slotResults[0].emoji}    ${slotResults[1].emoji}    ${slotResults[2].emoji}`;
-    if (won) {
-        const wonCredits = stake * slotResults[0].payout;
-        await DataStorage.addUserBalance(interaction.user.id, wonCredits);
-        void replyWithEmbed(
-            interaction,
-            "You win!",
-            `${stake} 🪙 => **${wonCredits} 🪙**\n${slotResultsString}`,
-            "info",
-            interaction.user
-        );
-    } else {
-        void replyWithEmbed(
-            interaction,
-            "oof.",
-            `Better luck next time.\n${slotResultsString}`,
-            "info",
-            interaction.user
-        );
-    }
+    const outcome = chooseSlotsOutcome();
+    void replyWithEmbed(
+        interaction,
+        "Slots woa",
+        constructFakeSlotsResult(outcome),
+        "info"
+    );
 }

@@ -472,6 +472,7 @@ export const blackjack = new Command(
             interaction,
             interaction.options.getNumber("stake")
         );
+        if (stake <= 0) return;
         void blackjackExecute(interaction, stake);
     },
     [
@@ -488,7 +489,6 @@ export const blackjackExecute = async (
     interaction: ChatInputCommandInteraction | ButtonInteraction,
     stake: number
 ) => {
-    if (stake === 0) return;
     try {
         await interaction.deferReply({ ephemeral: true });
         await DataStorage.subtractUserBalance(interaction.user.id, stake);
