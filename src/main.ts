@@ -11,6 +11,7 @@ import { BrowserRenderer } from "./webrender/BrowserRenderer.js";
 import { ClientStore } from "./ClientStore.js";
 import { ScheduledTask } from "./def/ScheduledTask.js";
 import { birthdayAnnouncementHandler } from "./handlers/BirthdayAnnouncementHandler.js";
+import { assertAdminPermissions } from "./def/Command.ts";
 
 config();
 const token: string = process.env.DISCORD_TOKEN;
@@ -66,6 +67,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
                     break;
                 case "menu":
                     void ButtonHandler.menu(interaction);
+                    break;
+                case "admin":
+                    if (!(await assertAdminPermissions(interaction))) return;
+                    void ButtonHandler.admin(interaction);
                     break;
                 default:
                     console.log(

@@ -1,4 +1,5 @@
 import {
+    ButtonInteraction,
     ChannelType,
     ChatInputCommandInteraction,
     GuildMember,
@@ -117,14 +118,16 @@ export class Command {
  * @returns true if allowed, false if not. False will answer the interaction.
  */
 export async function assertAdminPermissions(
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction | ButtonInteraction
 ): Promise<boolean> {
     if (!interaction.member || !(interaction.member instanceof GuildMember)) {
         await replyWithEmbed(
             interaction,
             "Couldn't determine access",
             "I'm not sure if you're allowed to run this command...",
-            "warn"
+            "warn",
+            interaction.user,
+            true
         );
         return false;
     }
@@ -137,7 +140,9 @@ export async function assertAdminPermissions(
             interaction,
             "No permission",
             "You're not allowed to use this command.",
-            "error"
+            "error",
+            interaction.user,
+            true
         );
         return false;
     }

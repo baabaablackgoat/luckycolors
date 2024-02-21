@@ -1,7 +1,5 @@
-import {
-    chooseSlotsOutcome,
-    constructFakeSlotsResult,
-} from "./commands/SlotsCommands.js";
+import { constructFakeSlotsResult } from "./commands/SlotsCommands.js";
+
 for (let i = 0; i < 50; i++) {
     let printResult = constructFakeSlotsResult({
         payout: 0,

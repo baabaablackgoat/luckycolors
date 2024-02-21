@@ -1,11 +1,15 @@
 import { Snowflake } from "discord.js";
 import { readFileSync, writeFile } from "fs";
+import { SlotSymbol } from "../commands/SlotsCommands.ts";
 
 interface ISettings {
     interactionChannels: { [key: Snowflake]: Snowflake };
     announcementChannels: { [key: Snowflake]: Snowflake };
     guildIds: Snowflake[];
     clientId: string;
+    slotsEmotes: SlotSymbol[];
+    slotsNullWeight: number;
+    slotsRollingEmote: string;
 }
 
 const settingsFileLocation = "./botSettings.json";

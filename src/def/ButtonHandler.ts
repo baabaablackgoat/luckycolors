@@ -12,6 +12,7 @@ import { BlackjackStorage } from "../commands/BlackjackCommands";
 import { pageChangeHandler } from "../handlers/PageChangeHandler";
 import { Lang } from "../lang/LanguageProvider";
 import { menuButtonHandler } from "../menu/Menu";
+import { slotsAdminButtonHandler } from "../commands/SlotsCommands.ts";
 
 function getItemID(customID: string): string {
     return customID.split("_")[1];
@@ -79,5 +80,37 @@ export class ButtonHandler {
 
     static async menu(interaction: ButtonInteraction) {
         await menuButtonHandler(interaction);
+    }
+
+    static async admin(interaction: ButtonInteraction) {
+        try {
+            const [_, target, subTarget] = interaction.customId.split("_");
+            if (!target)
+                console.warn(
+                    "Admin interaction received that doesn't actually seem to have a target interaction - skipping"
+                );
+            switch (target) {
+                case "slots":
+                    await slotsAdminButtonHandler(interaction, subTarget);
+                    break;
+                default:
+                    void replyWithEmbed(
+                        interaction,
+                        "Invalid admin interaction",
+                        "This interaction seems to have a broken ID",
+                        "warn",
+                        interaction.user,
+                        true
+                    );
+                    console.warn(
+                        `Invalid admin interaction received - target ${target} was not found`
+                    );
+            }
+        } catch (e) {
+            console.error(
+                "Something went wrong while handling an administrative button interaction",
+                e
+            );
+        }
     }
 }
