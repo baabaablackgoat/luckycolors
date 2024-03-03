@@ -6,4 +6,5 @@ out/*
 /src/webrender/fnv_cards/
 /src/webrender/cards/
 /src/webrender/fonts/
+/src/webrender/slots/
 /secrets.md

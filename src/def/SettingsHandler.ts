@@ -7,9 +7,8 @@ interface ISettings {
     announcementChannels: { [key: Snowflake]: Snowflake };
     guildIds: Snowflake[];
     clientId: string;
-    slotsEmotes: SlotSymbol[];
+    slotsEmotes: Record<string, SlotSymbol>;
     slotsNullWeight: number;
-    slotsRollingEmote: string;
 }
 
 const settingsFileLocation = "./botSettings.json";

@@ -15,6 +15,8 @@ import {
 } from "discord.js";
 import { getValidStake } from "../def/isValidStake.js";
 import { BotSettings } from "../def/SettingsHandler.ts";
+import { objectToMap } from "../def/MapHelpers.ts";
+import { BrowserRenderer } from "../webrender/BrowserRenderer.ts";
 
 export const slots = new Command(
     "slots", // TODO translate me!
@@ -49,31 +51,45 @@ export type SlotSymbol = {
     symbol: string | null;
 };
 
-function getSlotWeights(): Array<SlotSymbol> {
-    const setEmotes = BotSettings.getSetting("slotsEmotes");
+function getSlotWeights(): Map<string, SlotSymbol> {
+    const settingsWeights = objectToMap<SlotSymbol>(
+        BotSettings.getSetting("slotsEmotes")
+    );
     const nullWeight = BotSettings.getSetting("slotsNullWeight");
-    return [{ payout: 0, weight: nullWeight, symbol: null }, ...setEmotes];
+    return new Map([
+        ["failWeight", { payout: 0, weight: nullWeight, symbol: null }],
+        ...settingsWeights,
+    ]);
 }
 
 const totalSlotWeights = () =>
-    getSlotWeights().reduce((acc, cur) => acc + cur.weight, 0);
+    Array.from(getSlotWeights()).reduce(
+        (acc, [_name, cur]) => acc + cur.weight,
+        0
+    );
 
 export function calculateExpectedValue() {
     const totalWeight = totalSlotWeights();
-    return getSlotWeights().reduce(
-        (acc, cur) => acc + cur.payout * (cur.weight / totalWeight),
+    return Array.from(getSlotWeights()).reduce(
+        (acc, [_name, cur]) => acc + cur.payout * (cur.weight / totalWeight),
         0
     );
 }
 
-export function chooseSlotsOutcome(): SlotSymbol {
+export function chooseSlotsOutcome(): [string, SlotSymbol] {
     const randomizedWeight = Math.random() * totalSlotWeights();
     let sum = 0;
     const slotsWeights = getSlotWeights();
-    let chosenOutcome: { payout: number; weight: number; symbol: string };
-    for (let i = 0; i < slotsWeights.length; i++) {
-        const possibleOutcome = slotsWeights[i];
-        sum += possibleOutcome.weight;
+    const weightIterator = slotsWeights.entries();
+    let chosenOutcome: [string, SlotSymbol];
+    for (let i = 0; i < slotsWeights.size; i++) {
+        const iter = weightIterator.next();
+        if (iter.done)
+            throw new Error(
+                "The slots weights iterator was exceeded - How the hell did this happen"
+            );
+        const possibleOutcome = iter.value as [string, SlotSymbol];
+        sum += possibleOutcome[1].weight;
         if (sum >= randomizedWeight) {
             chosenOutcome = possibleOutcome;
             break;
@@ -85,13 +101,17 @@ export function chooseSlotsOutcome(): SlotSymbol {
     );
 }
 
-export function constructFakeSlotsResult(outcome: SlotSymbol) {
+export function getExistingSlotsSymbols(): SlotSymbol[] {
+    return [...getSlotWeights()]
+        .filter((el) => el[1].symbol !== null)
+        .map((el) => el[1]);
+}
+
+export function getFakeSlotSymbolIcons(outcome: SlotSymbol): Array<SlotSymbol> {
     const outputLength = 3;
-    const possibleFakeSymbols = getSlotWeights().filter(
-        (el) => el.symbol !== null
-    );
+    const possibleFakeSymbols = getExistingSlotsSymbols();
     if (outcome.payout === 0) {
-        let choices = [];
+        let choices: Array<SlotSymbol> = [];
         for (let i = 0; i < outputLength; i++) {
             if (i === outputLength - 1) {
                 // ensure the last symbol does not match by taking the "next" symbol
@@ -110,9 +130,9 @@ export function constructFakeSlotsResult(outcome: SlotSymbol) {
                     ]
                 );
         }
-        return choices.reduce((acc, cur) => acc + cur.symbol, "");
+        return choices.map((choice) => choice);
     } else {
-        return `${outcome.symbol} `.repeat(3).trim();
+        return Array(3).fill(outcome);
     }
 }
 
@@ -136,26 +156,31 @@ export async function slotsExecute(
             return;
         } else throw e;
     }
-    const outcome = chooseSlotsOutcome();
-    void replyWithEmbed(
-        interaction,
-        "Slots woa",
-        BotSettings.getSetting("slotsRollingEmote").repeat(3),
-        "info"
+    const outcome = chooseSlotsOutcome()[1];
+    const fakeResult = getFakeSlotSymbolIcons(outcome);
+    void replyWithEmbed(interaction, "Slots woa", "spinning", "info");
+    const slotsRenderURI = await BrowserRenderer.getInstance().renderSlots(
+        interaction.id,
+        fakeResult
     );
 
-    setTimeout(() => {
-        void replyWithEmbed(
+    setTimeout(async () => {
+        await replyWithEmbed(
             interaction,
             "Slots woa",
-            constructFakeSlotsResult(outcome),
-            "info"
+            "woa!",
+            "info",
+            interaction.user,
+            true,
+            undefined,
+            slotsRenderURI
         );
         if (outcome.payout !== 0)
             DataStorage.addUserBalance(
                 interaction.user.id,
                 Math.ceil(stake * outcome.payout)
             );
+        // await BrowserRenderer.getInstance().cleanupSlots(interaction.id);
     }, 1500);
 }
 
@@ -191,19 +216,7 @@ export const adminSlotsMenu = new Command(
             new ButtonBuilder()
                 .setLabel("Change fail weight")
                 .setStyle(ButtonStyle.Primary)
-                .setCustomId("admin_slots_failweight"),
-            new ButtonBuilder()
-                .setLabel("Add symbol")
-                .setStyle(ButtonStyle.Primary)
-                .setCustomId("admin_slots_addsymbol"),
-            new ButtonBuilder()
-                .setLabel("Remove symbol")
-                .setStyle(ButtonStyle.Primary)
-                .setCustomId("admin_slots_removesymbol"),
-            new ButtonBuilder()
-                .setLabel("Set spinning emote")
-                .setStyle(ButtonStyle.Primary)
-                .setCustomId("admin_slots_spinsymbol")
+                .setCustomId("admin_slots_failweight")
         );
         void interaction.editReply({
             embeds: [slotsAdminMenuEmbed],
@@ -232,9 +245,6 @@ export async function slotsAdminButtonHandler(
     switch (subTarget) {
         case "weights":
         case "failweight":
-        case "addsymbol":
-        case "removesymbol":
-        case "spinsymbol":
             void replyWithEmbed(
                 interaction,
                 "Not done yet",

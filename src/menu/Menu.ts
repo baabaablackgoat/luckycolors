@@ -119,7 +119,7 @@ function profileMenuEmbed(
             iconURL: user.avatarURL(),
         })
         .setColor(0xff0088)
-        .setImage("https://baabaablackgoat.com/res/salem/menuProfileGlass2.png")
+        .setImage("https://baabaablackgoat.com/res/salem/menuProfileNew.png")
         .addFields([
             {
                 name: Lang("profileMenu_field_balanceName"),
