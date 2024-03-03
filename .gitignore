@@ -8,3 +8,6 @@ out/*
 /src/webrender/fonts/
 /src/webrender/slots/
 /secrets.md
+/src/res/Colby_cropped.png
+/.idea/icon.svg
+/.idea/dataSources/

@@ -180,7 +180,7 @@ export async function slotsExecute(
                 interaction.user.id,
                 Math.ceil(stake * outcome.payout)
             );
-        // await BrowserRenderer.getInstance().cleanupSlots(interaction.id);
+        await BrowserRenderer.getInstance().cleanupSlots(interaction.id);
     }, 1500);
 }
 
