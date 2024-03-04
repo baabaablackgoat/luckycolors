@@ -156,7 +156,8 @@ export class BrowserRenderer {
 
     public async renderSlots(
         interactionID: Snowflake,
-        symbols: Array<SlotSymbol>
+        symbols: Array<SlotSymbol>,
+        outcome: string
     ): Promise<string> {
         if (!this.ready) throw new Error("not ready"); // todo make better error
         let slotsContent = slotsTemplate;
@@ -190,6 +191,7 @@ export class BrowserRenderer {
                     symbolProxy[symbolIndex + 1].symbol
                 );
         }
+        slotsContent = slotsContent.replace("$outcome", outcome);
         fs.writeFileSync(
             `./${BrowserRenderer.slotsDir}/${interactionID}.html`,
             slotsContent

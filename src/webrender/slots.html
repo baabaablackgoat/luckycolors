@@ -25,7 +25,9 @@
         }
 
         #slotWrapper {
-            background-color: #991;
+            background: linear-gradient(#bf9b30, #a67c00);
+            box-shadow: 5px 5px 10px rgba(0,0,0,.5), inset 5px 5px 10px rgba(0,0,0,.3), inset -5px -5px 10px rgba(0,0,0,.3);
+            border-radius: 5px;
             padding: 20px 50px;
             display: flex;
             width: fit-content;
@@ -36,7 +38,7 @@
             width: 150px;
             background-color: #ccc;
             margin: 0 5px;
-            box-shadow: black 5px 5px 5px 5px;
+            box-shadow: inset 5px 5px 10px rgba(0,0,0,1), inset -5px -5px 10px rgba(0,0,0,1);
         }
         .slotWheel > * {
             box-sizing: border-box;
@@ -52,6 +54,7 @@
         }
         .slotWheelTop {
             border-bottom: 4px solid gray;
+            border-top: 3px solid rgba(0,0,0,0);
             height: 75px;
         }
         .slotWheelTop img {
@@ -62,13 +65,33 @@
         }
         .slotWheelBottom {
             border-top: 4px solid gray;
+            border-bottom: 3px solid rgba(0,0,0,0);
             height: 75px;
+        }
+
+        #outcome {
+            margin: 20px auto;
+            font-size: 2em;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 <img alt="bgImg" id="bgImg" src="../../src/webrender/blackjackBgBlurryGreen.png">
 <div id="slotWrapper">
+    <!-- example wheel for debugging
+    <div class="slotWheel">
+        <div class="slotWheelTop">
+            <img src="../../src/webrender/slots/tangerine.png"/>
+        </div>
+        <div class="slotWheelLine">
+            <img src="../../src/webrender/slots/seben.png"/>
+        </div>
+        <div class="slotWheelBottom">
+            <img src="../../src/webrender/slots/grapes.png"/>
+        </div>
+    </div>
+    -->
     <div class="slotWheel">
         <div class="slotWheelTop">
             <img src="../../src/webrender/slots/$imagePlaceholder0"/>
@@ -103,6 +126,7 @@
         </div>
     </div>
 </div>
+<div id="outcome">$outcome</div>
 
 </body>
 </html>

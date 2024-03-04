@@ -161,8 +161,11 @@ export async function slotsExecute(
     void replyWithEmbed(interaction, "Slots woa", "spinning", "info");
     const slotsRenderURI = await BrowserRenderer.getInstance().renderSlots(
         interaction.id,
-        fakeResult
-    );
+        fakeResult,
+        outcome.payout !== 0
+            ? `Payout: ${stake * outcome.payout} 🪙`
+            : `Lost ${stake} 🪙`
+    ); // TODO translate this too!!
 
     setTimeout(async () => {
         await replyWithEmbed(
