@@ -177,7 +177,32 @@ class BlackjackGame {
         await this.updateGameState();
     }
     public async userDoubleDown() {
-        // remove 2nd set of stake first
+        // verify whether the game state actually allows for doubling down right now (i.e. user has already drawn another card)
+        if (this.UserCards.length > 2) {
+            await replyWithEmbed(
+                this.interaction,
+                "Invalid interaction",
+                "You can't double down right now. Don't try to cheat, please. Your stake may have been lost.",
+                "error",
+                this.interaction.user,
+                true
+            );
+            return;
+        }
+        // verify whether the user can afford a double down (could occur when the user is trying to be dumb with old interaction buttons)
+        if (!(await this.canAffordDoubleDown())) {
+            await replyWithEmbed(
+                this.interaction,
+                "Insufficient balance",
+                "You dont have enough coins to double down, neither should you have been able to click this. Your stake might have been lost.",
+                "warn",
+                this.interaction.user,
+                true
+            );
+            return;
+        }
+
+        // remove 2nd set of stake
         await DataStorage.subtractUserBalance(
             this.interaction.user.id,
             this.stake

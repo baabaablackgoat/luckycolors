@@ -204,11 +204,19 @@ export const adminSlotsMenu = new Command(
                     inline: true,
                 },
                 {
-                    name: "Configured emotes",
-                    value: BotSettings.getSetting(
-                        "slotsEmotes"
-                    ).length.toString(),
+                    name: "Fail Weight",
+                    value: BotSettings.getSetting("slotsNullWeight").toString(),
                     inline: true,
+                },
+                {
+                    name: "Configured emotes",
+                    value:
+                        Object.entries(
+                            BotSettings.getSetting("slotsEmotes")
+                        ).reduce((prev, [key, val]) => {
+                            return `${prev}\n- ${key}\t\t Pays ${val.payout}:1\t Weight ${val.weight}`;
+                        }, "```md") + "```",
+                    inline: false,
                 },
             ]);
         const slotsAdminMenuButtons = new ActionRowBuilder().addComponents(
@@ -216,6 +224,10 @@ export const adminSlotsMenu = new Command(
                 .setLabel("Change weights")
                 .setStyle(ButtonStyle.Primary)
                 .setCustomId("admin_slots_weights"),
+            new ButtonBuilder()
+                .setLabel("Change payouts")
+                .setStyle(ButtonStyle.Primary)
+                .setCustomId("admin_slots_payouts"),
             new ButtonBuilder()
                 .setLabel("Change fail weight")
                 .setStyle(ButtonStyle.Primary)
@@ -247,6 +259,7 @@ export async function slotsAdminButtonHandler(
 
     switch (subTarget) {
         case "weights":
+        case "payouts":
         case "failweight":
             void replyWithEmbed(
                 interaction,
