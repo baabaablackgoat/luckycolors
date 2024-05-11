@@ -50,8 +50,10 @@
             position: absolute;
             width: 130px;
             height: 130px;
-            padding: 10px
+            padding: 10px;
+            z-index: 1;
         }
+
         .slotWheelTop {
             border-bottom: 4px solid #333;
             border-top: 3px solid rgba(0,0,0,0);
@@ -59,6 +61,18 @@
         }
         .slotWheelTop img {
             bottom: 0;
+        }
+        .wheelShade {
+            position: absolute;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+        }
+        .slotWheelTop .wheelShade {
+            background: linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0));
+        }
+        .slotWheelBottom .wheelShade {
+            background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1));
         }
         .slotWheelLine {
             height: 150px;
@@ -79,49 +93,58 @@
 <body>
 <img alt="bgImg" id="bgImg" src="../../src/webrender/blackjackBgBlurryGreen.png">
 <div id="slotWrapper">
-    <!-- example wheel for debugging
+    <!-- testing wheel
     <div class="slotWheel">
         <div class="slotWheelTop">
-            <img src="../../src/webrender/slots/tangerine.png"/>
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/boba.png"/>
         </div>
         <div class="slotWheelLine">
-            <img src="../../src/webrender/slots/seben.png"/>
+            <img src="../../src/webrender/slots/pizza.png"/>
         </div>
         <div class="slotWheelBottom">
-            <img src="../../src/webrender/slots/grapes.png"/>
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/hamburger.png"/>
         </div>
     </div>
     -->
+
     <div class="slotWheel">
         <div class="slotWheelTop">
+            <div class="wheelShade"></div>
             <img src="../../src/webrender/slots/$imagePlaceholder0"/>
         </div>
         <div class="slotWheelLine">
             <img src="../../src/webrender/slots/$imagePlaceholder1"/>
         </div>
         <div class="slotWheelBottom">
+            <div class="wheelShade"></div>
             <img src="../../src/webrender/slots/$imagePlaceholder2"/>
         </div>
     </div>
     <div class="slotWheel">
         <div class="slotWheelTop">
+            <div class="wheelShade"></div>
             <img src="../../src/webrender/slots/$imagePlaceholder3"/>
         </div>
         <div class="slotWheelLine">
             <img src="../../src/webrender/slots/$imagePlaceholder4"/>
         </div>
         <div class="slotWheelBottom">
+            <div class="wheelShade"></div>
             <img src="../../src/webrender/slots/$imagePlaceholder5"/>
         </div>
     </div>
     <div class="slotWheel">
         <div class="slotWheelTop">
+            <div class="wheelShade"></div>
             <img src="../../src/webrender/slots/$imagePlaceholder6"/>
         </div>
         <div class="slotWheelLine">
             <img src="../../src/webrender/slots/$imagePlaceholder7"/>
         </div>
         <div class="slotWheelBottom">
+            <div class="wheelShade"></div>
             <img src="../../src/webrender/slots/$imagePlaceholder8"/>
         </div>
     </div>
