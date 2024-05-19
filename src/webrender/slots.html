@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Slots renderer</title>
+    <style>
+        @font-face {
+            font-family: Market Deco;
+            src: url("../../src/webrender/fonts/Market_Deco.ttf");
+        }
+        html,
+        body {
+            /*background-color: #36393e;*/
+            color: #eee;
+            text-shadow: #000 5px 0 10px, #000 2px 0, #000 -2px 0, #000 0 2px, #000 0 -2px;
+            font-family: "Market Deco", "TerminessTTF Nerd Font Mono", "sans-serif";
+        }
+        #bgImg {
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            position: absolute;
+            top: 0;
+            left: 0
+        }
+
+        #slotWrapper {
+            background: linear-gradient(#bf9b30, #a67c00);
+            box-shadow: 5px 5px 10px rgba(0,0,0,.5), inset 5px 5px 10px rgba(0,0,0,.3), inset -5px -5px 10px rgba(0,0,0,.3);
+            border-radius: 5px;
+            padding: 20px 50px;
+            display: flex;
+            width: fit-content;
+            margin: 60px auto 0;
+        }
+        .slotWheel {
+            height: 300px;
+            width: 150px;
+            background-color: #ccc;
+            margin: 0 5px;
+            box-shadow: inset 5px 5px 10px rgba(0,0,0,1), inset -5px -5px 10px rgba(0,0,0,1);
+        }
+        .slotWheel > * {
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+
+        }
+        .slotWheel img {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            padding: 10px;
+            z-index: 1;
+        }
+
+        .slotWheelTop {
+            border-bottom: 4px solid #333;
+            border-top: 3px solid rgba(0,0,0,0);
+            height: 75px;
+        }
+        .slotWheelTop img {
+            bottom: 0;
+        }
+        .wheelShade {
+            position: absolute;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+        }
+        .slotWheelTop .wheelShade {
+            background: linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0));
+        }
+        .slotWheelBottom .wheelShade {
+            background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1));
+        }
+        .slotWheelLine {
+            height: 150px;
+        }
+        .slotWheelBottom {
+            border-top: 4px solid #333;
+            border-bottom: 3px solid rgba(0,0,0,0);
+            height: 75px;
+        }
+
+        #outcome {
+            margin: 20px auto;
+            font-size: 2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<img alt="bgImg" id="bgImg" src="../../src/webrender/blackjackBgBlurryGreen.png">
+<div id="slotWrapper">
+    <!-- testing wheel
+    <div class="slotWheel">
+        <div class="slotWheelTop">
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/boba.png"/>
+        </div>
+        <div class="slotWheelLine">
+            <img src="../../src/webrender/slots/pizza.png"/>
+        </div>
+        <div class="slotWheelBottom">
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/hamburger.png"/>
+        </div>
+    </div>
+    -->
+
+    <div class="slotWheel">
+        <div class="slotWheelTop">
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/$imagePlaceholder0"/>
+        </div>
+        <div class="slotWheelLine">
+            <img src="../../src/webrender/slots/$imagePlaceholder1"/>
+        </div>
+        <div class="slotWheelBottom">
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/$imagePlaceholder2"/>
+        </div>
+    </div>
+    <div class="slotWheel">
+        <div class="slotWheelTop">
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/$imagePlaceholder3"/>
+        </div>
+        <div class="slotWheelLine">
+            <img src="../../src/webrender/slots/$imagePlaceholder4"/>
+        </div>
+        <div class="slotWheelBottom">
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/$imagePlaceholder5"/>
+        </div>
+    </div>
+    <div class="slotWheel">
+        <div class="slotWheelTop">
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/$imagePlaceholder6"/>
+        </div>
+        <div class="slotWheelLine">
+            <img src="../../src/webrender/slots/$imagePlaceholder7"/>
+        </div>
+        <div class="slotWheelBottom">
+            <div class="wheelShade"></div>
+            <img src="../../src/webrender/slots/$imagePlaceholder8"/>
+        </div>
+    </div>
+</div>
+<div id="outcome">$outcome</div>
+
+</body>
+</html>

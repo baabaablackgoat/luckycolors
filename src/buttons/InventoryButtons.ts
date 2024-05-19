@@ -7,7 +7,8 @@ export type ButtonAction =
     | "page"
     | "drawCard"
     | "blackjack"
-    | "menu";
+    | "menu"
+    | "admin";
 export type ItemButtonAction = "unlock" | "equip" | "remove";
 function ItemButtonBuilder(
     item: Item,

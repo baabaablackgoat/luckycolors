@@ -26,7 +26,7 @@ import {
     sendBirthdayModal,
 } from "../commands/BirthdayCommands";
 import { birthdayIsChangeable, formatBirthday } from "../def/FormatBirthday";
-import { comingSoonReply } from "../commands/SlotsCommands";
+import { slotsExecute } from "../commands/SlotsCommands";
 
 type MenuAction =
     | "enter"
@@ -119,7 +119,7 @@ function profileMenuEmbed(
             iconURL: user.avatarURL(),
         })
         .setColor(0xff0088)
-        .setImage("https://baabaablackgoat.com/res/salem/menuProfileGlass2.png")
+        .setImage("https://baabaablackgoat.com/res/salem/menuProfileNew.png")
         .addFields([
             {
                 name: Lang("profileMenu_field_balanceName"),
@@ -191,9 +191,19 @@ const blackjackStakeEmbed = new EmbedBuilder()
     .setDescription(Lang("menu_text_stakeDescription"))
     .setColor(0xff0088);
 
+/* Slots wager embed */
+// todo translate me when not lazy
+const slotsStakeEmbed = new EmbedBuilder()
+    .setTitle("Slots")
+    .setDescription("Select your wager")
+    .setColor(0xff0088);
+
 /* Stake Menu constructor */
-function stakeRowConstructor(gameId: string, wagerSymbol = "🪙") {
-    const wagers = [1, 2, 5, 10, 25];
+function stakeRowConstructor(
+    gameId: string,
+    wagerSymbol = "🪙",
+    wagers = [1, 2, 5, 10, 25]
+) {
     const row = new ActionRowBuilder();
     wagers.forEach((wager) => {
         row.addComponents(
@@ -346,7 +356,14 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
             void dailyExecute(interaction);
             break;
         case "slots":
-            void comingSoonReply(interaction);
+            // @ts-ignore
+            void interaction.update({
+                embeds: [slotsStakeEmbed],
+                components: [
+                    stakeRowConstructor("slots", undefined, [1, 3, 5]),
+                    backHomeRow,
+                ],
+            });
             break;
         case "stake":
             const game = interaction.customId.split("_")[2];
@@ -355,6 +372,9 @@ export async function menuButtonHandler(interaction: ButtonInteraction) {
             switch (game) {
                 case "blackjack":
                     void blackjackExecute(interaction, stake);
+                    break;
+                case "slots":
+                    void slotsExecute(interaction, stake);
                     break;
                 default:
                     // TODO: report that something went wrong

@@ -6,4 +6,8 @@ out/*
 /src/webrender/fnv_cards/
 /src/webrender/cards/
 /src/webrender/fonts/
+/src/webrender/slots/
 /secrets.md
+/src/res/Colby_cropped.png
+/.idea/icon.svg
+/.idea/dataSources/

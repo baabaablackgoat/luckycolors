@@ -3,6 +3,9 @@ import { replyWithEmbed } from "./replyWithEmbed.js";
 import { Lang } from "../lang/LanguageProvider.js";
 import { DataStorage } from "./DatabaseWrapper.js";
 import { formatBirthday } from "./FormatBirthday";
+import { assertAdminPermissions } from "./Command.ts";
+import { BotSettings } from "./SettingsHandler.ts";
+import { calculateExpectedSlotsValue } from "../commands/SlotsCommands.ts";
 
 export class ModalHandler {
     static async birthday(interaction: ModalSubmitInteraction) {
@@ -86,4 +89,46 @@ export class ModalHandler {
             true
         );
     }
+
+    static async slotsFailWeightHandler(interaction: ModalSubmitInteraction) {
+        if (!(await assertAdminPermissions(interaction))) return;
+
+        const newWeight = parseInt(
+            interaction.fields.getTextInputValue("slotsFailweightModal_weight")
+        );
+        if (isNaN(newWeight)) {
+            void replyWithEmbed(
+                interaction,
+                "Invalid value",
+                "The given weight value could not be parsed.",
+                "warn",
+                interaction.user,
+                true
+            );
+            return;
+        }
+        if (newWeight < 0) {
+            void replyWithEmbed(
+                interaction,
+                "Weight negative",
+                "Weights cant be negative.",
+                "warn",
+                interaction.user,
+                true
+            );
+            return;
+        }
+        BotSettings.setSetting("slotsNullWeight", newWeight);
+        void replyWithEmbed(
+            interaction,
+            "Fail Weight updated",
+            `New fail weight: ${newWeight}. New expected value: ${calculateExpectedSlotsValue()}`,
+            "info",
+            interaction.user,
+            true
+        );
+    }
+
+    static async slotsNullWeightHandler(interaction: ModalSubmitInteraction) {}
+    static async slotsWeightsHandler(interaction: ModalSubmitInteraction) {}
 }

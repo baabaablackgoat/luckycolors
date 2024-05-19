@@ -1,0 +1,16 @@
+{
+  "guildIds": [],
+  "clientId": "",
+  "announcementChannels": {  },
+  "interactionChannels": {  },
+  "slotWeights": {
+    "icecream": { "payout": 1, "weight": 20, "symbol": "softice.png" },
+    "sushi": { "payout": 2, "weight": 20, "symbol": "sushi.png" },
+    "boba": { "payout": 3, "weight": 15, "symbol": "boba.png" },
+    "fries": { "payout": 5, "weight": 10, "symbol": "fries.png" },
+    "pizza": { "payout": 10, "weight": 5, "symbol": "pizza.png" },
+    "hamburger": { "payout": 25, "weight": 3, "symbol": "hamburger.png" },
+    "pancakes": { "payout": 50, "weight": 1, "symbol": "pancakes.png" }
+  },
+  "slotsNullWeight": 40
+}

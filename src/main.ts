@@ -11,6 +11,7 @@ import { BrowserRenderer } from "./webrender/BrowserRenderer.js";
 import { ClientStore } from "./ClientStore.js";
 import { ScheduledTask } from "./def/ScheduledTask.js";
 import { birthdayAnnouncementHandler } from "./handlers/BirthdayAnnouncementHandler.js";
+import { assertAdminPermissions } from "./def/Command.ts";
 
 config();
 const token: string = process.env.DISCORD_TOKEN;
@@ -67,6 +68,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
                 case "menu":
                     void ButtonHandler.menu(interaction);
                     break;
+                case "admin":
+                    if (!(await assertAdminPermissions(interaction))) return;
+                    void ButtonHandler.admin(interaction);
+                    break;
                 default:
                     console.log(
                         "Invalid button interaction ID received, doing nothing"
@@ -86,6 +91,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
             switch (interaction.customId) {
                 case "birthdayModal":
                     void ModalHandler.birthday(interaction);
+                    break;
+                case "slotsFailweightModal":
+                    void ModalHandler.slotsFailWeightHandler(interaction);
+                    break;
+                case "slotsNullWeight":
+                    void ModalHandler.slotsNullWeightHandler(interaction);
+                    break;
+                case "slotsWeightsModal":
+                    void ModalHandler.slotsWeightsHandler(interaction);
                     break;
                 default:
                     console.log(

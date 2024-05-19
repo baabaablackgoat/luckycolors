@@ -9,14 +9,14 @@ import {
 import { addRoleItem } from "./commands/AdminShopCommands.js";
 import {
     buyItem,
-    listOwnedItems,
-    useItem,
     listItems,
+    listOwnedItems,
     shop,
+    useItem,
 } from "./commands/UserShopCommands.js";
 import { daily } from "./commands/DailyStreakCommand.js";
 import { blackjack, drawCard } from "./commands/BlackjackCommands.js";
-import { slots } from "./commands/SlotsCommands.js";
+import { adminSlotsMenu, slots } from "./commands/SlotsCommands.js";
 import { sendMenu } from "./menu/Menu.js";
 import { enter } from "./commands/MenuEntryCommand.js";
 import { setBirthday } from "./commands/BirthdayCommands.js";
@@ -24,7 +24,6 @@ import {
     setAnnouncementChannel,
     setInteractionChannel,
 } from "./commands/AdminChannelSelectionCommands.js";
-import { testCommand } from "./commands/TestCommand.js";
 
 export const enabledCommands: Command[] = [
     ping,
@@ -47,5 +46,5 @@ export const enabledCommands: Command[] = [
     enter,
     setAnnouncementChannel,
     setInteractionChannel,
-    testCommand, // TODO: remove me!
+    adminSlotsMenu,
 ];

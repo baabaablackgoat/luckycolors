@@ -5,11 +5,11 @@
   "description": "",
   "exports": "./index.ts",
   "scripts": {
-    "deployCommands:guilds": "node --experimental-specifier-resolution=node --loader ts-node/esm scripts/deployCommands.ts guilds",
-    "deployCommands:globals": "node --experimental-specifier-resolution=node --loader ts-node/esm scripts/deployCommands.ts globals",
-    "deployCommands:all": "node --experimental-specifier-resolution=node --loader ts-node/esm scripts/deployCommands.ts all",
-    "start": "node --experimental-specifier-resolution=node --loader ts-node/esm src/main.ts",
-    "testScriptPlsIgnore": "node --trace-warnings --experimental-specifier-resolution=node --loader ts-node/esm src/def/ScheduledTaskTester.ts"
+    "deployCommands:guilds": "npx tsx scripts/deployCommands.ts guilds",
+    "deployCommands:globals": "npx tsx scripts/deployCommands.ts globals",
+    "deployCommands:all": "npx tsx scripts/deployCommands.ts all",
+    "start": "npx tsx src/main.ts",
+    "testScriptPlsIgnore": "npx tsx src/genericTest.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "prettier": "^2.8.8",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "tsx": "^4.7.1"
   }
 }
