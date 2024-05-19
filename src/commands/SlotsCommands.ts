@@ -12,6 +12,9 @@ import {
     ButtonStyle,
     ChatInputCommandInteraction,
     EmbedBuilder,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle,
 } from "discord.js";
 import { getValidStake } from "../def/isValidStake.js";
 import { BotSettings } from "../def/SettingsHandler.ts";
@@ -26,7 +29,7 @@ export const slots = new Command(
             interaction,
             interaction.options.getNumber("stake")
         );
-        if (stake <= 0) return;
+        if (stake <= 0 || stake > 5) return;
         void slotsExecute(interaction, stake);
     },
     [
@@ -53,7 +56,7 @@ export type SlotSymbol = {
 
 function getSlotWeights(): Map<string, SlotSymbol> {
     const settingsWeights = objectToMap<SlotSymbol>(
-        BotSettings.getSetting("slotsEmotes")
+        BotSettings.getSetting("slotWeights")
     );
     const nullWeight = BotSettings.getSetting("slotsNullWeight");
     return new Map([
@@ -68,7 +71,7 @@ const totalSlotWeights = () =>
         0
     );
 
-export function calculateExpectedValue() {
+export function calculateExpectedSlotsValue() {
     const totalWeight = totalSlotWeights();
     return Array.from(getSlotWeights()).reduce(
         (acc, [_name, cur]) => acc + cur.payout * (cur.weight / totalWeight),
@@ -140,6 +143,17 @@ export async function slotsExecute(
     interaction: ChatInputCommandInteraction | ButtonInteraction,
     stake: number
 ) {
+    if (stake <= 0 || stake > 5) {
+        void replyWithEmbed(
+            interaction,
+            "Invalid stake",
+            `You can't stake ${stake} coins.`,
+            "warn",
+            interaction.user,
+            true
+        );
+        return;
+    }
     await interaction.deferReply({ ephemeral: true });
     const userBalance = await DataStorage.getUserBalance(interaction.user.id);
     try {
@@ -158,7 +172,17 @@ export async function slotsExecute(
     }
     const outcome = chooseSlotsOutcome()[1];
     const fakeResult = getFakeSlotSymbolIcons(outcome);
-    void replyWithEmbed(interaction, "Slots woa", "spinning", "info");
+    // todo translate
+    void replyWithEmbed(
+        interaction,
+        "Slots",
+        "Spinning the wheels...",
+        "info",
+        interaction.user,
+        true,
+        undefined,
+        new URL("https://baabaablackgoat.com/res/salem/pendingCompressed.gif")
+    );
     const slotsRenderURI = await BrowserRenderer.getInstance().renderSlots(
         interaction.id,
         fakeResult,
@@ -170,8 +194,8 @@ export async function slotsExecute(
     setTimeout(async () => {
         await replyWithEmbed(
             interaction,
-            "Slots woa",
-            "woa!",
+            "Slots",
+            "Wheels locked.",
             "info",
             interaction.user,
             true,
@@ -200,7 +224,7 @@ export const adminSlotsMenu = new Command(
             .addFields([
                 {
                     name: "Current expected value",
-                    value: calculateExpectedValue().toString(),
+                    value: calculateExpectedSlotsValue().toString(),
                     inline: true,
                 },
                 {
@@ -209,10 +233,10 @@ export const adminSlotsMenu = new Command(
                     inline: true,
                 },
                 {
-                    name: "Configured emotes",
+                    name: "Weights",
                     value:
                         Object.entries(
-                            BotSettings.getSetting("slotsEmotes")
+                            BotSettings.getSetting("slotWeights")
                         ).reduce((prev, [key, val]) => {
                             return `${prev}\n- ${key}\t\t Pays ${val.payout}:1\t Weight ${val.weight}`;
                         }, "```md") + "```",
@@ -221,7 +245,7 @@ export const adminSlotsMenu = new Command(
             ]);
         const slotsAdminMenuButtons = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setLabel("Change weights")
+                .setLabel("Change symbol weights")
                 .setStyle(ButtonStyle.Primary)
                 .setCustomId("admin_slots_weights"),
             new ButtonBuilder()
@@ -258,17 +282,14 @@ export async function slotsAdminButtonHandler(
     }
 
     switch (subTarget) {
-        case "weights":
-        case "payouts":
+        // case "weights":
+        // void sendWeightsModal(interaction);
+        // break;
+        // case "payouts":
+        // void sendPayoutsModal(interaction);
+        // break;
         case "failweight":
-            void replyWithEmbed(
-                interaction,
-                "Not done yet",
-                "sowy im lazy and dum",
-                "warn",
-                interaction.user,
-                true
-            );
+            void sendFailWeightModal(interaction);
             break;
         default:
             void replyWithEmbed(
@@ -280,4 +301,85 @@ export async function slotsAdminButtonHandler(
                 true
             );
     }
+}
+
+async function sendFailWeightModal(interaction: ButtonInteraction) {
+    const payingWeight = Array.from(getSlotWeights().values()).reduce(
+        (cur, sym) => {
+            if (sym.payout > 0) return cur + sym.weight;
+            else return cur;
+        },
+        0
+    );
+
+    const failWeightModal = new ModalBuilder()
+        .setTitle("Configuring fail weight")
+        .setCustomId("slotsFailweightModal");
+    const weightInput = new TextInputBuilder()
+        .setCustomId("slotsFailweightModal_weight")
+        .setLabel(`New loss chance (paying weights sum: ${payingWeight})`)
+        .setStyle(TextInputStyle.Short)
+        .setMaxLength(10)
+        .setMinLength(1)
+        .setValue(BotSettings.getSetting("slotsNullWeight").toString())
+        .setRequired(true);
+    const actionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
+        weightInput
+    );
+    failWeightModal.addComponents([actionRow]);
+    await interaction.showModal(failWeightModal);
+}
+
+async function sendWeightsModal(interaction: ButtonInteraction) {
+    // FIXME: Discord.js only allows for 5 inputs. Find a better way
+    const weights = getSlotWeights();
+    const weightsModal = new ModalBuilder()
+        .setTitle("Configuring paying weights")
+        .setCustomId("slotsWeightsModal");
+    const inputs: TextInputBuilder[] = [];
+    weights.forEach((sym, key) => {
+        if (sym.payout == 0) return;
+        const input = new TextInputBuilder()
+            .setLabel(`${key} (pays ${sym.payout}:1)`)
+            .setCustomId(`slotsWeightsModal_${key}`)
+            .setStyle(TextInputStyle.Short)
+            .setMaxLength(10)
+            .setMinLength(1)
+            .setValue(sym.weight.toString());
+        inputs.push(input);
+    });
+    const actionRowSize = 5;
+    const actionRows: ActionRowBuilder<TextInputBuilder>[] = [];
+    for (let i = 0; i < inputs.length; i += actionRowSize) {
+        const chunk: TextInputBuilder[] = inputs.slice(i, i + actionRowSize);
+        actionRows.push(
+            new ActionRowBuilder<TextInputBuilder>().addComponents(chunk)
+        );
+    }
+    weightsModal.addComponents(actionRows);
+    await interaction.showModal(weightsModal);
+}
+
+async function sendPayoutsModal(interaction: ButtonInteraction) {
+    // FIXME: Discord.js only allows for 5 inputs. Find a better way
+    const weights = getSlotWeights();
+    const weightsModal = new ModalBuilder()
+        .setTitle("Configuring payouts. Enter as val:1")
+        .setCustomId("slotsPayoutsModal");
+    const actionRows = [];
+    weights.forEach((sym, key) => {
+        if (sym.payout == 0) return;
+        const input = new TextInputBuilder()
+            .setLabel(`${key} (Weight: ${sym.weight})`)
+            .setCustomId(`weightsModal_${key}`)
+            .setStyle(TextInputStyle.Short)
+            .setMaxLength(10)
+            .setMinLength(1)
+            .setValue(sym.payout.toString());
+        actionRows.push(
+            new ActionRowBuilder<TextInputBuilder>().addComponents(input)
+        );
+    });
+    weightsModal.addComponents(actionRows);
+    await interaction.showModal(weightsModal);
 }

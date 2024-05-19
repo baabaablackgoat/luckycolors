@@ -92,6 +92,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
                 case "birthdayModal":
                     void ModalHandler.birthday(interaction);
                     break;
+                case "slotsFailweightModal":
+                    void ModalHandler.slotsFailWeightHandler(interaction);
+                    break;
+                case "slotsNullWeight":
+                    void ModalHandler.slotsNullWeightHandler(interaction);
+                    break;
+                case "slotsWeightsModal":
+                    void ModalHandler.slotsWeightsHandler(interaction);
+                    break;
                 default:
                     console.log(
                         "Invalid modal interaction ID received, doing nothing"

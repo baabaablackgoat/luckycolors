@@ -3,6 +3,7 @@ import {
     ChannelType,
     ChatInputCommandInteraction,
     GuildMember,
+    ModalSubmitInteraction,
     PermissionsBitField,
     SlashCommandBuilder,
 } from "discord.js";
@@ -118,7 +119,10 @@ export class Command {
  * @returns true if allowed, false if not. False will answer the interaction.
  */
 export async function assertAdminPermissions(
-    interaction: ChatInputCommandInteraction | ButtonInteraction
+    interaction:
+        | ChatInputCommandInteraction
+        | ButtonInteraction
+        | ModalSubmitInteraction
 ): Promise<boolean> {
     if (!interaction.member || !(interaction.member instanceof GuildMember)) {
         await replyWithEmbed(

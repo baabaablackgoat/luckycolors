@@ -7,7 +7,7 @@ interface ISettings {
     announcementChannels: { [key: Snowflake]: Snowflake };
     guildIds: Snowflake[];
     clientId: string;
-    slotsEmotes: Record<string, SlotSymbol>;
+    slotWeights: Record<string, SlotSymbol>;
     slotsNullWeight: number;
 }
 
