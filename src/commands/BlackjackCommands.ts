@@ -16,6 +16,7 @@ import {
 import { getValidStake } from "../def/isValidStake.js";
 import { BrowserRenderer } from "../webrender/BrowserRenderer.js";
 import { Lang } from "../lang/LanguageProvider";
+import { subtractStake } from "../handlers/StakeHandler.ts";
 
 export const drawCard = new Command(
     Lang("command_card_name"),
@@ -203,10 +204,7 @@ class BlackjackGame {
         }
 
         // remove 2nd set of stake
-        await DataStorage.subtractUserBalance(
-            this.interaction.user.id,
-            this.stake
-        );
+        await subtractStake(this.interaction, this.stake);
         // ...and then update the stake to be double
         this.stake = this.stake * 2;
         this.doubledDown = true;
@@ -516,20 +514,17 @@ export const blackjackExecute = async (
 ) => {
     try {
         await interaction.deferReply({ ephemeral: true });
-        await DataStorage.subtractUserBalance(interaction.user.id, stake);
+        if (!(await subtractStake(interaction, stake))) return;
         BlackjackStorage.getInstance().createGame(interaction, stake);
     } catch (e) {
-        if (e instanceof InsufficientBalanceError) {
-            void replyWithEmbed(
-                interaction,
-                Lang("blackjack_error_insufficientBalanceTitle"),
-                Lang("blackjack_error_insufficientBalanceDescription"),
-                "warn",
-                interaction.user,
-                true
-            );
-        } else {
-            throw e;
-        }
+        void replyWithEmbed(
+            interaction,
+            "Something went wrong",
+            "An error occurred while creating a new blackjack game",
+            "error",
+            interaction.user,
+            true
+        );
+        console.error("Failed to create new blackjack game", e);
     }
 };

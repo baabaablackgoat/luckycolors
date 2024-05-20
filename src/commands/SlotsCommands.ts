@@ -20,6 +20,7 @@ import { getValidStake } from "../def/isValidStake.js";
 import { BotSettings } from "../def/SettingsHandler.ts";
 import { objectToMap } from "../def/MapHelpers.ts";
 import { BrowserRenderer } from "../webrender/BrowserRenderer.ts";
+import { subtractStake } from "../handlers/StakeHandler.ts";
 
 export const slots = new Command(
     "slots", // TODO translate me!
@@ -155,21 +156,7 @@ export async function slotsExecute(
         return;
     }
     await interaction.deferReply({ ephemeral: true });
-    const userBalance = await DataStorage.getUserBalance(interaction.user.id);
-    try {
-        await DataStorage.subtractUserBalance(interaction.user.id, stake);
-    } catch (e) {
-        if (e instanceof InsufficientBalanceError) {
-            void replyWithEmbed(
-                interaction,
-                "Not enough 🪙",
-                `Your current balance: ${userBalance}`,
-                "warn",
-                interaction.user
-            );
-            return;
-        } else throw e;
-    }
+    if (!(await subtractStake(interaction, stake))) return;
     const outcome = chooseSlotsOutcome()[1];
     const fakeResult = getFakeSlotSymbolIcons(outcome);
     // todo translate
