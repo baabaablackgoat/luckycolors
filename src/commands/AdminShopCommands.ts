@@ -18,6 +18,7 @@ export const addRoleItem = new Command(
         const cost = interaction.options.getNumber(
             Lang("command_addRole_argCost")
         );
+        const hidden = interaction.options.getBoolean("hidden") ?? false;
         await interaction.deferReply({ ephemeral: true });
         if (!(await assertAdminPermissions(interaction))) return;
         if (cost < 0) {
@@ -75,7 +76,13 @@ export const addRoleItem = new Command(
             return;
         }
 
-        DataStorage.createShopItem(itemName, "role", { roleID: role.id }, cost)
+        DataStorage.createShopItem(
+            itemName,
+            "role",
+            { roleID: role.id },
+            cost,
+            hidden
+        )
             .then(async () => {
                 await replyWithEmbed(
                     interaction,
@@ -114,6 +121,13 @@ export const addRoleItem = new Command(
             name: Lang("command_addRole_argCost"),
             description: Lang("command_addRole_argCostDescription"),
             required: true,
+        },
+        {
+            type: "Boolean",
+            name: "hidden",
+            description:
+                "Whether this item is HIDDEN from shops. Set to true to hide.",
+            required: false,
         },
     ]
 );
@@ -166,7 +180,7 @@ export const showUnlisted = new Command(
 
 // TODO: change all of the below things to language keys
 export const changePrice = new Command(
-    "changePrice",
+    "changeprice",
     "🛠️ Alters the price for a shop item.",
     async (interaction) => {
         if (!(await assertAdminPermissions(interaction))) return;
@@ -181,7 +195,7 @@ export const changePrice = new Command(
         },
         {
             type: "Number",
-            name: "newValue",
+            name: "newvalue",
             description: "The new price for the item.",
             required: true,
         },

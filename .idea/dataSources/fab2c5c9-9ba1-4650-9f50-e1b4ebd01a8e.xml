@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="database.db">
-  <database-model serializer="dbm" dbms="SQLITE" family-id="SQLITE" format-version="4.49">
+  <database-model serializer="dbm" dbms="SQLITE" family-id="SQLITE" format-version="4.51">
     <root id="1">
-      <ServerVersion>3.39.2</ServerVersion>
+      <ServerVersion>3.43.0</ServerVersion>
     </root>
     <collation id="2" parent="1" name="BINARY"/>
     <collation id="3" parent="1" name="NOCASE"/>
@@ -367,8 +367,7 @@
     </routine>
     <schema id="166" parent="1" name="main">
       <Current>1</Current>
-      <IntrospectionTimestamp>2023-11-19.14:06:46.104</IntrospectionTimestamp>
-      <LocalIntrospectionTimestamp>2023-11-19.13:06:46</LocalIntrospectionTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-05-19.23:28:18</LastIntrospectionLocalTimestamp>
     </schema>
     <argument id="167" parent="15">
       <ArgumentDirection>R</ArgumentDirection>
@@ -1425,50 +1424,56 @@
       <DefaultExpression>0</DefaultExpression>
       <Position>5</Position>
     </column>
-    <key id="511" parent="485" name="Shop_PK">
+    <column id="511" parent="485" name="hidden">
+      <DasType>INTEGER|0s</DasType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <key id="512" parent="485" name="Shop_PK">
       <ColNames>itemID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="512" parent="486" name="userID">
+    <column id="513" parent="486" name="userID">
       <DasType>TEXT|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="513" parent="486" name="streak">
+    <column id="514" parent="486" name="streak">
       <DasType>INTEGER|0s</DasType>
       <DefaultExpression>0</DefaultExpression>
       <Position>2</Position>
     </column>
-    <column id="514" parent="486" name="lastClaimed">
+    <column id="515" parent="486" name="lastClaimed">
       <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <index id="515" parent="486" name="sqlite_autoindex_Streaks_1">
+    <index id="516" parent="486" name="sqlite_autoindex_Streaks_1">
       <ColNames>userID</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="516" parent="486" name="Streaks_PK">
+    <key id="517" parent="486" name="Streaks_PK">
       <ColNames>userID</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>sqlite_autoindex_Streaks_1</UnderlyingIndexName>
     </key>
-    <column id="517" parent="487" name="type">
+    <column id="518" parent="487" name="type">
       <DasType>TEXT|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="518" parent="487" name="name">
+    <column id="519" parent="487" name="name">
       <DasType>TEXT|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="519" parent="487" name="tbl_name">
+    <column id="520" parent="487" name="tbl_name">
       <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="520" parent="487" name="rootpage">
+    <column id="521" parent="487" name="rootpage">
       <DasType>INT|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="521" parent="487" name="sql">
+    <column id="522" parent="487" name="sql">
       <DasType>TEXT|0s</DasType>
       <Position>5</Position>
     </column>

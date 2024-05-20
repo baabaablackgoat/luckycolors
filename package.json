@@ -9,7 +9,8 @@
     "deployCommands:globals": "npx tsx scripts/deployCommands.ts globals",
     "deployCommands:all": "npx tsx scripts/deployCommands.ts all",
     "start": "npx tsx src/main.ts",
-    "testScriptPlsIgnore": "npx tsx src/genericTest.ts"
+    "testScriptPlsIgnore": "npx tsx src/genericTest.ts",
+    "dbTestScriptPlsIgnore": "npx tsx src/sql/dbtest.ts"
   },
   "keywords": [],
   "author": "",
