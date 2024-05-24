@@ -33,10 +33,20 @@ export class ButtonHandler {
         const onCooldown =
             lastFoundInteraction !== undefined &&
             new Date(lastFoundInteraction.getTime() + this.cooldown) > now;
-        if (onCooldown)
+        if (onCooldown) {
             console.info(
                 `User ${interaction.user.globalName} (${interaction.user.id}) has triggered the button cooldown`
             );
+            void replyWithEmbed(
+                interaction,
+                "2fast5me",
+                "⏳ Hey, no mashing the buttons! Try again in a few moments.",
+                "warn",
+                interaction.user,
+                true
+            );
+        }
+
         return onCooldown;
     }
     static async equip(interaction: ButtonInteraction) {
