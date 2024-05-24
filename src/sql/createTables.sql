@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS Shop (
     itemType TEXT,
     itemData TEXT,
     value REAL DEFAULT (0),
+    hidden INTEGER DEFAULT (0),
     CONSTRAINT Shop_PK PRIMARY KEY (itemID)
 );
 
@@ -37,3 +38,5 @@ CREATE TABLE IF NOT EXISTS Birthdays (
    announce INTEGER DEFAULT (1),
    CONSTRAINT Birthdays_PK PRIMARY KEY (userId)
 );
+
+PRAGMA FOREIGN_KEYS = 1;

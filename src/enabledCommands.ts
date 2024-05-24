@@ -6,7 +6,13 @@ import {
     setBalance,
     subtractBalance,
 } from "./commands/BalanceCommands.js";
-import { addRoleItem } from "./commands/AdminShopCommands.js";
+import {
+    addRoleItem,
+    changePrice,
+    relistItem,
+    removeItem,
+    unlistItem,
+} from "./commands/AdminShopCommands.js";
 import {
     buyItem,
     listItems,
@@ -47,4 +53,8 @@ export const enabledCommands: Command[] = [
     setAnnouncementChannel,
     setInteractionChannel,
     adminSlotsMenu,
+    unlistItem,
+    relistItem,
+    changePrice,
+    removeItem,
 ];

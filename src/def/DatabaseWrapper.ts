@@ -149,10 +149,14 @@ export class DatabaseWrapper {
     // Item stock / shop related queries
     // =============
 
-    public async listAllShopItems(items = [], offset = 0): Promise<Item[]> {
+    public async listAllShopItems(
+        items = [],
+        offset = 0,
+        showHidden = false
+    ): Promise<Item[]> {
         this.assertReady();
         const limit = 100;
-        const dbResponse = await this.listShopItems(limit, offset);
+        const dbResponse = await this.listShopItems(limit, offset, showHidden);
         const response = items.concat(dbResponse);
         if (dbResponse.length >= limit) {
             return await this.listAllShopItems(response, offset + limit);
@@ -161,10 +165,15 @@ export class DatabaseWrapper {
         }
     }
 
+    public async listAllUnlistedShopItems() {
+        const allShopItems = await this.listAllShopItems();
+        return allShopItems.filter((item) => item.hidden);
+    }
+
     public async listUnownedItems(userID: Snowflake): Promise<Item[]> {
         this.assertReady();
         const dbResponse = await this.database.all(
-            `SELECT * from Shop WHERE NOT EXISTS (SELECT itemID FROM Inventory WHERE Inventory.userID = "${userID}" AND Inventory.itemID = Shop.itemID);`
+            `SELECT * from Shop WHERE NOT EXISTS (SELECT itemID FROM Inventory WHERE Inventory.userID = "${userID}" AND Inventory.itemID = Shop.itemID) AND Shop.hidden = 0;`
         );
         return dbResponse.map((row) => Item.createFromDBResponse(row));
     }
@@ -173,12 +182,19 @@ export class DatabaseWrapper {
      * Lists (at most) `count` shop items, starting with item `offset`.
      * @param limit Defaults to 100 - constrained to database limitations.
      * @param offset
+     * @param showHidden Whether to include 'hidden' items - useful for admins.
      * @returns
      */
-    public async listShopItems(limit = 100, offset = 0): Promise<Item[]> {
+    public async listShopItems(
+        limit = 100,
+        offset = 0,
+        showHidden = false
+    ): Promise<Item[]> {
         this.assertReady();
         const response = await this.database.all(
-            `SELECT * FROM Shop ORDER BY itemName LIMIT ${limit} OFFSET ${offset};`
+            `SELECT * FROM Shop ${
+                showHidden ? "" : "WHERE hidden = 0"
+            } ORDER BY itemName LIMIT ${limit} OFFSET ${offset};`
         );
         if (!response)
             throw new DatabaseError(
@@ -191,16 +207,17 @@ export class DatabaseWrapper {
         itemName: string,
         itemType: ItemType,
         itemData: ItemData,
-        value: number
+        value: number,
+        hidden = false
     ) {
         this.assertReady();
         console.log(JSON.stringify(itemData));
         if (value < 0)
             throw new RangeError("Shop items must not have a negative price.");
         await this.database.exec(
-            `INSERT INTO Shop (itemName, itemType, itemData, value) VALUES ("${itemName}", "${itemType}", '${JSON.stringify(
+            `INSERT INTO Shop (itemName, itemType, itemData, value, hidden) VALUES ("${itemName}", "${itemType}", '${JSON.stringify(
                 itemData
-            )}', ${value});`
+            )}', ${value}, ${hidden ? 1 : 0});`
         );
     }
 
@@ -225,6 +242,24 @@ export class DatabaseWrapper {
     public async removeShopItem(itemID: number) {
         this.assertReady();
         await this.database.exec(`DELETE FROM Shop WHERE itemID = ${itemID};`);
+    }
+
+    public async setShopItemVisibility(itemID: number, hidden: boolean) {
+        this.assertReady();
+        await this.database.exec(
+            `UPDATE Shop SET hidden = ${
+                hidden ? 1 : 0
+            } WHERE itemID = ${itemID};`
+        );
+    }
+
+    public async setShopItemPrice(itemID: number, value: number) {
+        this.assertReady();
+        if (value < 0)
+            throw new RangeError(`Invalid new price specified: ${value}`);
+        await this.database.exec(
+            `UPDATE Shop SET value = ${value} WHERE itemID = ${itemID};`
+        );
     }
 
     // =============
@@ -267,6 +302,14 @@ export class DatabaseWrapper {
             FROM Shop INNER JOIN Inventory ON Shop.itemID = Inventory.itemID
             WHERE userID = "${userID}" AND Inventory.itemID = ${itemID}`);
         return response["COUNT(Shop.itemName)"] >= 1;
+    }
+
+    public async findAllOwners(itemID: number): Promise<Snowflake[]> {
+        this.assertReady();
+        const response: Array<{ userID: Snowflake }> = await this.database.all(
+            `SELECT DISTINCT userID FROM Inventory WHERE itemID = ${itemID};`
+        );
+        return response.map((row) => row.userID);
     }
 
     // =============

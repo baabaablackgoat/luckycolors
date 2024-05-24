@@ -49,7 +49,8 @@ type MenuProfileActions = "daily" | "inventory";
 const publicMenuEntranceEmbed = new EmbedBuilder()
     .setTitle(Lang("menu_entryPoint_title"))
     .setDescription(Lang("menu_entryPoint_description"))
-    .setColor(0xff0088);
+    .setColor(0xff0088)
+    .setImage("https://baabaablackgoat.com/res/salem/menuEntrance.png");
 const publicMenuEntranceButtonRow = [
     new ActionRowBuilder().addComponents(
         new ButtonBuilder()
