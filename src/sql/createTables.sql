@@ -38,3 +38,5 @@ CREATE TABLE IF NOT EXISTS Birthdays (
    announce INTEGER DEFAULT (1),
    CONSTRAINT Birthdays_PK PRIMARY KEY (userId)
 );
+
+PRAGMA FOREIGN_KEYS = 1;

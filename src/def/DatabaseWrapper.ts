@@ -240,7 +240,6 @@ export class DatabaseWrapper {
     }
 
     public async removeShopItem(itemID: number) {
-        // FIXME Before implementing, ensure CASCADE DELETE over Inventory
         this.assertReady();
         await this.database.exec(`DELETE FROM Shop WHERE itemID = ${itemID};`);
     }
