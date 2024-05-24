@@ -8,7 +8,7 @@ import { Lang } from "../lang/LanguageProvider";
 /**
  * Helper function that resolves an item name or ID to a database item. Also does some query sanitization.
  * @param interaction The interaction to possibly reject.
- * @param query: The user query. Separated from interaction to allow for different option names.
+ * @param query The user query. Separated from interaction to allow for different option names.
  * @private
  */
 export async function findItem(

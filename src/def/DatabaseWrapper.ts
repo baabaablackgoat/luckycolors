@@ -165,6 +165,11 @@ export class DatabaseWrapper {
         }
     }
 
+    public async listAllUnlistedShopItems() {
+        const allShopItems = await this.listAllShopItems();
+        return allShopItems.filter((item) => item.hidden);
+    }
+
     public async listUnownedItems(userID: Snowflake): Promise<Item[]> {
         this.assertReady();
         const dbResponse = await this.database.all(
@@ -235,8 +240,27 @@ export class DatabaseWrapper {
     }
 
     public async removeShopItem(itemID: number) {
+        // FIXME Before implementing, ensure CASCADE DELETE over Inventory
         this.assertReady();
         await this.database.exec(`DELETE FROM Shop WHERE itemID = ${itemID};`);
+    }
+
+    public async setShopItemVisibility(itemID: number, hidden: boolean) {
+        this.assertReady();
+        await this.database.exec(
+            `UPDATE Shop SET hidden = ${
+                hidden ? 1 : 0
+            } WHERE itemID = ${itemID};`
+        );
+    }
+
+    public async setShopItemPrice(itemID: number, value: number) {
+        this.assertReady();
+        if (value < 0)
+            throw new RangeError(`Invalid new price specified: ${value}`);
+        await this.database.exec(
+            `UPDATE Shop SET value = ${value} WHERE itemID = ${itemID};`
+        );
     }
 
     // =============
@@ -279,6 +303,14 @@ export class DatabaseWrapper {
             FROM Shop INNER JOIN Inventory ON Shop.itemID = Inventory.itemID
             WHERE userID = "${userID}" AND Inventory.itemID = ${itemID}`);
         return response["COUNT(Shop.itemName)"] >= 1;
+    }
+
+    public async findAllOwners(itemID: number): Promise<Snowflake[]> {
+        this.assertReady();
+        const response: Array<{ userID: Snowflake }> = await this.database.all(
+            `SELECT DISTINCT userID FROM Inventory WHERE itemID = ${itemID};`
+        );
+        return response.map((row) => row.userID);
     }
 
     // =============

@@ -24,6 +24,7 @@ export interface ItemDBResponse {
     value?: number;
     itemData?: string;
     itemType?: string;
+    hidden: number;
 }
 
 export class Item {
@@ -33,6 +34,7 @@ export class Item {
     // These values aren't always necessary
     itemID?: number;
     value?: number;
+    hidden: boolean;
 
     // TODO: I'm not confident with overloads in Typescript, so this will have to do for now. Rework this into an overload!
     static createFromDBResponse(dbResponse: ItemDBResponse): Item {
@@ -41,7 +43,8 @@ export class Item {
             dbResponse.itemType ?? "unknown",
             JSON.parse(dbResponse.itemData) ?? {},
             dbResponse.itemID,
-            dbResponse.value
+            dbResponse.value,
+            dbResponse.hidden == 1
         );
     }
 
@@ -50,13 +53,15 @@ export class Item {
         itemType: string,
         itemData: IItemData,
         itemID?: number,
-        value?: number
+        value?: number,
+        hidden?: boolean
     ) {
         // itemID and value may be undefined - itemID in cases of newly generated items, value in case of retrieved items.
         this.itemID = itemID;
         this.value = value;
         this.itemName = itemName;
         this.itemType = itemType as ItemType;
+        this.hidden = hidden ?? false;
         // load item-type specific data
         switch (itemType) {
             case "role":

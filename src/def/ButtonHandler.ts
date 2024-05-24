@@ -14,6 +14,8 @@ import { pageChangeHandler } from "../handlers/PageChangeHandler";
 import { Lang } from "../lang/LanguageProvider";
 import { menuButtonHandler } from "../menu/Menu";
 import { slotsAdminButtonHandler } from "../commands/SlotsCommands.ts";
+import { assertAdminPermissions } from "./Command.ts";
+import { removeItemButtonHandler } from "../commands/AdminShopCommands.ts";
 
 function getItemID(customID: string): string {
     return customID.split("_")[1];
@@ -108,6 +110,7 @@ export class ButtonHandler {
     }
 
     static async admin(interaction: ButtonInteraction) {
+        if (!(await assertAdminPermissions(interaction))) return;
         if (this.userIsOnCooldown(interaction)) return;
         try {
             const [_, target, subTarget] = interaction.customId.split("_");
@@ -119,6 +122,10 @@ export class ButtonHandler {
                 case "slots":
                     await slotsAdminButtonHandler(interaction, subTarget);
                     break;
+                case "removeItem": {
+                    await removeItemButtonHandler(interaction, subTarget);
+                    break;
+                }
                 default:
                     void replyWithEmbed(
                         interaction,

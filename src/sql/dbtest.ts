@@ -1,3 +1,3 @@
 import { DataStorage } from "../def/DatabaseWrapper.js";
-const noHidden = await DataStorage.listAllShopItems([], 0, false);
-const hidden = await DataStorage.listAllShopItems([], 0, true);
+await new Promise((resolve) => setTimeout(resolve, 1000));
+console.log(await DataStorage.findAllOwners(5));
