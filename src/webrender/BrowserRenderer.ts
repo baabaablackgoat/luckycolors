@@ -8,6 +8,11 @@ import {
     getExistingSlotsSymbols,
     SlotSymbol,
 } from "../commands/SlotsCommands.ts";
+import {
+    BuckshotItem,
+    CoinshotGame,
+    CoinshotPhase,
+} from "../commands/CoinshotCommands.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,6 +22,11 @@ const blackjackTemplate = fs.readFileSync(
     "utf-8"
 );
 const slotsTemplate = fs.readFileSync("./src/webrender/slots.html", "utf-8");
+
+const coinshotTemplate = fs.readFileSync(
+    "./src/webrender/coinshot.html",
+    "utf-8"
+);
 
 export class BrowserRenderer {
     private static instance: BrowserRenderer;
@@ -202,5 +212,71 @@ export class BrowserRenderer {
         const pngOutPath = `./${BrowserRenderer.slotsDir}/${interactionID}.png`;
         await this.page.screenshot({ path: pngOutPath });
         return pngOutPath;
+    }
+
+    public async renderCoinshot(interactionID: Snowflake, game: CoinshotGame) {
+        function shellReplacer(value: undefined | boolean) {
+            switch (value) {
+                case undefined:
+                    return "";
+                case true:
+                    return "live";
+                case false:
+                    return "blank";
+            }
+        }
+
+        function itemReplacer(value: undefined | BuckshotItem) {
+            switch (value) {
+                case BuckshotItem.Saw:
+                    return `<img src="slots/fries.png">`;
+                case BuckshotItem.Handcuffs:
+                    return `<img src="slots/boba.png">`;
+                case BuckshotItem.Cigarettes:
+                    return `<img src="slots/hamburger.png">`;
+                case BuckshotItem.Magnifier:
+                    return `<img src="slots/pancakes.png">`;
+                case BuckshotItem.Beer:
+                    return `<img src="slots/pizza.png">`;
+                case undefined:
+                    return "";
+            }
+        }
+
+        if (!this.ready) throw new Error("not ready"); // todo make better error
+        let coinshotContent = coinshotTemplate;
+        let fakeShells: Array<boolean> = [];
+        if (game.turnPhase == CoinshotPhase.Reloading) {
+            fakeShells = [
+                ...Array(game.shotgun.chamber.insertedTotal).keys(),
+            ].map((i) => i < game.shotgun.chamber.insertedLive);
+        }
+        for (let i = 0; i < 8; i++) {
+            coinshotContent.replace(
+                `$shotClass${i}`,
+                shellReplacer(fakeShells[i])
+            );
+        }
+        const healthElement = `<img src="slots/fries.png" />`;
+        coinshotContent.replace(
+            "$dealerHealth",
+            healthElement.repeat(game.dealer.health)
+        );
+        coinshotContent.replace(
+            "$playerHealth",
+            healthElement.repeat(game.player.health)
+        );
+        for (let i = 0; i < 8; i++) {
+            coinshotContent.replace(
+                `$dealerItem${i}`,
+                itemReplacer(game.dealer.inventory[i])
+            );
+        }
+        for (let i = 0; i < 8; i++) {
+            coinshotContent.replace(
+                `$playerItem${i}`,
+                itemReplacer(game.player.inventory[i])
+            );
+        }
     }
 }

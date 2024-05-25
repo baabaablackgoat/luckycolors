@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            @font-face {
+                font-family: Market Deco;
+                src: url("../../src/webrender/fonts/Market_Deco.ttf");
+            }
+            html,
+            body {
+                /*background-color: #36393e;*/
+                color: #eee;
+                text-shadow: #000 5px 0 10px, #000 2px 0, #000 -2px 0,
+                    #000 0 2px, #000 0 -2px;
+                font-family: "Market Deco", "TerminessTTF Nerd Font Mono",
+                    "sans-serif";
+            }
+            #bgImg {
+                width: 100vw;
+                height: 100vh;
+                z-index: -1;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            #shells {
+                z-index: 1;
+                position: absolute;
+                left: 300px;
+                top: 180px;
+                border: 2px solid gray;
+                padding: 2px;
+                width: fit-content;
+                display: flex;
+                background-color: #aaa;
+            }
+            #dealerItems {
+                top: 20px;
+            }
+            #playerItems {
+                top: 234px;
+            }
+            .shell {
+                border: 1px solid #333;
+                margin: 2px;
+                width: 10px;
+                height: 30px;
+                background-color: #555;
+            }
+            .shell div:first-child {
+                height: 24px;
+            }
+            .shell div:nth-child(2) {
+                height: 2px;
+                background-color: #f90;
+            }
+            .shell div:nth-child(3) {
+                height: 4px;
+                background-color: #333;
+            }
+            .live div:first-child {
+                background-color: red;
+            }
+            .blank div:first-child {
+                background-color: #66f;
+            }
+            .shell:not(.blank):not(.live) div:nth-child(2) {
+                display: none;
+            }
+            .shell:not(.blank):not(.live) div:nth-child(3) {
+                display: none;
+            }
+
+            .items {
+                width: 400px;
+                display: flex;
+                justify-content: space-between;
+                position: absolute;
+            }
+            .items > div {
+                width: 150px;
+                height: fit-content;
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .items > div > div {
+                flex-shrink: 0;
+                width: 73px;
+                height: 75px;
+                border: 1px solid #bbb;
+            }
+            .items img {
+                width: 68px;
+                height: 70px;
+                padding: 2px;
+            }
+
+            .health {
+                position: absolute;
+                border: 2px solid green;
+                background: black;
+                padding: 2px;
+                width: 45px;
+                height: 150px;
+                left: 184px;
+                display: flex;
+                flex-wrap: wrap;
+
+            }
+            .health img {
+                display: block;
+                width: 45px;
+                height: 25px;
+                margin: 0;
+                padding: 0;
+            }
+
+            #playerHealth {
+                top: 230px;
+                align-content: flex-end;
+
+            }
+            #dealerHealth {
+                top: 20px;
+                align-content: flex-start;
+
+            }
+        </style>
+    </head>
+    <body>
+        <img
+            alt="bgImg"
+            id="bgImg"
+            src="../../src/webrender/blackjackBgBlurryGreen.png"
+        />
+        <div id="shells">
+            <div class="shell $shotClass0">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="shell $shotClass1">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="shell $shotClass2">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="shell $shotClass3">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="shell $shotClass4">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="shell $shotClass5">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="shell $shotClass6">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="shell $shotClass7">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <div id="dealerItems" class="items">
+            <div>
+                <div>$dealerItem0</div>
+                <div>$dealerItem1</div>
+                <div>$dealerItem2</div>
+                <div>$dealerItem3</div>
+            </div>
+            <div>
+                <div>$dealerItem4</div>
+                <div>$dealerItem5</div>
+                <div>$dealerItem6</div>
+                <div>$dealerItem7</div>
+            </div>
+        </div>
+        <div id="playerItems" class="items">
+            <div>
+                <div>$playerItem0</div>
+                <div>$playerItem1</div>
+                <div>$playerItem2</div>
+                <div>$playerItem3</div>
+            </div>
+            <div>
+                <div>$playerItem4</div>
+                <div>$playerItem5</div>
+                <div>$playerItem6</div>
+                <div>$playerItem7</div>
+            </div>
+        </div>
+        <div id="dealerHealth" class="health">
+            $dealerHealth
+        </div>
+        <div id="playerHealth" class="health">
+            $playerHealth
+        </div>
+    </body>
+</html>

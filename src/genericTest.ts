@@ -1,10 +1,16 @@
-import { getFakeSlotSymbolIcons } from "./commands/SlotsCommands.js";
+import { shuffleArray } from "./def/ShuffleArray.ts";
 
-for (let i = 0; i < 50; i++) {
-    let printResult = getFakeSlotSymbolIcons({
-        payout: 0,
-        weight: 0,
-        symbol: null,
-    });
-    console.log(`PRINT: ${printResult}`);
-}
+const input = [
+    "hello",
+    "world",
+    "programmed",
+    "to",
+    "work",
+    "and",
+    "not",
+    "to",
+    "feel",
+];
+console.log(input.join(" "));
+shuffleArray(input);
+console.log(input.join(" "));
