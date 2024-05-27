@@ -266,6 +266,12 @@ export const sendMenu = new Command(
 );
 
 function sendAboutEmbed(interaction: ButtonInteraction) {
+    const secret = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder()
+            .setLabel("???")
+            .setStyle(ButtonStyle.Link)
+            .setURL("https://navidrome.takegoatto.space/share/xKISEEWD4Y")
+    );
     const embed = new EmbedBuilder()
         .setTitle(Lang("about_header_title"))
         .setDescription(Lang("about_header_description"))
@@ -277,7 +283,7 @@ function sendAboutEmbed(interaction: ButtonInteraction) {
             },
             {
                 name: "Source code",
-                value: "coming soon, I promise!",
+                value: "https://github.com/baabaablackgoat/luckycolors",
                 inline: true,
             },
             {
@@ -288,6 +294,7 @@ function sendAboutEmbed(interaction: ButtonInteraction) {
         );
     void interaction.reply({
         embeds: [embed],
+        components: [secret],
         ephemeral: true,
     });
 }
