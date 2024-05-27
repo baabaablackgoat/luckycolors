@@ -65,7 +65,7 @@ export const mainMenuEmbed = new EmbedBuilder()
     .setTitle(Lang("mainMenu_text_title"))
     .setDescription(Lang("mainMenu_text_description"))
     .setColor(0xff0088)
-    .setImage("https://baabaablackgoat.com/res/salem/menuLobbyGlass2.png");
+    .setImage("https://baabaablackgoat.com/res/salem/menu.png");
 export const mainMenuButtonRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
         .setLabel(Lang("mainMenu_button_games"))
@@ -120,7 +120,7 @@ function profileMenuEmbed(
             iconURL: user.avatarURL(),
         })
         .setColor(0xff0088)
-        .setImage("https://baabaablackgoat.com/res/salem/menuProfileNew.png")
+        .setImage("https://baabaablackgoat.com/res/salem/profile.png")
         .addFields([
             {
                 name: Lang("profileMenu_field_balanceName"),
