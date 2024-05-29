@@ -192,7 +192,7 @@ export async function slotsExecute(
             slotsRenderURI
         );
         if (outcome.payout !== 0)
-            DataStorage.addUserBalance(
+            await DataStorage.addUserBalance(
                 interaction.user.id,
                 Math.ceil(stake * outcome.payout)
             );

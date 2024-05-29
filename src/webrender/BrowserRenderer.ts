@@ -10,9 +10,9 @@ import {
 } from "../commands/SlotsCommands.ts";
 import {
     BuckshotItem,
-    CoinshotGame,
-    CoinshotPhase,
-} from "../commands/CoinshotCommands.ts";
+    BuckshotGame,
+    BuckshotPhase,
+} from "../commands/BuckshotCommands.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -23,8 +23,8 @@ const blackjackTemplate = fs.readFileSync(
 );
 const slotsTemplate = fs.readFileSync("./src/webrender/slots.html", "utf-8");
 
-const coinshotTemplate = fs.readFileSync(
-    "./src/webrender/coinshot.html",
+const buckshotTemplate = fs.readFileSync(
+    "./src/webrender/buckshot.html",
     "utf-8"
 );
 
@@ -33,6 +33,7 @@ export class BrowserRenderer {
 
     private static blackjackDir = "out/blackjack";
     private static slotsDir = "out/slots";
+    private static buckshotDir = "out/buckshot";
     private constructor() {
         void this.setup();
     }
@@ -59,24 +60,34 @@ export class BrowserRenderer {
 
     private static initialCleanup() {
         // clean out all known render directories
-        fs.readdir(`./${BrowserRenderer.blackjackDir}`, (err, files) => {
-            if (err)
-                console.error(
-                    "Couldn't perform initial cleanup task for blackjack:",
-                    err
-                );
-            files.forEach((fileName) => {
-                if (fileName.endsWith(".html") || fileName.endsWith(".png")) {
-                    const filePath = `./${BrowserRenderer.blackjackDir}/${fileName}`;
-                    console.log("Cleaning up leftover file: ", filePath);
-                    fs.unlink(filePath, (err) => {
-                        if (err)
-                            console.error(
-                                `Initial cleanup attempted to cleanup file ${filePath} but failed:`,
-                                err
-                            );
-                    });
-                }
+        // this is terrible but i'm also lazy
+        [
+            BrowserRenderer.blackjackDir,
+            BrowserRenderer.slotsDir,
+            BrowserRenderer.buckshotDir,
+        ].forEach((targetDir) => {
+            fs.readdir(`./${targetDir}`, (err, files) => {
+                if (err)
+                    console.error(
+                        `Couldn't perform initial cleanup task for ${targetDir}:`,
+                        err
+                    );
+                files.forEach((fileName) => {
+                    if (
+                        fileName.endsWith(".html") ||
+                        fileName.endsWith(".png")
+                    ) {
+                        const filePath = `./${targetDir}/${fileName}`;
+                        console.log("Cleaning up leftover file: ", filePath);
+                        fs.unlink(filePath, (err) => {
+                            if (err)
+                                console.error(
+                                    `Initial cleanup attempted to cleanup file ${filePath} but failed:`,
+                                    err
+                                );
+                        });
+                    }
+                });
             });
         });
     }
@@ -118,49 +129,35 @@ export class BrowserRenderer {
         return pngOutPath;
     }
 
+    private async cleanupRenderFiles(
+        directory: string,
+        interactionID: Snowflake
+    ) {
+        const htmlPath = `./${directory}/${interactionID}.html`;
+        const pngPath = `./${directory}/${interactionID}.png`;
+        fs.unlink(htmlPath, (err) => {
+            if (err) console.warn(`Couldn't delete raw HTML ${htmlPath}`, err);
+        });
+        fs.unlink(pngPath, (err) => {
+            if (err) console.warn(`Couldn't delete screenshot ${pngPath}`, err);
+        });
+    }
+
     public async cleanupBlackjack(interactionID: Snowflake) {
-        fs.unlink(
-            `./${BrowserRenderer.blackjackDir}/${interactionID}.html`,
-            (err) => {
-                if (err)
-                    console.warn(
-                        `Couldn't delete HTML file for Blackjack game ${interactionID}`,
-                        err
-                    );
-            }
-        );
-        fs.unlink(
-            `./${BrowserRenderer.blackjackDir}/${interactionID}.png`,
-            (err) => {
-                if (err)
-                    console.warn(
-                        `Couldn't delete screenshot for Blackjack game ${interactionID}`,
-                        err
-                    );
-            }
+        await this.cleanupRenderFiles(
+            BrowserRenderer.blackjackDir,
+            interactionID
         );
     }
 
     public async cleanupSlots(interactionID: Snowflake) {
-        fs.unlink(
-            `./${BrowserRenderer.slotsDir}/${interactionID}.html`,
-            (err) => {
-                if (err)
-                    console.warn(
-                        `Couldn't delete HTML file for Slots game ${interactionID}`,
-                        err
-                    );
-            }
-        );
-        fs.unlink(
-            `./${BrowserRenderer.slotsDir}/${interactionID}.png`,
-            (err) => {
-                if (err)
-                    console.warn(
-                        `Couldn't delete screenshot for Slots game ${interactionID}`,
-                        err
-                    );
-            }
+        await this.cleanupRenderFiles(BrowserRenderer.slotsDir, interactionID);
+    }
+
+    public async cleanupBuckshot(interactionID: Snowflake) {
+        await this.cleanupRenderFiles(
+            BrowserRenderer.buckshotDir,
+            interactionID
         );
     }
 
@@ -214,7 +211,7 @@ export class BrowserRenderer {
         return pngOutPath;
     }
 
-    public async renderCoinshot(interactionID: Snowflake, game: CoinshotGame) {
+    public async renderBuckshot(interactionID: Snowflake, game: BuckshotGame) {
         function shellReplacer(value: undefined | boolean) {
             switch (value) {
                 case undefined:
@@ -228,6 +225,7 @@ export class BrowserRenderer {
 
         function itemReplacer(value: undefined | BuckshotItem) {
             switch (value) {
+                // todo: replace with actual images
                 case BuckshotItem.Saw:
                     return `<img src="slots/fries.png">`;
                 case BuckshotItem.Handcuffs:
@@ -244,39 +242,51 @@ export class BrowserRenderer {
         }
 
         if (!this.ready) throw new Error("not ready"); // todo make better error
-        let coinshotContent = coinshotTemplate;
+        let buckshotContent = buckshotTemplate;
         let fakeShells: Array<boolean> = [];
-        if (game.turnPhase == CoinshotPhase.Reloading) {
+        if (game.turnPhase == BuckshotPhase.Reloading) {
             fakeShells = [
                 ...Array(game.shotgun.chamber.insertedTotal).keys(),
             ].map((i) => i < game.shotgun.chamber.insertedLive);
         }
         for (let i = 0; i < 8; i++) {
-            coinshotContent.replace(
+            buckshotContent.replace(
                 `$shotClass${i}`,
                 shellReplacer(fakeShells[i])
             );
         }
+        // todo: replace with actual image
         const healthElement = `<img src="slots/fries.png" />`;
-        coinshotContent.replace(
+        buckshotContent.replace(
             "$dealerHealth",
             healthElement.repeat(game.dealer.health)
         );
-        coinshotContent.replace(
+        buckshotContent.replace(
             "$playerHealth",
             healthElement.repeat(game.player.health)
         );
         for (let i = 0; i < 8; i++) {
-            coinshotContent.replace(
+            buckshotContent.replace(
                 `$dealerItem${i}`,
                 itemReplacer(game.dealer.inventory[i])
             );
         }
         for (let i = 0; i < 8; i++) {
-            coinshotContent.replace(
+            buckshotContent.replace(
                 `$playerItem${i}`,
                 itemReplacer(game.player.inventory[i])
             );
         }
+
+        fs.writeFileSync(
+            `./${BrowserRenderer.buckshotDir}/${interactionID}.html`,
+            buckshotContent
+        );
+        await this.page.goto(
+            `file://${__dirname}/../../${BrowserRenderer.buckshotDir}/${interactionID}.html`
+        );
+        const pngOutPath = `./${BrowserRenderer.buckshotDir}/${interactionID}.png`;
+        await this.page.screenshot({ path: pngOutPath });
+        return pngOutPath;
     }
 }

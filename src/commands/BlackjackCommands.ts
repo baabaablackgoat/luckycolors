@@ -7,16 +7,13 @@ import {
     ButtonInteraction,
     ButtonStyle,
     ChatInputCommandInteraction,
-    Snowflake,
 } from "discord.js";
-import {
-    DataStorage,
-    InsufficientBalanceError,
-} from "../def/DatabaseWrapper.js";
+import { DataStorage } from "../def/DatabaseWrapper.js";
 import { getValidStake } from "../def/isValidStake.js";
 import { BrowserRenderer } from "../webrender/BrowserRenderer.js";
 import { Lang } from "../lang/LanguageProvider";
 import { subtractStake } from "../handlers/StakeHandler.ts";
+import { GameBase, GameStorage } from "../def/GameStorage.ts";
 
 export const drawCard = new Command(
     Lang("command_card_name"),
@@ -57,19 +54,21 @@ enum BlackjackPhase {
     "DealerDrawing",
     "Done",
 }
-class BlackjackGame {
+
+class BlackjackGame extends GameBase {
     private deck: Deck;
-    private stake: number;
     private doubledDown: boolean = false;
     private phase: BlackjackPhase = BlackjackPhase.UserDrawing;
     public DealerCards: Card[] = [];
     public UserCards: Card[] = [];
-    interaction: ChatInputCommandInteraction;
     public initializeTime: Date;
-    constructor(interaction: ChatInputCommandInteraction, stake: number) {
-        this.interaction = interaction;
+
+    constructor(
+        interaction: ChatInputCommandInteraction | ButtonInteraction,
+        stake: number
+    ) {
+        super(interaction, stake);
         this.initializeTime = new Date();
-        this.stake = stake;
         this.deck = new Deck();
         this.deck.shuffle().shuffle(); // extra shuffles for extra randomness
         // setup user and dealer cards one by one, like in real play
@@ -173,10 +172,12 @@ class BlackjackGame {
         this.UserCards.push(this.deck.drawCard());
         await this.updateGameState();
     }
+
     public async userStand() {
         this.phase = BlackjackPhase.DealerDrawing;
         await this.updateGameState();
     }
+
     public async userDoubleDown() {
         // verify whether the game state actually allows for doubling down right now (i.e. user has already drawn another card)
         if (this.UserCards.length > 2) {
@@ -216,21 +217,26 @@ class BlackjackGame {
     private get UserBlackjack() {
         return this.isBlackjack(this.UserCards);
     }
+
     private get UserBust() {
         return this.UserScore > 21;
     }
+
     private get DealerBust() {
         return this.DealerScore > 21;
     }
+
     private get UserWins() {
         return (
             !this.UserBust &&
             (this.UserScore > this.DealerScore || this.DealerBust)
         );
     }
+
     private get Tied() {
         return !this.UserBust && this.UserScore === this.DealerScore;
     }
+
     private get UserLost() {
         return (
             (!this.DealerBust && this.DealerScore > this.UserScore) ||
@@ -240,7 +246,7 @@ class BlackjackGame {
 
     public async updateMessage() {
         let description: string = "Something went terribly wrong...";
-        let buttons: unknown[] = []; // still need to figure out which type this is
+        let buttons: ActionRowBuilder<ButtonBuilder>[] = [];
         const canAffordDouble = await this.canAffordDoubleDown();
         const renderPath = await this.renderHands();
         switch (this.phase) {
@@ -270,7 +276,11 @@ class BlackjackGame {
                 description = `${Lang(
                     "blackjack_text_yourTurn"
                 )}\n${this.printHands(true)}`;
-                buttons = [new ActionRowBuilder().addComponents(buttonList)];
+                buttons = [
+                    new ActionRowBuilder<ButtonBuilder>().addComponents(
+                        buttonList
+                    ),
+                ];
                 break;
             case BlackjackPhase.DealerDrawing:
                 description = `${Lang(
@@ -315,7 +325,7 @@ class BlackjackGame {
                     : this.stake;
 
                 buttons = [
-                    new ActionRowBuilder().addComponents([
+                    new ActionRowBuilder<ButtonBuilder>().addComponents([
                         new ButtonBuilder()
                             .setLabel(
                                 Lang("blackjack_button_playAgain", {
@@ -343,6 +353,7 @@ class BlackjackGame {
     private hideSecondDealerCard() {
         this.DealerCards[1].hidden = true;
     }
+
     private showSecondDealerCard() {
         this.DealerCards[1].hidden = false;
     }
@@ -411,37 +422,23 @@ class BlackjackGame {
 
 const BlackjackInteractionTypes = ["hit", "stand", "double"];
 
-export class BlackjackStorage {
+export class BlackjackStorage extends GameStorage<BlackjackGame> {
     static instance: BlackjackStorage;
+
     private constructor() {
-        this.games = [];
-        setInterval(this.cleanupTask.bind(this), 6e4); // once every minute
+        super("blackjack", BrowserRenderer.getInstance().cleanupBlackjack);
     }
+
     public static getInstance() {
         if (!BlackjackStorage.instance)
             BlackjackStorage.instance = new BlackjackStorage();
         return BlackjackStorage.instance;
     }
 
-    private games: BlackjackGame[] = [];
-
-    private deleteGame(interactionID: Snowflake) {
-        this.games = this.games.filter(
-            (game) => game.interaction.id !== interactionID
-        );
-        void BrowserRenderer.getInstance().cleanupBlackjack(interactionID);
-    }
-
-    public cleanupTask() {
-        this.games.forEach((game) => {
-            if (game.initializeTime.getTime() + 6e5 <= Date.now()) {
-                // ten minutes ago
-                this.deleteGame(game.interaction.id);
-            }
-        });
-    }
-
-    public createGame(interaction, stake) {
+    public createGame(
+        interaction: ChatInputCommandInteraction | ButtonInteraction,
+        stake: number
+    ) {
         this.games.push(new BlackjackGame(interaction, stake));
     }
 
