@@ -593,6 +593,12 @@ export class BuckshotGame extends GameBase {
         opponent: ShotgunPlayer,
         decision: BuckshotInteraction
     ) {
+        if (this.turnOwner !== target) {
+            console.warn(
+                `Attempted to execute decision ${decision} on behalf of ${target.name}, but it wasn't their turn: turnOwner is ${this.turnOwner}`
+            );
+            return;
+        }
         switch (decision) {
             case BuckshotInteraction.ShootSelf:
                 this.shootSelf(target, opponent);
@@ -624,6 +630,7 @@ export class BuckshotGame extends GameBase {
         target.damage(outcome.damage);
         const live = outcome.damage > 0;
         this.dealer.knowledge.shellUsed(live);
+        // todo don't just console.log stuff, make it do shit
         console.log(
             `${target.name} aims the shotgun at themselves... ${
                 live
@@ -639,6 +646,7 @@ export class BuckshotGame extends GameBase {
         opponent.damage(outcome.damage);
         const live = outcome.damage > 0;
         this.dealer.knowledge.shellUsed(live);
+        // todo don't just console.log stuff, make it do shit
         console.log(
             `${target.name} aims the shotgun at ${opponent.name}... ${
                 live
@@ -652,6 +660,7 @@ export class BuckshotGame extends GameBase {
 
     useHandcuffs(target, opponent) {
         opponent.cuff();
+        // todo don't just console.log stuff, make it do shit
         console.log(
             `${target.name} handcuffs ${opponent.name}. Their next turn will be skipped.`
         );
@@ -659,6 +668,7 @@ export class BuckshotGame extends GameBase {
 
     useCigarettes(target) {
         target.smoke();
+        // todo don't just console.log stuff, make it do shit
         console.log(
             `${target.name} smokes a cigarette to take off the edge. They now have ${target.health} health.`
         );
@@ -667,6 +677,7 @@ export class BuckshotGame extends GameBase {
     useBeer(target) {
         target.drinkBeer();
         const outcome = this.shotgun.shoot();
+        // todo don't just console.log stuff, make it do shit
         console.log(
             `${
                 target.name
@@ -677,12 +688,14 @@ export class BuckshotGame extends GameBase {
     }
     useSaw(target) {
         this.shotgun.sawOff();
+        // todo don't just console.log stuff, make it do shit
         console.log(
             `${target.name} saws off the front half of the shotgun. The next shell deals double damage.`
         );
     }
     useMagnifier(target: ShotgunPlayer) {
         const isLive = this.shotgun.checkChamber();
+        // todo don't just console.log stuff, make it do shit
         if (target instanceof ShotgunDealer) {
             console.log(
                 `${target.name} checks the chamber in secret. Very interesting...`
