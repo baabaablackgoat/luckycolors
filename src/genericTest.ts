@@ -1,6 +1,6 @@
 import { BuckshotItem, ShotgunPlayer } from "./commands/BuckshotCommands.ts";
 
-const player = new ShotgunPlayer(5);
+/*const player = new ShotgunPlayer(5);
 player.addItem(BuckshotItem.Saw);
 player.addItem(BuckshotItem.Magnifier);
 
@@ -15,7 +15,7 @@ for (let i = 0; i < itemValues.length; i++) {
         BuckshotItem[itemValues[i]],
         player.inventory.includes(itemValues[i])
     );
-}
+}*/
 
 // const foo = await locks.request("testLock", { ifAvailable: true }, () => {
 //     return new Promise((resolve) => {

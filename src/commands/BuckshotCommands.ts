@@ -29,7 +29,13 @@ export async function buckshotExecute(
 ) {
     // todo: choose and deduct stake
     const stake = 5;
-    const shellCount = randomInt(3, 9);
+    BuckshotStorage.getInstance().createGame(interaction, stake);
+}
+
+enum BuckshotButtonInteractions {
+    ShootSelf = "self",
+    ShootDealer = "dealer",
+    Item = "item",
 }
 
 export class BuckshotStorage extends GameStorage<BuckshotGame> {
@@ -50,14 +56,139 @@ export class BuckshotStorage extends GameStorage<BuckshotGame> {
         this.games.push(new BuckshotGame(interaction, stake));
     }
 
-    handleInteraction(buttonInteraction: ButtonInteraction): void {
-        if (!buttonInteraction.customId.startsWith("buckshot")) {
-            console.error(
-                `Interaction ${buttonInteraction.customId} wrongly given to buckshot handler, ignoring.`
+    async handleInteraction(
+        buttonInteraction: ButtonInteraction
+    ): Promise<void> {
+        const interactionData = this.getGameInteractionData(buttonInteraction);
+        if (interactionData === null) {
+            console.warn("Invalid interaction data, aborting coinshot handler");
+            return;
+        }
+        const foundGame = this.findGame(interactionData.gameID);
+        if (!foundGame) {
+            console.warn(
+                "Unknown Buckshot Game interaction ID received:",
+                JSON.stringify(interactionData)
+            );
+            void replyWithEmbed(
+                buttonInteraction,
+                "Game ID unknown",
+                "Something went wrong... that interaction had an unknown game ID.",
+                "error",
+                buttonInteraction.user,
+                true
             );
             return;
         }
-        // implement actions
+        // Execution guard
+        // todo: for bonus points, pull this execution guard out into the GameStorage to make it work for everything
+        await locks.request(
+            `${this.prefix}_${interactionData.gameID}`,
+            { ifAvailable: true },
+            async (lock) => {
+                if (!lock) {
+                    replyWithEmbed(
+                        buttonInteraction,
+                        "Woah there!",
+                        "This game is already being processed.",
+                        "warn",
+                        buttonInteraction.user,
+                        true
+                    );
+                    return;
+                }
+                // actual interaction execution
+                if (
+                    !Object.keys(BuckshotButtonInteractions)
+                        .filter((key) => isNaN(Number(key)))
+                        .map((key) => BuckshotItem[key])
+                        .includes(interactionData.action)
+                ) {
+                    console.warn(
+                        "Invalid Buckshot Button Interaction received:",
+                        JSON.stringify(interactionData)
+                    );
+                    void replyWithEmbed(
+                        buttonInteraction,
+                        "Invalid interaction",
+                        "Something went wrong... I couldn't recognize that interaction.",
+                        "error",
+                        buttonInteraction.user,
+                        true
+                    );
+                    return;
+                }
+                switch (interactionData.action) {
+                    case BuckshotButtonInteractions.ShootSelf:
+                        await foundGame.executeDecision(
+                            foundGame.player,
+                            foundGame.dealer,
+                            BuckshotInteraction.ShootSelf
+                        );
+                        break;
+                    case BuckshotButtonInteractions.ShootDealer:
+                        await foundGame.executeDecision(
+                            foundGame.player,
+                            foundGame.dealer,
+                            BuckshotInteraction.ShootOpponent
+                        );
+                        break;
+                    case BuckshotButtonInteractions.Item:
+                        switch (parseInt(interactionData.actionData)) {
+                            case BuckshotItem.Saw:
+                                await foundGame.executeDecision(
+                                    foundGame.player,
+                                    foundGame.dealer,
+                                    BuckshotInteraction.UseSaw
+                                );
+                                break;
+                            case BuckshotItem.Beer:
+                                await foundGame.executeDecision(
+                                    foundGame.player,
+                                    foundGame.dealer,
+                                    BuckshotInteraction.UseBeer
+                                );
+                                break;
+                            case BuckshotItem.Cigarettes:
+                                await foundGame.executeDecision(
+                                    foundGame.player,
+                                    foundGame.dealer,
+                                    BuckshotInteraction.UseCigarettes
+                                );
+                                break;
+                            case BuckshotItem.Handcuffs:
+                                await foundGame.executeDecision(
+                                    foundGame.player,
+                                    foundGame.dealer,
+                                    BuckshotInteraction.UseHandcuffs
+                                );
+                                break;
+                            case BuckshotItem.Magnifier:
+                                await foundGame.executeDecision(
+                                    foundGame.player,
+                                    foundGame.dealer,
+                                    BuckshotInteraction.UseMagnifier
+                                );
+                                break;
+                            default:
+                                console.warn(
+                                    "Invalid Buckshot Button Interaction received:",
+                                    JSON.stringify(interactionData)
+                                );
+                                void replyWithEmbed(
+                                    buttonInteraction,
+                                    "Invalid item usage",
+                                    "Something went wrong... No item was associated with that request.",
+                                    "error",
+                                    buttonInteraction.user,
+                                    true
+                                );
+                                return;
+                        }
+                        break;
+                }
+            }
+        );
     }
 }
 
@@ -93,10 +224,10 @@ interface ShotOutcome {
 
 class Shotgun {
     chamber: Chamber;
-    private sawedOff: boolean;
+    private _sawedOff: boolean;
     constructor() {}
 
-    loadShotgun() {
+    reload() {
         const chosenShells = randomInt(3, 9);
         const chosenLiveShells = randomInt(1, chosenShells - 1);
         this.chamber = new Chamber(chosenLiveShells, chosenShells);
@@ -108,8 +239,8 @@ class Shotgun {
 
     shoot(): ShotOutcome {
         const shell = this.chamber.playNextShell();
-        if (this.sawedOff) {
-            this.sawedOff = false;
+        if (this._sawedOff) {
+            this._sawedOff = false;
             return {
                 damage: shell ? 2 : 0,
                 shellsLeft: this.chamber.shellsLeft,
@@ -118,7 +249,10 @@ class Shotgun {
         return { damage: shell ? 1 : 0, shellsLeft: this.chamber.shellsLeft };
     }
     sawOff() {
-        this.sawedOff = true;
+        this._sawedOff = true;
+    }
+    get sawedOff() {
+        return this._sawedOff;
     }
 }
 
@@ -137,10 +271,9 @@ class BuckshotInvalidActionError extends Error {
     }
 }
 
-// todo disable this export
-export class ShotgunPlayer {
+class ShotgunPlayer {
     name: string;
-    private maxInventory: 8;
+    private maxInventory: 4; // limited to half because it'd be very tedious otherwise
     private _health: number;
     maxHealth: number;
     public get health() {
@@ -311,36 +444,16 @@ export class BuckshotGame extends GameBase {
         stake: number
     ) {
         super(interaction, stake);
+        const chosenHealth = randomInt(3, 7);
+        this.player = new ShotgunPlayer(chosenHealth);
+        this.dealer = new ShotgunDealer(chosenHealth);
+        this.turnPhase = BuckshotPhase.Reloading;
+        this.turnOwner = this.player;
+        void this.reloadSequence(); // will automatically trigger items and give turn to player
     }
 
     private get buttonPrefix() {
         return `${GameButtonPrefix}_${this.interaction.id}`;
-    }
-
-    // Use this wrapper to ensure execution guarding
-    public async performPlayerAction(
-        newInteraction: ButtonInteraction,
-        action: () => Promise<void>
-    ) {
-        await locks.request(
-            this.interaction.id,
-            { ifAvailable: true },
-            async (lock) => {
-                if (!lock) {
-                    // lock already blocked out, reject interaction
-                    void replyWithEmbed(
-                        newInteraction,
-                        "Woah there",
-                        "This game is already being processed, slow down!",
-                        "warn",
-                        newInteraction.user,
-                        true
-                    );
-                    return;
-                }
-                await action();
-            }
-        );
     }
 
     stepTurn(target: ShotgunPlayer) {
@@ -351,16 +464,76 @@ export class BuckshotGame extends GameBase {
         }
     }
 
-    async updateGame() {
-        this.renderGame();
+    get gameOver() {
+        return this.player.health <= 0 || this.dealer.health <= 0;
+    }
+
+    // call after action has been made to update relevant things
+    async updateGameState() {
+        // If the game is over, prevent everything else from happening, do one final render
+        if (this.gameOver) {
+            this.turnPhase = BuckshotPhase.Done;
+            // todo: award the payout
+            // todo: possibly open up for double or nothing
+            await this.renderGame();
+            return;
+        }
+
+        // if the shotgun is empty, shotgun must be reloaded.
+        if (this.shotgun.chamber.shellsLeft) {
+            this.turnPhase = BuckshotPhase.Reloading;
+            // automatically perform reload steps after n seconds
+            setTimeout(this.reloadSequence, 3000);
+        }
+
+        // render game after all relevant variables are up to date
+        await this.renderGame();
+
+        if (this.turnOwner == this.dealer) {
+            // finally, queue next dealer action in n seconds
+            setTimeout(() => {
+                const dealerAction = this.dealer.chooseAction(
+                    this.player.cuffed,
+                    this.shotgun.sawedOff
+                );
+                this.executeDecision(this.dealer, this.player, dealerAction);
+            }, 3000);
+        }
+    }
+
+    handoutItems(target: ShotgunPlayer) {
+        for (let i = 0; i < 2; i++) {
+            const randomItem = randomInt(
+                0,
+                Object.keys(BuckshotItem).length / 2
+            );
+            target.addItem(randomItem);
+        }
+    }
+
+    async reloadSequence() {
+        // - hand out two items each
+        this.handoutItems(this.player);
+        this.handoutItems(this.dealer);
+        // - reload shotgun
+        this.shotgun.reload();
+        // render game to show the recently loaded shells
+        await this.renderGame();
+        // after n seconds of reloading time, return to Playing Phase, give turn to player & trigger re-render
+        setTimeout(async () => {
+            this.turnPhase = BuckshotPhase.Playing;
+            this.turnOwner = this.player;
+            await this.renderGame();
+        }, 5000);
     }
 
     async renderGame() {
+        // todo: update texts based on game state
         const imagePath = await BrowserRenderer.getInstance().renderBuckshot(
             this.interaction.id,
             this
         );
-        replyWithEmbed(
+        await replyWithEmbed(
             this.interaction,
             "Buckshot Roulette",
             "TODO Put cool text here",
@@ -384,11 +557,15 @@ export class BuckshotGame extends GameBase {
                 new ButtonBuilder()
                     .setStyle(ButtonStyle.Danger)
                     .setLabel("🎯 Shoot yourself")
-                    .setCustomId(`${this.buttonPrefix}_shootSelf`),
+                    .setCustomId(
+                        `${this.buttonPrefix}_${BuckshotButtonInteractions.ShootSelf}`
+                    ),
                 new ButtonBuilder()
                     .setStyle(ButtonStyle.Danger)
                     .setLabel("🎯 Shoot the dealer")
-                    .setCustomId(`${this.buttonPrefix}_shootDealer`),
+                    .setCustomId(
+                        `${this.buttonPrefix}_${BuckshotButtonInteractions.ShootDealer}`
+                    ),
             ]
         );
         // warning: if there's any more items added, there's a chance items need to be split to two rows! limit of 5/row
@@ -402,14 +579,16 @@ export class BuckshotGame extends GameBase {
                     new ButtonBuilder()
                         .setLabel(`📦 Use ${BuckshotItem[allItems[i]]}`)
                         .setStyle(ButtonStyle.Secondary)
-                        .setCustomId(`${this.buttonPrefix}_item_${i}`)
+                        .setCustomId(
+                            `${this.buttonPrefix}_${BuckshotButtonInteractions.Item}_${i}`
+                        )
                 );
             }
         }
         return [shootingRow, itemRow];
     }
 
-    executeDecision(
+    async executeDecision(
         target: ShotgunPlayer,
         opponent: ShotgunPlayer,
         decision: BuckshotInteraction
@@ -437,6 +616,7 @@ export class BuckshotGame extends GameBase {
                 this.useMagnifier(target);
                 break;
         }
+        await this.updateGameState();
     }
 
     shootSelf(target, opponent) {

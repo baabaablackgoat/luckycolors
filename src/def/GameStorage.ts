@@ -64,11 +64,14 @@ export abstract class GameStorage<T extends GameBase> {
         return this.games.find((game) => game.interactionID === interactionID);
     }
 
-    public splitButtonId(id: string): ButtonGameInteraction | null {
-        const [gameName, gameID, action, actionData] = id.split("_");
+    public getGameInteractionData(
+        interaction: ButtonInteraction
+    ): ButtonGameInteraction | null {
+        const [gameName, gameID, action, actionData] =
+            interaction.customId.split("_");
         if (!gameName || !gameID || !action) {
             console.error(
-                `Missing data while handling game button interaction. RAW: ${id}\nGAME: ${gameName} ID:${gameID} ACTION:${action} EXTRA DATA:${actionData}`
+                `Missing data while handling game button interaction. RAW: ${interaction.customId}\nGAME: ${gameName} ID:${gameID} ACTION:${action} EXTRA DATA:${actionData}`
             );
             return null;
         }
