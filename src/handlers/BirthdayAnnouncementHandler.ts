@@ -4,6 +4,7 @@ import { ClientStore } from "../ClientStore.js";
 import { EmbedBuilder, GuildMember, TextChannel } from "discord.js";
 import { formatBirthdayAge } from "../def/FormatBirthday.js";
 import { Lang } from "../lang/LanguageProvider.js";
+import { getChannels } from "../def/GetChannels.ts";
 
 function createBirthdayEmbed(target: GuildMember, birthday: BirthdayResponse) {
     return new EmbedBuilder()
@@ -51,28 +52,7 @@ export async function birthdayAnnouncementHandler() {
         return;
     }
 
-    const client = ClientStore.getClient();
-
-    let announcementChannels: TextChannel[] = [];
-
-    for (const guildId of Object.keys(announcementChannelIds)) {
-        const channelId = announcementChannelIds[guildId];
-        try {
-            const guild = await client.guilds.fetch(guildId);
-            const channel = await guild.channels.fetch(channelId);
-            if (!(channel instanceof TextChannel)) {
-                console.error(
-                    `The stored channel with ID ${channelId} was found in ${
-                        guild.name
-                    }, but was not a TextChannel: ${typeof channel}`
-                );
-            } else announcementChannels.push(channel);
-        } catch (e) {
-            console.error(
-                `Something went wrong while trying to retrieve information about the guild with the ID ${guildId}`
-            );
-        }
-    }
+    const announcementChannels = await getChannels(announcementChannelIds);
 
     if (announcementChannels.length === 0) {
         console.error(

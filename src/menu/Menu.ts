@@ -46,13 +46,13 @@ type MenuGamesActions = "blackjack" | "slots" | "draw";
 type MenuProfileActions = "daily" | "inventory";
 
 /*  TOP LEVEL MENU - Publically visible  */
-const publicMenuEntranceEmbed = new EmbedBuilder()
+export const publicMenuEntranceEmbed = new EmbedBuilder()
     .setTitle(Lang("menu_entryPoint_title"))
     .setDescription(Lang("menu_entryPoint_description"))
     .setColor(0xff0088)
     .setImage("https://baabaablackgoat.com/res/salem/menuEntrance.png");
-const publicMenuEntranceButtonRow = [
-    new ActionRowBuilder().addComponents(
+export const publicMenuEntranceButtonRow = [
+    new ActionRowBuilder<ButtonBuilder>().addComponents(
         new ButtonBuilder()
             .setLabel(Lang("menu_entryPoint_buttonLabel"))
             .setStyle(ButtonStyle.Primary)
@@ -237,7 +237,6 @@ export const sendMenu = new Command(
         targetedChannel
             .send({
                 embeds: [publicMenuEntranceEmbed],
-                //@ts-ignore: what the fuck is wrong with you, discord.js??
                 components: publicMenuEntranceButtonRow,
             })
             .then(

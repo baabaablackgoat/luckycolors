@@ -12,6 +12,7 @@ import { ClientStore } from "./ClientStore.js";
 import { ScheduledTask } from "./def/ScheduledTask.js";
 import { birthdayAnnouncementHandler } from "./handlers/BirthdayAnnouncementHandler.js";
 import { assertAdminPermissions } from "./def/Command.ts";
+import { sendInteractionHandler } from "./handlers/sendInteractionHandler.ts";
 
 config();
 const token: string = process.env.DISCORD_TOKEN;
@@ -134,4 +135,9 @@ const birthdayTask = new ScheduledTask(
     "birthdayAnnouncements",
     "0 0 0 * * *",
     birthdayAnnouncementHandler
+);
+const sendMenuTask = new ScheduledTask(
+    "sendMenu",
+    "0 0 * * * *",
+    sendInteractionHandler
 );
