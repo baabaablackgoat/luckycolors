@@ -15,7 +15,7 @@ export async function getLoanHandler(interaction: ButtonInteraction) {
             interaction.user,
             true,
             undefined,
-            new URL("https://baabaablackgoat.com/res/salem/baaHumbug.png")
+            new URL("https://baabaablackgoat.com/res/salem/attorney.png")
         );
         return;
     }
@@ -32,6 +32,6 @@ export async function getLoanHandler(interaction: ButtonInteraction) {
         interaction.user,
         true,
         undefined,
-        new URL("https://baabaablackgoat.com/res/salem/baaHumbug.png")
+        new URL("https://baabaablackgoat.com/res/salem/attorney.png")
     );
 }
