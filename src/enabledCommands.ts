@@ -32,7 +32,6 @@ import {
 } from "./commands/AdminChannelSelectionCommands.js";
 
 export const enabledCommands: Command[] = [
-    ping,
     setBirthday,
     balance,
     setBalance,
