@@ -168,7 +168,9 @@ export async function slotsExecute(
         interaction.user,
         true,
         undefined,
-        new URL("https://baabaablackgoat.com/res/salem/pendingCompressed.gif")
+        new URL(
+            "https://baabaablackgoat.com/res/salem/pendingTempCompressed.gif"
+        )
     );
     const slotsRenderURI = await BrowserRenderer.getInstance().renderSlots(
         interaction.id,
