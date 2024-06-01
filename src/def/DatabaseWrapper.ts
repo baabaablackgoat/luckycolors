@@ -111,7 +111,8 @@ export class DatabaseWrapper {
     ): Promise<number> {
         this.assertReady();
         await this.database.exec(
-            `INSERT OR REPLACE INTO Bank (userID, balance) VALUES ("${userID}", ${amount});`
+            `INSERT OR IGNORE INTO Bank (userID, balance) VALUES ("${userID}", ${amount});
+                UPDATE Bank SET balance = ${amount} WHERE userID = "${userID}";`
         );
         return amount;
     }
