@@ -5,26 +5,12 @@ import { dateDayReducer } from "../def/DateDifference.js";
 import { Lang } from "../lang/LanguageProvider";
 import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
 import { numberToPosition } from "../def/NumberToPosition";
+import { ReadableTime } from "../def/ReadableTime.ts";
 
 function getNextClaim(lastClaimed: Date): Date {
     const result = dateDayReducer(lastClaimed);
     result.setUTCDate(result.getUTCDate() + 1);
     return result;
-}
-
-class ReadableTime {
-    hours: number;
-    minutes: number;
-    seconds: number;
-    constructor(millis: number) {
-        this.hours = Math.floor(millis / (1000 * 60 * 60));
-        this.minutes = Math.floor(millis / (1000 * 60)) % 60;
-        this.seconds = Math.floor(millis / 1000) % 60;
-    }
-    toString(seconds = false): string {
-        if (seconds) return `${this.hours}:${this.minutes}:${this.seconds}`;
-        else return `${this.hours}h${this.minutes}`;
-    }
 }
 
 export const daily = new Command(

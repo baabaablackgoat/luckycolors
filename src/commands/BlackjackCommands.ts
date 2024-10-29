@@ -7,16 +7,15 @@ import {
     ButtonInteraction,
     ButtonStyle,
     ChatInputCommandInteraction,
+    GuildMember,
     Snowflake,
 } from "discord.js";
-import {
-    DataStorage,
-    InsufficientBalanceError,
-} from "../def/DatabaseWrapper.js";
+import { DataStorage } from "../def/DatabaseWrapper.js";
 import { getValidStake } from "../def/isValidStake.js";
 import { BrowserRenderer } from "../webrender/BrowserRenderer.js";
 import { Lang } from "../lang/LanguageProvider";
 import { subtractStake } from "../handlers/StakeHandler.ts";
+import { GamblingSessions } from "../handlers/GamblingSessionHandler.ts";
 
 export const drawCard = new Command(
     Lang("command_card_name"),
@@ -514,6 +513,9 @@ export const blackjackExecute = async (
 ) => {
     try {
         await interaction.deferReply({ ephemeral: true });
+        void GamblingSessions.createOrPingSession(
+            interaction.member as GuildMember
+        ).catch(console.error);
         if (!(await subtractStake(interaction, stake))) return;
         BlackjackStorage.getInstance().createGame(interaction, stake);
     } catch (e) {

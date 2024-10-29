@@ -3,6 +3,7 @@ import {
     ButtonBuilder,
     ButtonInteraction,
     ButtonStyle,
+    GuildMember,
     Snowflake,
 } from "discord.js";
 import { useItemHandler } from "../handlers/UseItemHandler";
@@ -16,6 +17,7 @@ import { menuButtonHandler } from "../menu/Menu";
 import { slotsAdminButtonHandler } from "../commands/SlotsCommands.ts";
 import { assertAdminPermissions } from "./Command.ts";
 import { removeItemButtonHandler } from "../commands/AdminShopCommands.ts";
+import { GamblingSessions } from "../handlers/GamblingSessionHandler.ts";
 
 function getItemID(customID: string): string {
     return customID.split("_")[1];
@@ -111,6 +113,9 @@ export class ButtonHandler {
     }
     static async blackjack(interaction: ButtonInteraction) {
         if (this.userIsOnCooldown(interaction)) return;
+        void GamblingSessions.createOrPingSession(
+            interaction.member as GuildMember
+        ).catch(console.error);
         await BlackjackStorage.getInstance().handleInteraction(interaction);
     }
 

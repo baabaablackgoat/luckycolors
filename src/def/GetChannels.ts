@@ -22,7 +22,8 @@ export async function getChannels(channelIds: {
             } else channels.push(channel);
         } catch (e) {
             console.error(
-                `Something went wrong while trying to retrieve information about the guild with the ID ${guildId}`
+                `Something went wrong while trying to retrieve information about the guild with the ID ${guildId}`,
+                { cause: e }
             );
         }
     }

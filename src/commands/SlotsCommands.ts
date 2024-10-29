@@ -1,9 +1,6 @@
 import { assertAdminPermissions, Command } from "../def/Command.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
-import {
-    DataStorage,
-    InsufficientBalanceError,
-} from "../def/DatabaseWrapper.js";
+import { DataStorage } from "../def/DatabaseWrapper.js";
 import { randomInt } from "../def/randomInt.js";
 import {
     ActionRowBuilder,
@@ -12,6 +9,7 @@ import {
     ButtonStyle,
     ChatInputCommandInteraction,
     EmbedBuilder,
+    GuildMember,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
@@ -21,6 +19,7 @@ import { BotSettings } from "../def/SettingsHandler.ts";
 import { objectToMap } from "../def/MapHelpers.ts";
 import { BrowserRenderer } from "../webrender/BrowserRenderer.ts";
 import { subtractStake } from "../handlers/StakeHandler.ts";
+import { GamblingSessions } from "../handlers/GamblingSessionHandler.ts";
 
 export const slots = new Command(
     "slots", // TODO translate me!
@@ -156,6 +155,9 @@ export async function slotsExecute(
         return;
     }
     await interaction.deferReply({ ephemeral: true });
+    void GamblingSessions.createOrPingSession(
+        interaction.member as GuildMember
+    ).catch(console.error);
     if (!(await subtractStake(interaction, stake))) return;
     const outcome = chooseSlotsOutcome()[1];
     const fakeResult = getFakeSlotSymbolIcons(outcome);
