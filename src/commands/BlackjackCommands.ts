@@ -10,10 +10,7 @@ import {
     GuildMember,
     Snowflake,
 } from "discord.js";
-import {
-    DataStorage,
-    InsufficientBalanceError,
-} from "../def/DatabaseWrapper.js";
+import { DataStorage } from "../def/DatabaseWrapper.js";
 import { getValidStake } from "../def/isValidStake.js";
 import { BrowserRenderer } from "../webrender/BrowserRenderer.js";
 import { Lang } from "../lang/LanguageProvider";

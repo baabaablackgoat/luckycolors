@@ -1,4 +1,4 @@
-import { Guild, GuildMember, Snowflake, TextChannel, User } from "discord.js";
+import { GuildMember, Snowflake, TextChannel } from "discord.js";
 import { DataStorage } from "../def/DatabaseWrapper.ts";
 import { ReadableTime } from "../def/ReadableTime.ts";
 import { BotSettings } from "../def/SettingsHandler.ts";

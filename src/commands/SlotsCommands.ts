@@ -1,9 +1,6 @@
 import { assertAdminPermissions, Command } from "../def/Command.js";
 import { replyWithEmbed } from "../def/replyWithEmbed.js";
-import {
-    DataStorage,
-    InsufficientBalanceError,
-} from "../def/DatabaseWrapper.js";
+import { DataStorage } from "../def/DatabaseWrapper.js";
 import { randomInt } from "../def/randomInt.js";
 import {
     ActionRowBuilder,

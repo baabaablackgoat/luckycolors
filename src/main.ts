@@ -13,10 +13,7 @@ import { ScheduledTask } from "./def/ScheduledTask.js";
 import { birthdayAnnouncementHandler } from "./handlers/BirthdayAnnouncementHandler.js";
 import { assertAdminPermissions } from "./def/Command.ts";
 import { sendInteractionHandler } from "./handlers/sendInteractionHandler.ts";
-import {
-    GamblingSessionHandler,
-    GamblingSessions,
-} from "./handlers/GamblingSessionHandler.ts";
+import { GamblingSessions } from "./handlers/GamblingSessionHandler.ts";
 
 config();
 const token: string = process.env.DISCORD_TOKEN;
