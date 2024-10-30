@@ -5,10 +5,15 @@ import {
     publicMenuEntranceButtonRow,
     publicMenuEntranceEmbed,
 } from "../menu/Menu.ts";
+import { Message } from "discord.js";
+
+function isProbablyMenuMessage(msg: Message): boolean {
+    const client = ClientStore.getClient();
+    return msg.author.id === client.user.id && msg.components.length > 0; //testing for "self" and for a button existing
+}
 
 export async function sendInteractionHandler() {
     const minMessagesBeforeSend = 20;
-    const client = ClientStore.getClient();
     const interactionChannelIds = BotSettings.getSetting("interactionChannels");
     if (Object.keys(interactionChannelIds).length === 0) {
         console.warn(
@@ -27,10 +32,10 @@ export async function sendInteractionHandler() {
         channel.messages
             .fetch({ limit: minMessagesBeforeSend })
             .then((messages) => {
-                const ownMessages = messages.filter(
-                    (msg) => msg.author.id == client.user.id
+                const possibleMenuMessages = messages.filter((msg) =>
+                    isProbablyMenuMessage(msg)
                 );
-                if (ownMessages.size > 0) {
+                if (possibleMenuMessages.size > 0) {
                     console.info(
                         `Nothing to do, last ${minMessagesBeforeSend} messages include own message in ${channel.id}`
                     );

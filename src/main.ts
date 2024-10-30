@@ -155,17 +155,17 @@ BrowserRenderer.getInstance();
 // Register the scheduled tasks.
 const birthdayTask = new ScheduledTask(
     "birthdayAnnouncements",
-    "0 0 0 * * *",
+    "0 0 0 * * *", // once a day
     birthdayAnnouncementHandler
 );
 const sendMenuTask = new ScheduledTask(
     "sendMenu",
-    "0 0 * * * *",
+    "0 0 * * * *", // at the start of every hour
     sendInteractionHandler
 );
 const GamblingSessionTask = new ScheduledTask(
     "gamblingSession",
-    "0 * * * * *",
+    "0 * * * * *", // at the start of every minute
     () => {
         GamblingSessions.handleExpiredSessions().catch(console.error);
     }
